@@ -168,8 +168,8 @@ var _default = {
         }, {
           pagePath: 'pages/wholesaler/goods',
           text: '货盘',
-          iconNormal: '/static/tabbar/shops_normal.png',
-          iconSelected: '/static/tabbar/shops_a.png'
+          iconNormal: '/static/tabbar/dp.png',
+          iconSelected: '/static/tabbar/dp1.png'
         }, {
           pagePath: 'pages/wholesaler/reservations',
           text: '预订',

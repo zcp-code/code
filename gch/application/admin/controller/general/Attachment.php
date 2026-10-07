@@ -18,7 +18,7 @@ class Attachment extends Backend
      */
     protected $model = null;
 
-    protected $searchFields = 'id,filename,url';
+    protected $searchFields = 'id,name,url';
     protected $noNeedRight = ['classify'];
 
     public function _initialize()

@@ -41,7 +41,7 @@ export default {
         // 批发商 tabBar:工作台/货盘/预订/我的
         return [
           { pagePath: 'pages/wholesaler/dashboard/dashboard', text: '工作台', iconNormal: '/static/tabbar/sy.png', iconSelected: '/static/tabbar/sy1.png' },
-          { pagePath: 'pages/wholesaler/goods',                text: '货盘',   iconNormal: '/static/tabbar/shops_normal.png', iconSelected: '/static/tabbar/shops_a.png' },
+          { pagePath: 'pages/wholesaler/goods',                text: '货盘',   iconNormal: '/static/tabbar/dp.png', iconSelected: '/static/tabbar/dp1.png' },
           { pagePath: 'pages/wholesaler/reservations',         text: '预订',   iconNormal: '/static/tabbar/dd.png', iconSelected: '/static/tabbar/dd1.png' },
           { pagePath: 'pages/wholesaler/mine',                 text: '我的',   iconNormal: '/static/tabbar/wd.png', iconSelected: '/static/tabbar/wd1.png' }
         ]

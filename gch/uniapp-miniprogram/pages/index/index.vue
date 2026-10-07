@@ -8,7 +8,7 @@
 
     <!-- 搜索框(可点击跳转搜索页) -->
     <view class="search-bar" @tap="goSearch">
-      <text class="search-icon">🔍</text>
+      <text class="search-icon iconfont icon-sousuo"></text>
       <text class="search-placeholder">搜索货品 / 店铺</text>
     </view>
 
@@ -38,7 +38,8 @@
 
     <!-- 货盘列表 -->
     <view class="goods-list">
-      <view v-for="g in list" :key="g.id" class="goods-card" @tap="goDetail(g.id)">
+		<!-- @tap="goDetail(g.id)" -->
+      <view v-for="g in list" :key="g.id" class="goods-card" >
         <view class="emoji-cover">{{ emojiOf(g.name) }}</view>
         <view class="goods-info">
           <view class="goods-name ellipsis-2">{{ g.name }}</view>

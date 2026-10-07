@@ -250,7 +250,7 @@ var _default = {
     };
   },
   onLoad: function onLoad() {
-    // this.load(true);
+    this.load(true);
   },
   onShow: function onShow() {
     this.load(true);

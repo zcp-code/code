@@ -1,85 +1,136 @@
 <template>
-  <view class="container">
-    <!-- 橙色头部(头像+昵称+公司名/账号) -->
-    <view class="header">
-      <view class="user-row">
-        <view class="avatar">{{ userInfo.icon || '👤' }}</view>
-        <view class="info">
-          <view class="nick">{{ userInfo.name || '游客' }}</view>
-          <view class="sub">{{ userInfo.subtitle || '微信授权登录 · 鲜果优选连锁' }}</view>
-        </view>
-      </view>
-    </view>
+ <view class="container">
+ 
+   <!-- 橙色头部 -->
+   <view class="header">
+     <view class="user-row">
+       <view class="avatar">
+         <image :src="userInfo.icon || '/static/avatar.png'" mode="widthFix"></image>
+       </view>
+       <view class="info">
+         <view class="nick">{{ userInfo.name || '游客' }}</view>
+         <view class="sub">{{ userInfo.subtitle || '微信授权登录 · 鲜果优选连锁' }}</view>
+       </view>
+     </view>
+   </view>
+ 
+   <!-- 未登录态 -->
+   <block v-if="!isLogin">
+     <view class="login-card">
+       <text class="login-icon">🍎</text>
+       <view class="login-title">果仓货盘</view>
+       <view class="login-slogan">产地直连 · 批发采购更省心</view>
+ 
+       <button class="btn-green" @tap="wxLogin">
+         <text class="wx-icon">💬</text>
+         <text>微信授权登录</text>
+       </button>
+ 
+       <view class="account-link" @tap="goAccountLogin">
+         账号密码登录<text class="arrow">›</text>
+       </view>
+ 
+       <view class="demo-tip">演示账号 test / 123456</view>
+     </view>
+ 
+     <view class="agreement">登录代表已同意《用户协议》与《隐私政策》</view>
+   </block>
+ 
+   <!-- 已登录态 -->
+   <block v-else>
+ 
+     <!-- 我的订单卡片：设计重点 -->
+     <view class="order-card">
+       <view class="card-head">
+         <text class="card-title">我的订单</text>
+         <text class="card-more" @tap="goMyOrders">查看全部 ›</text>
+       </view>
+ 
+       <view class="order-grid">
+         <view class="order-item" @tap="goMyOrders">
+           <view class="order-icon wait">
+             <text class="iconfont icon-daiqueren1"></text>
+           </view>
+           <text class="order-text">待确认</text>
+         </view>
+ 
+         <view class="order-item" @tap="goMyOrders">
+           <view class="order-icon confirm">
+             <text class="iconfont icon-yiqueren"></text>
+           </view>
+           <text class="order-text">已确认</text>
+         </view>
+ 
+         <view class="order-item" @tap="goMyOrders">
+           <view class="order-icon cancel">
+             <text class="iconfont icon-yiquxiao2"></text>
+           </view>
+           <text class="order-text">已取消</text>
+         </view>
+       </view>
+     </view>
+ 
+     <!-- 第一组功能 -->
+     <view class="cell-group">
+       <view class="cell" @tap="goMyOrders">
+         <view class="cell-icon orange">
+           <text>📋</text>
+         </view>
+         <text class="cell-label">我的订单</text>
+         <text class="cell-count" v-if="orderCount > 0">{{ orderCount }} 笔</text>
+         <text class="cell-arrow iconfont icon-xiangyou"></text>
+       </view>
+ 
+       <view class="cell" @tap="goFavorites">
+         <view class="cell-icon red">
+           <text>⭐</text>
+         </view>
+         <text class="cell-label">我的收藏</text>
+         <text class="cell-count" v-if="favCount > 0">{{ favCount }} 家</text>
+         <text class="cell-arrow iconfont icon-xiangyou"></text>
+       </view>
+ 
+       <view class="cell" @tap="goChangePwd">
+         <view class="cell-icon yellow">
+           <text>🔒</text>
+         </view>
+         <text class="cell-label">修改密码</text>
+         <text class="cell-arrow iconfont icon-xiangyou"></text>
+       </view>
+     </view>
+ 
+     <!-- 第二组功能 -->
+     <view class="cell-group">
+       <view v-if="isBuyer" class="cell" @tap="switchRole('wholesaler')">
+         <view class="cell-icon blue">
+           <text>🏪</text>
+         </view>
+         <text class="cell-label">切换为批发商</text>
+         <text class="cell-arrow iconfont icon-xiangyou"></text>
+       </view>
+ 
+       <view v-if="isWholesaler" class="cell" @tap="switchRole('buyer')">
+         <view class="cell-icon purple">
+           <text>🛒</text>
+         </view>
+         <text class="cell-label">切换为采购商</text>
+         <text class="cell-arrow iconfont icon-xiangyou"></text>
+       </view>
+ 
+       <view class="cell cell-danger" @tap="logout">
+         <view class="cell-icon danger">
+           <text>🚪</text>
+         </view>
+         <text class="cell-label">退出登录</text>
+         <text class="cell-arrow iconfont icon-xiangyou"></text>
+       </view>
+     </view>
+ 
+   </block>
+ 
+   <custom-tabbar v-if="isLogin" />
+ </view>
 
-    <!-- 未登录态(loginView)— 规格 6.5 -->
-    <block v-if="!isLogin">
-      <view class="login-card">
-        <text class="login-icon">🍎</text>
-        <view class="login-title">果仓货盘</view>
-        <view class="login-slogan">产地直连 · 批发采购更省心</view>
-
-        <!-- 微信授权登录(绿色,演示 demo) -->
-        <button class="btn-green" @tap="wxLogin">
-          <text class="wx-icon">💬</text>
-          <text>微信授权登录</text>
-        </button>
-
-        <!-- 账号密码登录(链接) -->
-        <view class="account-link" @tap="goAccountLogin">
-          账号密码登录<text class="arrow">›</text>
-        </view>
-
-        <view class="demo-tip">演示账号 test / 123456</view>
-      </view>
-
-      <view class="agreement">登录代表已同意《用户协议》与《隐私政策》</view>
-    </block>
-
-    <!-- 已登录态 -->
-    <block v-else>
-      <!-- 第一组 cell -->
-      <view class="cell-group">
-        <view class="cell" @tap="goMyOrders">
-          <text class="cell-icon">📋</text>
-          <text class="cell-label">我的订单</text>
-          <text class="cell-count" v-if="orderCount > 0">{{ orderCount }} 笔</text>
-          <text class="cell-arrow">›</text>
-        </view>
-        <view class="cell" @tap="goFavorites">
-          <text class="cell-icon">⭐</text>
-          <text class="cell-label">我的收藏</text>
-          <text class="cell-count" v-if="favCount > 0">{{ favCount }} 家</text>
-          <text class="cell-arrow">›</text>
-        </view>
-        <view class="cell" @tap="goChangePwd">
-          <text class="cell-icon">🔒</text>
-          <text class="cell-label">修改密码</text>
-          <text class="cell-arrow">›</text>
-        </view>
-      </view>
-
-      <!-- 第二组 cell -->
-      <view class="cell-group">
-        <view v-if="isBuyer" class="cell" @tap="switchRole('wholesaler')">
-          <text class="cell-icon">🏪</text>
-          <text class="cell-label">切换为批发商</text>
-          <text class="cell-arrow">›</text>
-        </view>
-        <view v-if="isWholesaler" class="cell" @tap="switchRole('buyer')">
-          <text class="cell-icon">🛒</text>
-          <text class="cell-label">切换为采购商</text>
-          <text class="cell-arrow">›</text>
-        </view>
-        <view class="cell cell-danger" @tap="logout">
-          <text class="cell-icon">🚪</text>
-          <text class="cell-label">退出登录</text>
-          <text class="cell-arrow">›</text>
-        </view>
-      </view>
-    </block>
-
-    <custom-tabbar v-if="isLogin" />
-  </view>
 </template>
 
 <script>
@@ -113,7 +164,7 @@ export default {
     updateUserInfo() {
       if (this.isBuyer) {
         this.userInfo = {
-          icon: '🧑‍💼',
+          icon: '/static/avatar.jpg',
           name: userStore.profile?.real_name || userStore.profile?.account || '李采购',
           subtitle: userStore.profile?.company || '微信授权登录 · 鲜果优选连锁'
         }
@@ -192,98 +243,283 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-.header {
-  background: linear-gradient(135deg, #ff6600, #ff8a2b);
-  padding: 80rpx 30rpx 100rpx;
-  color: #fff;
+page {
+  background-color: #f7f8fa;
 }
-.user-row { display: flex; align-items: center; }
+
+.container {
+  min-height: 100vh;
+  padding-bottom: 140rpx;
+  box-sizing: border-box;
+}
+
+/* ========== 顶部橙色头部 ========== */
+.header {
+  background: linear-gradient(135deg, #ff6600 0%, #ff8a2b 100%);
+  padding: 90rpx 32rpx 110rpx;
+  color: #fff;
+  border-radius: 0 0 32rpx 32rpx;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+}
+
 .avatar {
-  width: 124rpx;
-  height: 124rpx;
+  width: 128rpx;
+  height: 128rpx;
   border-radius: 50%;
-  background: rgba(255,255,255,.25);
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 64rpx;
-  margin-right: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 20rpx rgba(255, 102, 0, 0.25);
 }
-.info { flex: 1; }
-.nick { font-size: 36rpx; font-weight: 700; }
-.sub { font-size: 24rpx; opacity: .92; margin-top: 8rpx; }
 
-/* 未登录态 */
-.login-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 60rpx 40rpx 50rpx;
-  margin: -60rpx 30rpx 20rpx;
-  text-align: center;
+.avatar image {
+  width: 100%;
+  height: 100%;
 }
-.login-icon { font-size: 80rpx; display: block; }
-.login-title { font-size: 40rpx; font-weight: 700; color: #111; margin-top: 12rpx; }
-.login-slogan { color: #999; font-size: 24rpx; margin-top: 8rpx; }
+
+.info {
+  flex: 1;
+  margin-left: 24rpx;
+}
+
+.nick {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.sub {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.88);
+  margin-top: 6rpx;
+}
+
+/* ========== 未登录态 ========== */
+.login-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 70rpx 40rpx 60rpx;
+  margin: -60rpx 24rpx 24rpx;
+  text-align: center;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.06);
+}
+
+.login-icon {
+  font-size: 88rpx;
+  display: block;
+}
+
+.login-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #111111;
+  margin-top: 16rpx;
+}
+
+.login-slogan {
+  color: #999999;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
 
 .btn-green {
   background: #07c160;
-  color: #fff;
+  color: #ffffff;
   width: 100%;
   border-radius: 24rpx;
-  padding: 24rpx 0;
+  padding: 26rpx 0;
   font-size: 30rpx;
   font-weight: 500;
-  margin-top: 40rpx;
+  margin-top: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12rpx;
+  gap: 14rpx;
 }
-.btn-green .wx-icon { font-size: 34rpx; }
+
+.btn-green .wx-icon {
+  font-size: 34rpx;
+}
 
 .account-link {
   color: #ff6600;
   font-size: 28rpx;
-  padding: 20rpx 0;
-  margin-top: 10rpx;
+  padding: 24rpx 0;
+  margin-top: 12rpx;
 }
-.account-link .arrow { margin-left: 8rpx; font-size: 28rpx; }
+
+.account-link .arrow {
+  margin-left: 8rpx;
+}
 
 .demo-tip {
-  color: #999;
+  color: #999999;
   font-size: 22rpx;
-  margin-top: 20rpx;
+  margin-top: 24rpx;
   padding-top: 20rpx;
   border-top: 1rpx solid #f2f2f2;
 }
 
 .agreement {
   text-align: center;
-  color: #999;
+  color: #999999;
   font-size: 22rpx;
-  padding: 30rpx 30rpx;
+  padding: 0 30rpx;
 }
 
-/* 已登录 cell 列表 */
-.cell-group {
-  background: #fff;
-  border-radius: 12rpx;
-  margin: -50rpx 24rpx 20rpx;
-  overflow: hidden;
+/* ========== 我的订单卡片（设计重点） ========== */
+.order-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  margin: -60rpx 24rpx 20rpx;
+  box-shadow: 0 12rpx 32rpx rgba(255, 102, 0, 0.08);
 }
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #222222;
+}
+
+.card-more {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.order-grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.order-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-bottom: 12rpx;
+}
+
+.order-icon.wait {
+  background: #fff2e8;
+}
+
+.order-icon.confirm {
+  background: #e8f8ef;
+}
+
+.order-icon.cancel {
+  background: #f5f5f5;
+}
+
+.order-text {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+/* ========== 功能卡片组 ========== */
+.cell-group {
+  background: #ffffff;
+  border-radius: 20rpx;
+  margin: 0 24rpx 20rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
 .cell {
   display: flex;
   align-items: center;
-  padding: 30rpx 32rpx;
-  border-bottom: 1rpx solid #f2f2f2;
+  padding: 28rpx 24rpx;
+  border-bottom: 1rpx solid #f5f5f5;
 }
-.cell:last-child { border-bottom: none; }
-.cell:active { background: #fafafa; }
-.cell-icon { font-size: 36rpx; margin-right: 20rpx; }
-.cell-label { flex: 1; font-size: 30rpx; color: #333; }
-.cell-count { color: #999; font-size: 24rpx; margin-right: 8rpx; }
-.cell-arrow { color: #ccc; font-size: 32rpx; }
-.cell-danger .cell-label { color: #e64340; }
+
+.cell:last-child {
+  border-bottom: none;
+}
+
+.cell:active {
+  background-color: #fafafa;
+}
+
+.cell-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: 20rpx;
+}
+
+.cell-icon.orange {
+  background: #fff2e8;
+}
+
+.cell-icon.red {
+  background: #ffe8e8;
+}
+
+.cell-icon.yellow {
+  background: #fff8e1;
+}
+
+.cell-icon.blue {
+  background: #e8f3ff;
+}
+
+.cell-icon.purple {
+  background: #f3e8ff;
+}
+
+.cell-icon.danger {
+  background: #ffe8e8;
+}
+
+.cell-label {
+  flex: 1;
+  font-size: 30rpx;
+  color: #222222;
+}
+
+.cell-count {
+  color: #999999;
+  font-size: 24rpx;
+  margin-right: 10rpx;
+}
+
+.cell-arrow {
+  color: #cccccc;
+  font-size: 32rpx;
+}
+
+.cell-danger .cell-label {
+  color: #e53e3e;
+}
 </style>

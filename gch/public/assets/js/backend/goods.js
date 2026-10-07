@@ -39,41 +39,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     '<span class="label label-warning">售罄</span>'][v];
                         }},
                         {field: 'publish_time', title: '发布时间', formatter: Table.api.formatter.datetime, operate: 'RANGE', addclass: 'datetimerange', sortable: true},
-                        {field: 'operate', title: __('Operate'), table: table, events: {
-                            'click .btn-editone': function (e, value, row, index) {
-                                e.stopPropagation();
-                                $('.btn-edit').data('ids', row.id).trigger('click');
-                            },
-                            'click .btn-statusone': function (e, value, row, index) {
-                                e.stopPropagation();
-                                layer.confirm('确认强制下架该货盘？这将取消所有待确认预订', function (i) {
-                                    layer.close(i);
-                                    $.ajax({
-                                        url: 'goods/status',
-                                        data: {ids: row.id},
-                                        type: 'POST',
-                                        dataType: 'json',
-                                        success: function (ret) {
-                                            if (ret.code === 1) {
-                                                table.bootstrapTable('refresh');
-                                                Layer.alert(ret.msg, {icon: 1});
-                                            } else {
-                                                Layer.alert(ret.msg, {icon: 2});
-                                            }
-                                        }
-                                    });
-                                });
-                            }
-                        }, formatter: function (value, row, index) {
-                            var html = '';
-                            if (Config.auth.check('goods/edit')) {
-                                html += '<a href="javascript:;" class="btn btn-xs btn-success btn-editone"><i class="fa fa-pencil"></i> 编辑</a> ';
-                            }
-                            if (Config.auth.check('goods/status') && row.status == 1) {
-                                html += '<a href="javascript:;" class="btn btn-xs btn-warning btn-statusone"><i class="fa fa-arrow-down"></i> 下架</a> ';
-                            }
-                            return html;
-                        }}
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ]
             });

@@ -205,6 +205,16 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 184));
@@ -278,6 +288,16 @@ var _default = {
     goDetail: function goDetail(id) {
       uni.navigateTo({
         url: "/pages/shop/shop?id=".concat(id)
+      });
+    },
+    // 新增电话拨打
+    callPhone: function callPhone(shop) {
+      if (!shop.contact_phone) return uni.showToast({
+        title: "暂无联系电话",
+        icon: "none"
+      });
+      uni.makePhoneCall({
+        phoneNumber: shop.contact_phone
       });
     }
   }

@@ -256,6 +256,57 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 184));
@@ -294,7 +345,7 @@ var _default = {
       if (this.isBuyer) {
         var _userStore$profile, _userStore$profile2, _userStore$profile3;
         this.userInfo = {
-          icon: '🧑‍💼',
+          icon: '/static/avatar.jpg',
           name: ((_userStore$profile = _user.default.profile) === null || _userStore$profile === void 0 ? void 0 : _userStore$profile.real_name) || ((_userStore$profile2 = _user.default.profile) === null || _userStore$profile2 === void 0 ? void 0 : _userStore$profile2.account) || '李采购',
           subtitle: ((_userStore$profile3 = _user.default.profile) === null || _userStore$profile3 === void 0 ? void 0 : _userStore$profile3.company) || '微信授权登录 · 鲜果优选连锁'
         };

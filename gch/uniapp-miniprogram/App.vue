@@ -34,6 +34,7 @@ export default {
 </script>
 
 <style>
+@import "@/static/icon.css";	
 page {
   background-color: #f5f5f5;
   font-size: 28rpx;
