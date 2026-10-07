@@ -37,19 +37,15 @@
         </view>
       </view>
     </view>
-
-    <custom-tabbar />
   </view>
 </template>
 
 <script>
 import http, { api } from '@/utils/request.js'
-import CustomTabbar from '@/components/custom-tabbar/custom-tabbar.vue'
 
 const FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟']
 
 export default {
-  components: { CustomTabbar },
   data() {
     return {
       type: 'goods',     // goods / shop

@@ -163,8 +163,8 @@ var _default = {
         return [{
           pagePath: 'pages/wholesaler/dashboard/dashboard',
           text: '工作台',
-          iconNormal: '/static/tabbar/home_normal.png',
-          iconSelected: '/static/tabbar/home_a.png'
+          iconNormal: '/static/tabbar/sy.png',
+          iconSelected: '/static/tabbar/sy1.png'
         }, {
           pagePath: 'pages/wholesaler/goods',
           text: '货盘',
@@ -173,36 +173,36 @@ var _default = {
         }, {
           pagePath: 'pages/wholesaler/reservations',
           text: '预订',
-          iconNormal: '/static/tabbar/favorites_normal.png',
-          iconSelected: '/static/tabbar/favorites_a.png'
+          iconNormal: '/static/tabbar/dd.png',
+          iconSelected: '/static/tabbar/dd1.png'
         }, {
           pagePath: 'pages/wholesaler/mine',
           text: '我的',
-          iconNormal: '/static/tabbar/profile_normal.png',
-          iconSelected: '/static/tabbar/profile_a.png'
+          iconNormal: '/static/tabbar/wd.png',
+          iconSelected: '/static/tabbar/wd1.png'
         }];
       }
       // 采购商 tabBar:首页/店铺/订单/我的
       return [{
         pagePath: 'pages/index/index',
         text: '首页',
-        iconNormal: '/static/tabbar/home_normal.png',
-        iconSelected: '/static/tabbar/home_a.png'
+        iconNormal: '/static/tabbar/sy.png',
+        iconSelected: '/static/tabbar/sy1.png'
       }, {
         pagePath: 'pages/shops/shops',
         text: '店铺',
-        iconNormal: '/static/tabbar/shops_normal.png',
-        iconSelected: '/static/tabbar/shops_a.png'
+        iconNormal: '/static/tabbar/dp.png',
+        iconSelected: '/static/tabbar/dp1.png'
       }, {
         pagePath: 'pages/orders/orders',
         text: '订单',
-        iconNormal: '/static/tabbar/favorites_normal.png',
-        iconSelected: '/static/tabbar/favorites_a.png'
+        iconNormal: '/static/tabbar/dd.png',
+        iconSelected: '/static/tabbar/dd1.png'
       }, {
         pagePath: 'pages/profile/profile',
         text: '我的',
-        iconNormal: '/static/tabbar/profile_normal.png',
-        iconSelected: '/static/tabbar/profile_a.png'
+        iconNormal: '/static/tabbar/wd.png',
+        iconSelected: '/static/tabbar/wd1.png'
       }];
     },
     currentIdx: function currentIdx() {

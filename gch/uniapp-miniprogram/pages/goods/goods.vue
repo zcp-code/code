@@ -61,18 +61,14 @@
         <view class="sheet-tip">提交后由批发商确认，确认前可取消</view>
       </view>
     </view>
-
-    <custom-tabbar />
   </view>
 </template>
 
 <script>
 import http, { api } from '@/utils/request.js'
 import userStore from '@/store/user.js'
-import CustomTabbar from '@/components/custom-tabbar/custom-tabbar.vue'
 
 export default {
-  components: { CustomTabbar },
   data() {
     return {
       id: 0,
