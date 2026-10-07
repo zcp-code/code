@@ -1,0 +1,147 @@
+<?php
+namespace app\api\controller;
+
+use app\api\model\Goods as GoodsModel;
+use app\api\model\GoodsImage;
+use app\api\model\ProductCategory;
+use app\api\model\Wholesaler as WholesalerModel;
+use think\Db;
+
+/**
+ * 批发商货盘管理
+ */
+class WholesalerGoods extends ApiBase
+{
+    protected $requireRole = 'wholesaler';
+
+    /**
+     * 可选分类（复用采购商端接口）
+     */
+    public function categories()
+    {
+        $list = ProductCategory::where('status', 1)->order('sort asc')->select();
+        return $this->success($list);
+    }
+
+    /**
+     * 我的货盘列表
+     */
+    public function index()
+    {
+        $page  = (int)$this->request->param('page', 1);
+        $limit = (int)$this->request->param('limit', 20);
+        $status = $this->request->param('status', '');
+
+        $where = ['wholesaler_id' => $this->user['user_id']];
+        if ($status !== '') $where['status'] = (int)$status;
+
+        $list  = GoodsModel::where($where)->order('id desc')->page($page, $limit)->select();
+        $total = GoodsModel::where($where)->count();
+
+        foreach ($list as &$g) {
+            $g->available = max(0, $g->total_stock - $g->reserved_quantity);
+        }
+        return $this->success(['list' => $list, 'total' => $total]);
+    }
+
+    /**
+     * 货盘详情
+     */
+    public function detail($id = 0)
+    {
+        $id = (int)$id;
+        $g = GoodsModel::get($id);
+        if (!$g || $g->wholesaler_id != $this->user['user_id']) {
+            return $this->error('货盘不存在', 404);
+        }
+        $g->images = GoodsImage::getByGoods($g->id);
+        $g->available = max(0, $g->total_stock - $g->reserved_quantity);
+        return $this->success($g);
+    }
+
+    /**
+     * 发布货盘
+     */
+    public function create()
+    {
+        $data = $this->request->only([
+            'category_id', 'name', 'price', 'unit', 'total_stock', 'description',
+        ]);
+        $images = $this->request->param('images/a', []); // 图片 URL 数组
+
+        // 校验
+        if (empty($data['category_id'])) return $this->error('分类不能为空');
+        if (empty($data['name'])) return $this->error('品名不能为空');
+        if (!isset($data['price']) || $data['price'] <= 0) return $this->error('单价必须大于 0');
+        if (empty($data['unit'])) return $this->error('单位不能为空');
+        if (!isset($data['total_stock']) || $data['total_stock'] < 1) return $this->error('库存必须大于等于 1');
+
+        // 批发商必须绑定店铺
+        $wh = WholesalerModel::get($this->user['user_id']);
+        if (!$wh || !$wh->shop_id) return $this->error('您尚未绑定店铺');
+
+        Db::startTrans();
+        try {
+            $g = GoodsModel::create([
+                'goods_no'      => GoodsModel::genNo(),
+                'wholesaler_id' => $wh->id,
+                'shop_id'       => $wh->shop_id,
+                'category_id'   => $data['category_id'],
+                'name'          => $data['name'],
+                'price'         => $data['price'],
+                'unit'          => $data['unit'],
+                'total_stock'   => $data['total_stock'],
+                'description'   => $data['description'] ?? '',
+                'status'        => 1,
+                'publish_time'  => time(),
+            ]);
+
+            // 保存图片
+            foreach ($images as $i => $url) {
+                if (!empty($url)) {
+                    GoodsImage::create([
+                        'goods_id' => $g->id,
+                        'url'      => $url,
+                        'sort'     => $i,
+                    ]);
+                }
+            }
+            Db::commit();
+            return $this->success(['id' => $g->id, 'goods_no' => $g->goods_no], '发布成功');
+        } catch (\Exception $e) {
+            Db::rollback();
+            return $this->error('发布失败：' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 上下架
+     */
+    public function status()
+    {
+        $id = (int)$this->request->param('id', 0);
+        $status = (int)$this->request->param('status', 0);
+        if (!$id) return $this->error('缺少 id');
+
+        $g = GoodsModel::get($id);
+        if (!$g || $g->wholesaler_id != $this->user['user_id']) {
+            return $this->error('货盘不存在', 404);
+        }
+        if (!in_array($status, [0, 1, 2])) return $this->error('status 非法');
+
+        // 下架时校验是否有未完成预订
+        if ($status == 0) {
+            $pending = \think\Db::name('reservation')
+                ->where('goods_id', $id)
+                ->where('status', 'pending')
+                ->count();
+            if ($pending > 0) {
+                return $this->error('该货盘有待确认预订（' . $pending . ' 单），请先取消');
+            }
+        }
+
+        $g->status = $status;
+        $g->save();
+        return $this->success(null, '操作成功');
+    }
+}

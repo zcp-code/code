@@ -1,0 +1,104 @@
+
+.header.data-v-60cb334c {
+  background: linear-gradient(135deg, #ff6600, #ff8a2b);
+  padding: 80rpx 30rpx 100rpx;
+  color: #fff;
+}
+.user-row.data-v-60cb334c { display: flex; align-items: center;
+}
+.avatar.data-v-60cb334c {
+  width: 124rpx;
+  height: 124rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64rpx;
+  margin-right: 24rpx;
+}
+.info.data-v-60cb334c { flex: 1;
+}
+.nick.data-v-60cb334c { font-size: 36rpx; font-weight: 700;
+}
+.sub.data-v-60cb334c { font-size: 24rpx; opacity: .92; margin-top: 8rpx;
+}
+/* 未登录态 */
+.login-card.data-v-60cb334c {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 60rpx 40rpx 50rpx;
+  margin: -60rpx 30rpx 20rpx;
+  text-align: center;
+}
+.login-icon.data-v-60cb334c { font-size: 80rpx; display: block;
+}
+.login-title.data-v-60cb334c { font-size: 40rpx; font-weight: 700; color: #111; margin-top: 12rpx;
+}
+.login-slogan.data-v-60cb334c { color: #999; font-size: 24rpx; margin-top: 8rpx;
+}
+.btn-green.data-v-60cb334c {
+  background: #07c160;
+  color: #fff;
+  width: 100%;
+  border-radius: 24rpx;
+  padding: 24rpx 0;
+  font-size: 30rpx;
+  font-weight: 500;
+  margin-top: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+.btn-green .wx-icon.data-v-60cb334c { font-size: 34rpx;
+}
+.account-link.data-v-60cb334c {
+  color: #ff6600;
+  font-size: 28rpx;
+  padding: 20rpx 0;
+  margin-top: 10rpx;
+}
+.account-link .arrow.data-v-60cb334c { margin-left: 8rpx; font-size: 28rpx;
+}
+.demo-tip.data-v-60cb334c {
+  color: #999;
+  font-size: 22rpx;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f2f2f2;
+}
+.agreement.data-v-60cb334c {
+  text-align: center;
+  color: #999;
+  font-size: 22rpx;
+  padding: 30rpx 30rpx;
+}
+/* 已登录 cell 列表 */
+.cell-group.data-v-60cb334c {
+  background: #fff;
+  border-radius: 12rpx;
+  margin: -50rpx 24rpx 20rpx;
+  overflow: hidden;
+}
+.cell.data-v-60cb334c {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 32rpx;
+  border-bottom: 1rpx solid #f2f2f2;
+}
+.cell.data-v-60cb334c:last-child { border-bottom: none;
+}
+.cell.data-v-60cb334c:active { background: #fafafa;
+}
+.cell-icon.data-v-60cb334c { font-size: 36rpx; margin-right: 20rpx;
+}
+.cell-label.data-v-60cb334c { flex: 1; font-size: 30rpx; color: #333;
+}
+.cell-count.data-v-60cb334c { color: #999; font-size: 24rpx; margin-right: 8rpx;
+}
+.cell-arrow.data-v-60cb334c { color: #ccc; font-size: 32rpx;
+}
+.cell-danger .cell-label.data-v-60cb334c { color: #e64340;
+}
+

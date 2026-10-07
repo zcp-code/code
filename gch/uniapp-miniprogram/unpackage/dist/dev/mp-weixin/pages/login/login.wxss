@@ -1,0 +1,65 @@
+
+.entry.data-v-b237504c {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #ff8a2b 0%, #ff6600 50%, #f04a00 100%);
+  padding: 120rpx 60rpx 60rpx;
+  display: flex;
+  flex-direction: column;
+}
+.hero.data-v-b237504c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 80rpx;
+}
+.big-icon.data-v-b237504c { font-size: 140rpx;
+}
+.title.data-v-b237504c {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 20rpx;
+}
+.slogan.data-v-b237504c {
+  color: rgba(255,255,255,.92);
+  font-size: 26rpx;
+  margin-top: 16rpx;
+}
+.hint.data-v-b237504c {
+  color: rgba(255,255,255,.85);
+  font-size: 24rpx;
+  margin-top: 30rpx;
+}
+.role-list.data-v-b237504c { display: flex; flex-direction: column; gap: 24rpx;
+}
+.role-card.data-v-b237504c {
+  background: rgba(255,255,255,.96);
+  border-radius: 24rpx;
+  padding: 36rpx 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  box-shadow: 0 6rpx 20rpx rgba(0,0,0,.12);
+}
+.role-card.data-v-b237504c:active { -webkit-transform: scale(.98); transform: scale(.98);
+}
+.role-icon.data-v-b237504c { font-size: 64rpx; flex-shrink: 0;
+}
+.role-info.data-v-b237504c { flex: 1; display: flex; flex-direction: column;
+}
+.role-title.data-v-b237504c { font-size: 32rpx; font-weight: 600; color: #111;
+}
+.role-desc.data-v-b237504c { color: #666; font-size: 22rpx; margin-top: 8rpx;
+}
+.arrow.data-v-b237504c { color: #ff6600; font-size: 36rpx; font-weight: bold;
+}
+.footer.data-v-b237504c {
+  margin-top: auto;
+  padding-top: 60rpx;
+  text-align: center;
+  color: rgba(255,255,255,.85);
+  font-size: 22rpx;
+}
+.reset.data-v-b237504c { color: #fff; text-decoration: underline; margin-left: 8rpx;
+}
+

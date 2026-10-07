@@ -1,0 +1,12 @@
+<view class="container">
+  <view class="grid">
+    <view wx:for="{{categories}}" wx:key="id"
+          class="cat-card"
+          data-id="{{item.id}}"
+          bindtap="selectCategory">
+      <view class="cat-icon">📦</view>
+      <view class="cat-name">{{item.name}}</view>
+      <view class="cat-count">{{item.count}} 个货品</view>
+    </view>
+  </view>
+</view>

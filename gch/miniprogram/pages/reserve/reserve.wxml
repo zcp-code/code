@@ -1,0 +1,33 @@
+<view class="container" wx:if="{{goods}}">
+  <view class="card goods-summary">
+    <image src="{{goods.cover || '/images/placeholder.png'}}" mode="aspectFill" class="cover"></image>
+    <view class="info">
+      <view class="name ellipsis-2">{{goods.name}}</view>
+      <view class="price">¥{{goods.price}}/{{goods.unit}}</view>
+      <view class="available">可订 {{goods.available}} {{goods.unit}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-row">
+      <text class="label">预订数量</text>
+      <view class="qty-control">
+        <view class="qty-btn" bindtap="decQty">−</view>
+        <text class="qty-value">{{quantity}}</text>
+        <view class="qty-btn" bindtap="incQty">+</view>
+      </view>
+    </view>
+    <view class="form-row total">
+      <text class="label">合计</text>
+      <text class="total-price">¥{{goods.price * quantity}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="tip">
+      📌 预订提交后，批发商会收到通知并确认。请保持电话畅通。
+    </view>
+  </view>
+
+  <button class="btn-primary submit-btn" bindtap="submit">提交预订</button>
+</view>

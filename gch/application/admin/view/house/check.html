@@ -1,0 +1,513 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <!-- 基本信息 -->
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Title')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-title" data-rule="required" class="form-control" name="row[title]" type="text" value="{$row.title|htmlentities}" disabled>
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Type')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <select id="c-type" data-rule="required" class="form-control selectpicker" name="row[type]" disabled>
+                {foreach name="typeList" item="vo"}
+                <option value="{$key}" {in name="key" value="$row.type"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Cover_image')}:</label>
+        <div class="col-xs-12 col-sm-10">
+            <img src="{$row.cover_image|htmlentities}">
+<!--            <div class="input-group">-->
+<!--                <input id="c-cover_image" data-rule="required" class="form-control" size="50" name="row[cover_image]" type="text" value="{$row.cover_image|htmlentities}">-->
+<!--                <div class="input-group-addon no-border no-padding">-->
+<!--                    <span><button type="button" id="faupload-cover_image" class="btn btn-danger faupload" data-input-id="c-cover_image" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp,image/webp" data-multiple="false" data-preview-id="p-cover_image"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>-->
+<!--                    <span><button type="button" id="fachoose-cover_image" class="btn btn-primary fachoose" data-input-id="c-cover_image" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>-->
+<!--                </div>-->
+<!--                <span class="msg-box n-right" for="c-cover_image"></span>-->
+<!--            </div>-->
+<!--            <span style="color: red">※图片宽高推荐400x300</span>-->
+<!--            <ul class="row list-inline faupload-preview" id="p-cover_image"></ul>-->
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Images')}:</label>
+        <div class="col-xs-12 col-sm-10">
+            {if !empty($row.images)}
+            {php}$imgArr = explode(',', $row['images']);{/php}
+            {foreach name="imgArr" item="vo"}
+            {if !empty($vo)}
+            <img src="{$vo|htmlentities}">
+            {/if}
+            {/foreach}
+            {/if}
+<!--            <div class="input-group">-->
+<!--                <input id="c-images" class="form-control" size="50" name="row[images]" type="text" value="{$row.images|htmlentities}">-->
+<!--                <div class="input-group-addon no-border no-padding">-->
+<!--                    <span><button type="button" id="faupload-images" class="btn btn-danger faupload" data-input-id="c-images" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp,image/webp" data-multiple="true" data-preview-id="p-images"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>-->
+<!--                    <span><button type="button" id="fachoose-images" class="btn btn-primary fachoose" data-input-id="c-images" data-mimetype="image/*" data-multiple="true"><i class="fa fa-list"></i> {:__('Choose')}</button></span>-->
+<!--                </div>-->
+<!--                <span class="msg-box n-right" for="c-images"></span>-->
+<!--            </div>-->
+<!--            <span style="color: red">※图片宽高推荐400x300</span>-->
+<!--            <ul class="row list-inline faupload-preview" id="p-images"></ul>-->
+        </div>
+    </div>
+
+    <!-- 房屋信息 -->
+    <legend>房屋信息</legend>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Community_name')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-community_id" disabled data-rule="required" data-source="community/index" class="form-control selectpage" data-params='{"custom[status]":1}' name="row[community_id]" type="text" value="{$row.community_id|htmlentities}">
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Has_elevator')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <select id="c-has_elevator" class="form-control selectpicker" name="row[has_elevator]" disabled>
+                {foreach name="hasElevatorList" item="vo"}
+                <option value="{$key}" {in name="key" value="$row.has_elevator"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+        <!-- <label class="control-label col-xs-12 col-sm-2">{:__('Address')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-address" data-rule="required" class="form-control" name="row[address]" type="text" value="{$row.address|htmlentities}">
+        </div> -->
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('House_type')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-house_type" disabled data-rule="required" class="form-control" name="row[house_type]" type="text" value="{$row.house_type|htmlentities}" placeholder="如：3室2厅1卫">
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Area')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-area"  disabled class="form-control" step="0.01" name="row[area]" type="number" value="{$row.area|htmlentities}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Orientation')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-orientation" disabled class="form-control" name="row[orientation]" type="text" value="{$row.orientation|htmlentities}">
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Decoration')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-decoration" disabled class="form-control" name="row[decoration]" type="text" value="{$row.decoration|htmlentities}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Floor')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-floor" disabled class="form-control" name="row[floor]" type="text" value="{$row.floor|htmlentities}" placeholder="如：10">
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Total_floor')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-total_floor" disabled class="form-control" name="row[total_floor]" type="text" value="{$row.total_floor|htmlentities}" placeholder="如：33">
+        </div>
+
+    </div>
+
+    <!-- 价格信息 -->
+    <legend>价格信息</legend>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Price')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <div class="input-group">
+                <input id="c-price" disabled class="form-control" step="0.01" name="row[price]" type="number" value="{$row.price|htmlentities}">
+                <span class="input-group-addon">万元</span>
+            </div>
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Unit_price')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <div class="input-group">
+                <input id="c-unit_price" disabled class="form-control" step="0.01" name="row[unit_price]" type="number" value="{$row.unit_price|htmlentities}">
+                <span class="input-group-addon">元/㎡</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Monthly_rent')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <div class="input-group">
+                <input id="c-monthly_rent" disabled class="form-control" step="0.01" name="row[monthly_rent]" type="number" value="{$row.monthly_rent|htmlentities}">
+                <span class="input-group-addon">元/月</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 房屋属性 -->
+    <legend>房屋属性</legend>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('House_use')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-house_use" disabled class="form-control" name="row[house_use]" type="text" value="{$row.house_use|htmlentities}">
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('House_nature')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-house_nature" disabled class="form-control" name="row[house_nature]" type="text" value="{$row.house_nature|htmlentities}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Co_ownership')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-co_ownership" disabled class="form-control" name="row[co_ownership]" type="text" value="{$row.co_ownership|htmlentities}">
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Mortgage')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-mortgage" disabled class="form-control" name="row[mortgage]" type="text" value="{$row.mortgage|htmlentities}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Commission_type')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-commission_type" disabled class="form-control" name="row[commission_type]" type="text" value="{$row.commission_type|htmlentities}">
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Inner_area')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-inner_area" disabled class="form-control" step="0.01" name="row[inner_area]" type="number" value="{$row.inner_area|htmlentities}">
+        </div>
+    </div>
+
+    <!-- 房源信息 -->
+    <legend>房源信息</legend>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('House_code')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-house_code" disabled class="form-control" name="row[house_code]" type="text" value="{$row.house_code|htmlentities}">
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Agent_id')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-agent_id" disabled data-source="agent/index" class="form-control selectpage" name="row[agent_id]" type="text" value="{$row.agent_id|htmlentities}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('House_code_qrcode')}:</label>
+        <div class="col-xs-12 col-sm-10">
+            <img src="{$row.house_code_qrcode|htmlentities}">
+        </div>
+    </div>
+
+<!--    <div class="form-group">-->
+<!--        <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>-->
+<!--        <div class="col-xs-12 col-sm-4">-->
+<!--            <div class="radio" disabled>-->
+<!--                {foreach name="statusList" item="vo"}-->
+<!--                <label for="row[status]-{$key}"><input id="row[status]-{$key}" name="row[status]" type="radio" value="{$key}" {in name="key" value="$row.status"}checked{/in} /> {$vo}</label>-->
+<!--                {/foreach}-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <label class="control-label col-xs-12 col-sm-2">{:__('Is_recommend')}:</label>-->
+<!--        <div class="col-xs-12 col-sm-4">-->
+<!--            <select id="c-is_recommend" disabled class="form-control selectpicker" name="row[is_recommend]">-->
+<!--                {foreach name="isRecommendList" item="vo"}-->
+<!--                <option value="{$key}" {in name="key" value="$row.is_recommend"}selected{/in}>{$vo}</option>-->
+<!--                {/foreach}-->
+<!--            </select>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Verify_status')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <select id="c-verify_status" disabled class="form-control selectpicker" name="row[verify_status]">
+                {foreach name="verifyStatusList" item="vo"}
+                <option value="{$key}" {in name="key" value="$row.verify_status"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+        <label class="control-label col-xs-12 col-sm-2">{:__('Verify_time')}:</label>
+        <div class="col-xs-12 col-sm-4">
+            <input id="c-verify_time" disabled class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[verify_time]" type="text" value="{:$row.verify_time?datetime($row.verify_time):''}">
+        </div>
+    </div>
+
+<!--    <div class="form-group">-->
+<!--        <label class="control-label col-xs-12 col-sm-2">{:__('Publish_time')}:</label>-->
+<!--        <div class="col-xs-12 col-sm-4">-->
+<!--            <input id="c-publish_time" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[publish_time]" type="text" value="{:$row.publish_time?datetime($row.publish_time):''}">-->
+<!--        </div>-->
+<!--        <label class="control-label col-xs-12 col-sm-2">{:__('Weigh')}:</label>-->
+<!--        <div class="col-xs-12 col-sm-4">-->
+<!--            <input id="c-weigh" class="form-control" name="row[weigh]" type="number" value="{$row.weigh|htmlentities}">-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="form-group">-->
+<!--        <label class="control-label col-xs-12 col-sm-2">{:__('View_count')}:</label>-->
+<!--        <div class="col-xs-12 col-sm-4">-->
+<!--            <input id="c-view_count" class="form-control" name="row[view_count]" type="number" value="{$row.view_count|htmlentities}" readonly>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- 详细描述 -->
+    <legend>详细描述</legend>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Description')}:</label>
+        <div class="col-xs-12 col-sm-10">
+            <textarea id="c-description" disabled class="form-control" rows="5" name="row[description]" cols="50">{$row.description|htmlentities}</textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Facilities')}:</label>
+        <div class="col-xs-12 col-sm-10">
+            <textarea id="c-facilities-orig" disabled class="form-control" rows="2" style="display:none;">{:json_encode($facilitiesArr)}</textarea>
+            <input type="hidden" name="row[facilities]" id="c-facilities" value="">
+            <div id="facilities-group" class="row" style="line-height: 2;"></div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Check_status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="radio">
+                {foreach name="checkStatusList" item="vo" offset='1' length='2'}
+                <label for="row[check_status]-{$key}"><input id="row[check_status]-{$key}" name="row[check_status]" type="radio" value="{$key}" /> {$vo}</label>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Remark')}:<span id="remark-required-star" style="color:#e74c3c;display:none;margin-left:2px;">*</span></label>
+        <div class="col-xs-12 col-sm-10">
+            <textarea id="c-remark" class="form-control" rows="5" name="row[remark]" cols="50"></textarea>
+            <p id="remark-tip" class="text-muted" style="color:#999;font-size:12px;display:none;margin-top:4px;">审核不通过时，审核备注为必填项</p>
+        </div>
+    </div>
+
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-10">
+            <button type="submit" class="btn btn-primary btn-embossed">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>
+
+<!-- 编辑审核：变更字段数据（由后端编码，前端 JSON.parse 读取，避免模板 { } 与 JS 冲突） -->
+<input type="hidden" id="changed-fields-json" value="{$changedFieldsJson|htmlspecialchars}">
+
+<script>
+(function(){
+    var facilitiesList = ['床', '空调', '冰箱', '洗衣机', '电视', '热水器', '沙发', '衣柜', '橱柜', '燃气灶', '油烟机', '微波炉', '饮水机', '宽带', '阳台', '车位', '地下室', '电梯'];
+    var container = document.getElementById('facilities-group');
+    var hiddenInput = document.getElementById('c-facilities');
+    var selected = {:json_encode($facilitiesArr)};
+    if (!Array.isArray(selected)) selected = [];
+
+    facilitiesList.forEach(function(item) {
+        var col = document.createElement('div');
+        col.className = 'col-xs-3';
+        var checked = selected.indexOf(item) > -1 ? 'checked' : '';
+        col.innerHTML = '<label style="padding-left:0;font-weight:normal;"><input disabled type="checkbox" value="'+item+'" '+checked+'> '+item+'</label>';
+        container.appendChild(col);
+    });
+
+    if (hiddenInput) {
+        container.onclick = function() {
+            var checkboxes = container.querySelectorAll('input[type="checkbox"]');
+            var selected = [];
+            checkboxes.forEach(function(cb) {
+                if (cb.checked) selected.push(cb.value);
+            });
+            hiddenInput.value = JSON.stringify(selected);
+        };
+
+        hiddenInput.value = JSON.stringify(selected);
+    }
+})();
+
+// ===== 编辑审核：变更字段标红 =====
+(function(){
+    var changedFields = {};
+    try {
+        changedFields = JSON.parse(document.getElementById('changed-fields-json').value || '{}');
+    } catch(e) {
+        changedFields = {};
+    }
+    if (!changedFields || Object.keys(changedFields).length === 0) return;
+
+    // 字段名到中文标签的映射
+    var labelMap = {
+        'title': '标题', 'type': '类型', 'cover_image': '封面图', 'images': '图片组',
+        'community_id': '小区', 'has_elevator': '电梯',
+        'house_type': '户型', 'area': '面积', 'orientation': '朝向', 'decoration': '装修情况',
+        'floor': '所在楼层', 'total_floor': '总楼层',
+        'price': '售价', 'unit_price': '单价', 'monthly_rent': '月租金',
+        'house_use': '房屋用途', 'house_nature': '房屋性质',
+        'co_ownership': '共有情况', 'mortgage': '抵押信息',
+        'commission_type': '佣金', 'inner_area': '套内面积',
+        'house_code': '房源编号',
+        'verify_status': '核验状态', 'verify_time': '核验时间',
+        'description': '描述', 'facilities': '配套设施', 'address': '地址',
+        'house_code_qrcode': '房源码二维码'
+    };
+
+    var typeMap = { 'sale': '出售', 'rent': '出租' };
+    var elevatorMap = { '0': '无', '1': '有' };
+    var verifyMap = { '0': '未核验', '1': '已核验' };
+
+    // 格式化字段旧值（可读文本）
+    function formatVal(field, val) {
+        if (val === '' || val === null || val === undefined) return '(空)';
+        if (field === 'type') return typeMap[val] || val;
+        if (field === 'has_elevator') return elevatorMap[val] || val;
+        if (field === 'verify_status') return verifyMap[val] || val;
+        if (field === 'images') return '已更新';
+        if (field === 'facilities') {
+            try { var arr = JSON.parse(val); return arr.length ? arr.join(', ') : '(空)'; } catch(e) { return val; }
+        }
+        if (field === 'verify_time' && val && !isNaN(val)) {
+            var d = new Date(val * 1000);
+            return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+        }
+        return String(val);
+    }
+
+    // 精确标红：作用于字段所属的列容器，避免同一 form-group 内未修改字段被误标
+    for (var field in changedFields) {
+        var info = changedFields[field];
+        var el = document.getElementById('c-' + field);
+        if (!el) continue;
+
+        // 找到字段所属的列容器
+        var col = el.closest('.col-xs-12');
+        if (!col) col = el.parentElement;
+        col.classList.add('field-changed');
+
+        if (field === 'facilities') {
+            // 配套设施是 checkbox 组（c-facilities 为隐藏域），对组容器标红
+            var fg = document.getElementById('facilities-group');
+            if (fg) {
+                fg.style.border = '1px solid #e74c3c';
+                fg.style.backgroundColor = '#fff5f5';
+                fg.style.borderRadius = '4px';
+                fg.style.padding = '4px';
+            }
+        } else {
+            // 输入框/下拉框标红
+            el.style.borderColor = '#e74c3c';
+            el.style.backgroundColor = '#fff5f5';
+        }
+
+        var oldDiv = document.createElement('div');
+        oldDiv.className = 'field-old-val';
+        var label = labelMap[field] || field;
+        oldDiv.innerHTML = '<strong>' + label + '</strong> 旧值：<span>' + formatVal(field, info.old) + '</span>';
+        col.appendChild(oldDiv);
+    }
+
+    // 封面图特殊处理
+    if (changedFields['cover_image']) {
+        var coverImg = document.querySelector('#c-cover_image') || document.querySelector('img[src]');
+        if (coverImg) {
+            var parent = coverImg.closest('.col-xs-12') || coverImg.parentElement;
+            parent.classList.add('field-changed');
+            var oldDiv = document.createElement('div');
+            oldDiv.className = 'field-old-val';
+            oldDiv.innerHTML = '<strong>封面图</strong> 已更新';
+            parent.appendChild(oldDiv);
+        }
+    }
+})();
+
+// ===== 审核状态与 remark 必填联动 =====
+(function(){
+    var form = document.getElementById('edit-form');
+    var remarkBox = document.getElementById('c-remark');
+    var star = document.getElementById('remark-required-star');
+    var tip = document.getElementById('remark-tip');
+    var radios = document.querySelectorAll('input[name="row[check_status]"]');
+
+    // 是否选择了「审核不通过」(value = 2)
+    function isReject() {
+        var checked = document.querySelector('input[name="row[check_status]"]:checked');
+        return !!checked && checked.value === '2';
+    }
+
+    // 联动：切换必填标记
+    function syncRemark() {
+        if (isReject()) {
+            remarkBox.setAttribute('data-rule', 'required');
+            remarkBox.style.borderColor = '#e74c3c';
+            if (star) star.style.display = 'inline';
+            if (tip) tip.style.display = 'block';
+        } else {
+            remarkBox.removeAttribute('data-rule');
+            remarkBox.style.borderColor = '';
+            if (star) star.style.display = 'none';
+            if (tip) tip.style.display = 'none';
+        }
+    }
+
+    radios.forEach(function(r) {
+        r.addEventListener('change', syncRemark);
+    });
+    syncRemark();
+
+    // 提交拦截：捕获阶段先于 FastAdmin 表单逻辑执行，
+    // 审核不通过且 remark 为空时阻止提交并提示
+    form.addEventListener('submit', function(e) {
+        if (isReject() && remarkBox.value.trim() === '') {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            remarkBox.focus();
+            if (window.Toastr) {
+                Toastr.error('审核不通过，请填写审核备注');
+            } else if (window.Layer) {
+                Layer.msg('审核不通过，请填写审核备注');
+            } else {
+                alert('审核不通过，请填写审核备注');
+            }
+        }
+    }, true);
+})();
+
+</script>
+
+<style>
+.form-horizontal img {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 4px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+.field-changed {
+    background: #fff5f5 !important;
+    border-radius: 4px;
+}
+.field-changed .control-label {
+    color: #e74c3c !important;
+}
+.field-old-val {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    padding: 3px 0;
+}
+.field-old-val span {
+    color: #c0392b;
+    text-decoration: line-through;
+    font-weight: bold;
+}
+.field-old-val strong {
+    color: #e74c3c;
+    font-weight: bold;
+}
+</style>

@@ -1,0 +1,29 @@
+
+.form-card.data-v-3a745426 { background: #fff; border-radius: 12rpx; padding: 20rpx;
+}
+.form-row.data-v-3a745426 { display: flex; align-items: center; padding: 24rpx 0; border-bottom: 1rpx solid #eee;
+}
+.form-row.column.data-v-3a745426 { flex-direction: column; align-items: stretch;
+}
+.form-row .label.data-v-3a745426 { width: 160rpx; color: #666; font-size: 28rpx;
+}
+.form-row .input.data-v-3a745426, .form-row .picker.data-v-3a745426, .form-row .textarea.data-v-3a745426 { flex: 1; font-size: 28rpx;
+}
+.form-row .picker.data-v-3a745426 { padding: 8rpx 0;
+}
+.form-row .textarea.data-v-3a745426 { width: 100%; padding: 12rpx 0; box-sizing: border-box;
+}
+.image-list.data-v-3a745426 { display: flex; flex-wrap: wrap; gap: 16rpx; margin-top: 12rpx;
+}
+.image-item.data-v-3a745426 { position: relative; width: 160rpx; height: 160rpx; border-radius: 8rpx; overflow: hidden; background: #f5f5f5;
+}
+.image-item .image.data-v-3a745426 { width: 100%; height: 100%;
+}
+.image-item .del.data-v-3a745426 { position: absolute; top: 0; right: 0; background: rgba(0,0,0,.5); color: #fff; width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; font-size: 32rpx;
+}
+.image-item.add.data-v-3a745426 { display: flex; align-items: center; justify-content: center; font-size: 60rpx; color: #999; border: 2rpx dashed #ddd; box-sizing: border-box;
+}
+.submit.data-v-3a745426 { margin-top: 40rpx; margin-bottom: 60rpx;
+}
+/* 底部留白避免被遮挡 */
+

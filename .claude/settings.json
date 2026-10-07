@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/2026KF/fangyuanzhanshi2026/web/**)",
+      "Read(//d/2026KF/fangyuanzhanshi2026/web/application/**)",
+      "Read(//d/2026KF/fangyuanzhanshi2026/web/public/**)",
+      "Read(//d/2026KF/fangyuanzhanshi2026/web/runtime/**)"
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+<view class="container">
+  <view class="logo">
+    <text class="logo-icon">📦</text>
+    <text class="logo-text">仓货盘</text>
+  </view>
+
+  <!-- 角色切换 -->
+  <view class="role-tabs">
+    <view class="role-tab {{role === 'visitor' ? 'active' : ''}}"
+          data-role="visitor"
+          bindtap="switchRole">微信游客登录</view>
+    <view class="role-tab {{role === 'buyer' ? 'active' : ''}}"
+          data-role="buyer"
+          bindtap="switchRole">采购商登录</view>
+  </view>
+
+  <!-- 游客登录表单 -->
+  <block wx:if="{{role === 'visitor'}}">
+    <view class="card">
+      <view class="form-row">
+        <text class="label">昵称</text>
+        <input class="input" placeholder="选填" value="{{nickname}}" bindinput="onNicknameInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">头像URL</text>
+        <input class="input" placeholder="选填" value="{{avatar}}" bindinput="onAvatarInput" />
+      </view>
+      <view class="form-tip">点击下方按钮将调用 wx.login() 拿 code，由后端换取 openid</view>
+    </view>
+    <button class="btn-primary" bindtap="wxLoginTap">微信一键登录</button>
+  </block>
+
+  <!-- 采购商登录表单 -->
+  <block wx:elif="{{role === 'buyer'}}">
+    <view class="card">
+      <view class="form-row">
+        <text class="label">账号</text>
+        <input class="input" placeholder="管理员预创建的账号" value="{{account}}" bindinput="onAccountInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">密码</text>
+        <input class="input" password placeholder="8-20 位" value="{{password}}" bindinput="onPasswordInput" />
+      </view>
+      <view class="form-tip">账号由 PC 后台创建，默认密码请向管理员索取</view>
+    </view>
+    <button class="btn-primary" bindtap="buyerLoginTap">登录</button>
+  </block>
+</view>

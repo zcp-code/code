@@ -1,0 +1,111 @@
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+
+    var Controller = {
+        index: function () {
+            Table.api.init({
+                extend: {
+                    index_url: 'wholesaler/index',
+                    add_url: 'wholesaler/add',
+                    edit_url: 'wholesaler/edit',
+                    del_url: 'wholesaler/del',
+                    resetpwd_url: 'wholesaler/resetPwd',
+                    table: 'wholesaler',
+                }
+            });
+
+            var table = $("#table");
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'id',
+                sortOrder: 'desc',
+                columns: [
+                    [
+                        {checkbox: true},
+                        {field: 'id', title: 'ID'},
+                        {field: 'account', title: '账号'},
+                        {field: 'real_name', title: '负责人'},
+                        {field: 'shop_name', title: '所属店铺', operate: false},
+                        {field: 'mobile', title: '手机号'},
+                        {field: 'contact_phone', title: '店铺电话'},
+                        {field: 'last_login_time', title: '最后登录', formatter: Table.api.formatter.datetime, operate: false},
+                        {field: 'status', title: '状态', searchList: {1:'启用',0:'停用'}, formatter: function(v){
+                            return ['<span class="label label-default">停用</span>',
+                                    '<span class="label label-success">启用</span>'][v];
+                        }},
+                        {field: 'createtime', title: '创建时间', formatter: Table.api.formatter.datetime, operate: 'RANGE', addclass: 'datetimerange', sortable: true},
+                        {field: 'operate', title: __('Operate'), table: table, events: {
+                            'click .btn-resetpwdone': function (e, value, row, index) {
+                                e.stopPropagation();
+                                layer.confirm('确认重置密码？', function (i) {
+                                    layer.close(i);
+                                    $.ajax({
+                                        url: 'wholesaler/resetPwd',
+                                        data: {ids: row.id},
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        success: function (ret) {
+                                            Layer.alert(ret.msg, {icon: ret.code === 1 ? 1 : 2});
+                                        }
+                                    });
+                                });
+                            }
+                        }, formatter: function (value, row, index) {
+                            var html = '';
+                            if (Config.auth.check('wholesaler/edit')) {
+                                html += '<a href="javascript:;" class="btn btn-xs btn-success btn-editone"><i class="fa fa-pencil"></i> 编辑</a> ';
+                            }
+                            if (Config.auth.check('wholesaler/resetPwd')) {
+                                html += '<a href="javascript:;" class="btn btn-xs btn-warning btn-resetpwdone"><i class="fa fa-key"></i> 重置密码</a> ';
+                            }
+                            return html;
+                        }}
+                    ]
+                ]
+            });
+
+            Table.api.bindevent(table);
+
+            // 重置密码（批量）
+            $(document).on('click', '.btn-resetpwd', function () {
+                var ids = Table.api.selectedids(table);
+                if (ids.length === 0) {
+                    Layer.alert('请选择记录');
+                    return;
+                }
+                layer.confirm('确认重置所选账号密码？', function (i) {
+                    layer.close(i);
+                    $.ajax({
+                        url: 'wholesaler/resetPwd',
+                        data: {ids: ids.join(',')},
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (ret) {
+                            Layer.alert(ret.msg, {icon: ret.code === 1 ? 1 : 2});
+                        }
+                    });
+                });
+            });
+
+            // TAB 切换
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var status = $(this).data('value');
+                var options = table.bootstrapTable('getOptions');
+                options.pageNumber = 1;
+                options.queryParams = function (params) {
+                    if (status !== '' && status !== undefined) params.status = status;
+                    return params;
+                };
+                table.bootstrapTable('refresh', {});
+                return false;
+            });
+        },
+        add: function () {
+            Form.api.bindevent($("form[role=form]"));
+        },
+        edit: function () {
+            Form.api.bindevent($("form[role=form]"));
+        }
+    };
+    return Controller;
+});

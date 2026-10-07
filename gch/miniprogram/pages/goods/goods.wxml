@@ -1,0 +1,35 @@
+<view class="container" wx:if="{{goods}}">
+  <!-- 顶部图 -->
+  <swiper class="banner" indicator-dots autoplay circular>
+    <swiper-item wx:for="{{images}}" wx:key="id">
+      <image src="{{item.url}}" mode="aspectFill" class="banner-img"></image>
+    </swiper-item>
+    <swiper-item wx:if="{{images.length === 0}}">
+      <view class="banner-empty">暂无图片</view>
+    </swiper-item>
+  </swiper>
+
+  <view class="card">
+    <view class="price-row">
+      <text class="price">¥{{goods.price}}</text>
+      <text class="unit">/{{goods.unit}}</text>
+      <text class="available">可订 {{goods.available}}</text>
+    </view>
+    <view class="name">{{goods.name}}</view>
+    <view class="meta">店铺:{{goods.shop ? goods.shop.name : '-'}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">货品描述</view>
+    <view class="desc">{{goods.description || '暂无描述'}}</view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="action-btn call" bindtap="callWholesaler">📞 联系批发商</view>
+    <view class="action-btn fav {{favorited ? 'active' : ''}}" bindtap="toggleFav">
+      {{favorited ? '★ 已收藏' : '☆ 收藏'}}
+    </view>
+    <view class="action-btn primary" bindtap="goReserve">一键预订</view>
+  </view>
+</view>

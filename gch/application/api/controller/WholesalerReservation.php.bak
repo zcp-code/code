@@ -1,0 +1,90 @@
+<?php
+namespace app\api\controller;
+
+use app\api\model\Goods as GoodsModel;
+use app\api\model\Reservation as ReservationModel;
+use app\api\model\Wholesaler as WholesalerModel;
+
+/**
+ * 批发商预订管理
+ */
+class WholesalerReservation extends ApiBase
+{
+    protected $requireRole = 'wholesaler';
+
+    /**
+     * 预订列表
+     */
+    public function index()
+    {
+        $page  = (int)$this->request->param('page', 1);
+        $limit = (int)$this->request->param('limit', 20);
+        $status = $this->request->param('status', '');
+
+        $data = ReservationModel::getList([
+            'wholesaler_id' => $this->user['user_id'],
+            'status'        => $status,
+        ], $page, $limit);
+        return $this->success($data);
+    }
+
+    /**
+     * 预订详情（显示采购商手机号）
+     */
+    public function detail($id = 0)
+    {
+        $id = (int)$id;
+        $r = ReservationModel::get($id);
+        if (!$r) return $this->error('订单不存在', 404);
+        if ($r->wholesaler_id != $this->user['user_id']) {
+            return $this->error('无权访问', 403);
+        }
+        // 关联采购商（含手机号）
+        $buyer = \app\api\model\Buyer::get($r->buyer_id);
+        $r->buyer = $buyer ? [
+            'id'        => $buyer->id,
+            'account'   => $buyer->account,
+            'real_name' => $buyer->real_name,
+            'mobile'    => $buyer->mobile,
+        ] : null;
+        $r->shop;
+        return $this->success($r);
+    }
+
+    /**
+     * 确认预订
+     */
+    public function confirm()
+    {
+        $id = (int)$this->request->param('id', 0);
+        if (!$id) return $this->error('缺少 id');
+
+        $r = ReservationModel::get($id);
+        if (!$r) return $this->error('订单不存在', 404);
+        if ($r->wholesaler_id != $this->user['user_id']) {
+            return $this->error('无权操作', 403);
+        }
+        list($ok, $msg) = $r->confirm();
+        if (!$ok) return $this->error($msg);
+        return $this->success(null, '已确认');
+    }
+
+    /**
+     * 取消预订
+     */
+    public function cancel()
+    {
+        $id = (int)$this->request->param('id', 0);
+        $reason = $this->request->param('reason', '');
+        if (!$id) return $this->error('缺少 id');
+
+        $r = ReservationModel::get($id);
+        if (!$r) return $this->error('订单不存在', 404);
+        if ($r->wholesaler_id != $this->user['user_id']) {
+            return $this->error('无权操作', 403);
+        }
+        list($ok, $msg) = $r->cancel($reason, 'wholesaler');
+        if (!$ok) return $this->error($msg);
+        return $this->success(null, '已取消');
+    }
+}

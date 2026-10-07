@@ -1,0 +1,40 @@
+<view class="container">
+  <!-- 顶部用户信息 -->
+  <view class="user-card">
+    <block wx:if="{{userInfo}}">
+      <image class="avatar" src="{{userInfo.avatar || '/images/avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-info">
+        <view class="nick">{{userInfo.nickname || userInfo.real_name || userInfo.account || '用户'}}</view>
+        <view class="role">{{roleName}}</view>
+      </view>
+      <view class="logout-btn" bindtap="logout">退出</view>
+    </block>
+    <block wx:else>
+      <view class="login-tip" bindtap="goLogin">点击登录 →</view>
+    </block>
+  </view>
+
+  <!-- 我的预订 -->
+  <view class="card" wx:if="{{role === 'buyer'}}">
+    <view class="section-title">我的预订</view>
+    <view wx:if="{{reservations.length === 0}}" class="empty-tip">暂无预订</view>
+    <view wx:for="{{reservations}}" wx:key="id" class="reservation">
+      <view class="res-row">
+        <text class="res-no">{{item.reservation_no}}</text>
+        <text class="res-status status-{{item.status}}">{{item.status === 'pending' ? '待确认' : item.status === 'confirmed' ? '已确认' : '已取消'}}</text>
+      </view>
+      <view class="res-name ellipsis-2">{{item.goods_name}} × {{item.quantity}}</view>
+      <view class="res-amount">¥{{item.price * item.quantity}}</view>
+      <view class="res-actions" wx:if="{{item.status === 'pending'}}">
+        <view class="cancel-btn" bindtap="cancelReservation" data-id="{{item.id}}">取消预订</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 游客快捷入口 -->
+  <view class="card" wx:if="{{role === 'visitor'}}">
+    <view class="section-title">游客提示</view>
+    <view class="empty-tip">游客仅可浏览。如需下单，请登录采购商账号。</view>
+    <view class="quick-btn" bindtap="goLogin">切换为采购商</view>
+  </view>
+</view>

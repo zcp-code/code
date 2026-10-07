@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/wxlogin/wxlogin",
+    "pages/login/account",
+    "pages/index/index",
+    "pages/shops/shops",
+    "pages/orders/orders",
+    "pages/reservation-detail/reservation-detail",
+    "pages/favorites/favorites",
+    "pages/search/search",
+    "pages/goods/goods",
+    "pages/shop/shop",
+    "pages/reserve/reserve",
+    "pages/profile/profile",
+    "pages/change-pwd/change-pwd",
+    "pages/wholesaler/dashboard/dashboard",
+    "pages/wholesaler/goods",
+    "pages/wholesaler/publish",
+    "pages/wholesaler/reservations",
+    "pages/wholesaler/mine",
+    "pages/wholesaler/qrcode"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "果仓货盘",
+    "navigationBarBackgroundColor": "#ff6b35",
+    "backgroundColor": "#f5f5f5"
+  },
+  "usingComponents": {}
+}

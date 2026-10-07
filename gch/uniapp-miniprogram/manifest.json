@@ -1,0 +1,37 @@
+{
+    "name" : "仓货盘",
+    "appid" : "__UNI__GCHAPP",
+    "description" : "仓货盘小程序客户端 demo",
+    "versionName" : "1.0.0",
+    "versionCode" : "100",
+    "transformPx" : false,
+    "app-plus" : {
+        "usingComponents" : true,
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
+        }
+    },
+    "quickapp" : {},
+    "mp-weixin" : {
+        "appid" : "wx8fc9118cdc5d7fac",
+        "setting" : {
+            "urlCheck" : false,
+            "es6" : true,
+            "minified" : true
+        },
+        "usingComponents" : true
+    },
+    "h5" : {
+        "title" : "仓货盘",
+        "router" : {
+            "mode" : "hash",
+            "base" : "/"
+        }
+    },
+    "vueVersion" : "2"
+}

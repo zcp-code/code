@@ -1,0 +1,87 @@
+# Nginx 配置示例 - 仓货盘小程序
+# 复制此文件到 /etc/nginx/conf.d/gch.conf 并修改路径
+
+server {
+    listen       80;
+    server_name  api.your-domain.com admin.your-domain.com;
+
+    # 强制 HTTPS（生产环境）
+    # return 301 https://$host$request_uri;
+
+    root  /var/www/gch/public;
+    index index.php index.html;
+
+    # 日志
+    access_log /var/log/nginx/gch_access.log;
+    error_log  /var/log/nginx/gch_error.log;
+
+    # 客户端大小（图片上传）
+    client_max_body_size 20M;
+
+    # 上传路径静态资源（本地存储）
+    location ^~ /uploads/ {
+        expires 30d;
+        access_log off;
+    }
+
+    # PC 后台
+    location /admin {
+        try_files $uri $uri/ /admin/index.html;
+    }
+
+    # 公共路由
+    location / {
+        if (!-e $request_filename) {
+            rewrite ^(.*)$ /index.php?s=$1 last;
+            break;
+        }
+    }
+
+    # PHP 处理
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php-fpm/www.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+
+        # 超时设置
+        fastcgi_connect_timeout 60;
+        fastcgi_read_timeout    300;
+        fastcgi_send_timeout    300;
+
+        # 缓冲
+        fastcgi_buffer_size 64k;
+        fastcgi_buffers   4 64k;
+        fastcgi_busy_buffers_size 128k;
+    }
+
+    # 禁止访问敏感文件
+    location ~ /\.(ht|env|git|svn) {
+        deny all;
+    }
+
+    location ~ /(application|thinkphp|extend|addons|vendor|runtime)/ {
+        deny all;
+    }
+}
+
+# HTTPS 配置（生产环境）
+# server {
+#     listen       443 ssl http2;
+#     server_name  api.your-domain.com admin.your-domain.com;
+#
+#     ssl_certificate     /etc/nginx/ssl/fullchain.pem;
+#     ssl_certificate_key /etc/nginx/ssl/privkey.pem;
+#
+#     ssl_protocols       TLSv1.2 TLSv1.3;
+#     ssl_ciphers         ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+#
+#     add_header X-Frame-Options "SAMEORIGIN";
+#     add_header X-Content-Type-Options "nosniff";
+#     add_header Strict-Transport-Security "max-age=31536000" always;
+#
+#     set_real_ip_from 0.0.0.0/0;
+#     real_ip_header X-Forwarded-For;
+#
+#     include /etc/nginx/conf.d/gch-common.conf;
+# }

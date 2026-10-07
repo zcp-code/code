@@ -1,0 +1,18 @@
+
+.qr-card.data-v-e2e2eec0 { background: #fff; border-radius: 16rpx; padding: 60rpx 40rpx; text-align: center;
+}
+.title.data-v-e2e2eec0 { font-size: 36rpx; font-weight: 600; color: #333; margin-bottom: 40rpx;
+}
+.qr-wrap.data-v-e2e2eec0 { width: 480rpx; height: 480rpx; margin: 0 auto; padding: 20rpx; border: 2rpx solid #eee; border-radius: 12rpx;
+}
+.qr-img.data-v-e2e2eec0 { width: 100%; height: 100%;
+}
+.desc.data-v-e2e2eec0 { color: #999; font-size: 26rpx; margin-top: 30rpx;
+}
+.shop-name.data-v-e2e2eec0 { font-size: 32rpx; font-weight: 500; color: #ff6b35; margin-top: 16rpx;
+}
+.btn-primary.data-v-e2e2eec0 { margin-top: 40rpx;
+}
+.loading.data-v-e2e2eec0 { text-align: center; color: #999; padding: 100rpx 0;
+}
+

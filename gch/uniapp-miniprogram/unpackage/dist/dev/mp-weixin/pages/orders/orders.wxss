@@ -1,0 +1,93 @@
+
+.container.data-v-8a71bbb4 { padding-bottom: 40rpx;
+}
+.title-bar.data-v-8a71bbb4 {
+  background: #fff;
+  padding: 24rpx 30rpx;
+  border-bottom: 1rpx solid #f2f2f2;
+}
+.title-bar .title.data-v-8a71bbb4 { font-size: 34rpx; font-weight: 700; color: #111;
+}
+.empty-card.data-v-8a71bbb4 {
+  background: #fff;
+  border-radius: 12rpx;
+  margin: 20rpx 24rpx;
+  padding: 100rpx 0;
+  text-align: center;
+}
+.empty-icon.data-v-8a71bbb4 { font-size: 100rpx; display: block;
+}
+.empty-text.data-v-8a71bbb4 { color: #bbb; font-size: 26rpx; margin: 16rpx 0 30rpx;
+}
+.btn-primary.data-v-8a71bbb4 { background: #ff6600; color: #fff; border-radius: 24rpx; padding: 20rpx 60rpx; font-size: 28rpx;
+}
+.order-card.data-v-8a71bbb4 {
+  background: #fff;
+  border-radius: 12rpx;
+  margin: 20rpx 24rpx;
+  padding: 0;
+  overflow: hidden;
+}
+.order-head.data-v-8a71bbb4 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 28rpx;
+  border-bottom: 1rpx solid #f2f2f2;
+}
+.order-no.data-v-8a71bbb4 { color: #999; font-size: 22rpx;
+}
+.order-status.data-v-8a71bbb4 {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+.status-pending.data-v-8a71bbb4 { color: #ff6600; background: #fff1e6;
+}
+.status-confirmed.data-v-8a71bbb4 { color: #07c160; background: #e8f7ef;
+}
+.status-cancelled.data-v-8a71bbb4 { color: #999; background: #f2f2f2;
+}
+.order-body.data-v-8a71bbb4 { display: flex; gap: 20rpx; padding: 20rpx 28rpx;
+}
+.emoji.data-v-8a71bbb4 {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 8rpx;
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50rpx;
+  flex-shrink: 0;
+}
+.info.data-v-8a71bbb4 { flex: 1; min-width: 0;
+}
+.name.data-v-8a71bbb4 { font-size: 28rpx; font-weight: 600; color: #111;
+}
+.amount.data-v-8a71bbb4 { color: #ff4d00; font-size: 26rpx; margin-top: 8rpx;
+}
+.shop.data-v-8a71bbb4 { color: #999; font-size: 22rpx; margin-top: 6rpx;
+}
+.order-actions.data-v-8a71bbb4 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  padding: 16rpx 28rpx;
+  border-top: 1rpx solid #f2f2f2;
+}
+.btn-gray.data-v-8a71bbb4 {
+  background: #f2f2f2;
+  color: #666;
+  border-radius: 16rpx;
+  padding: 14rpx 28rpx;
+  font-size: 26rpx;
+}
+.btn-primary.data-v-8a71bbb4 {
+  background: #ff6600;
+  color: #fff;
+  border-radius: 16rpx;
+  padding: 14rpx 28rpx;
+  font-size: 26rpx;
+}
+

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "预订处理",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "custom-tabbar": "/components/custom-tabbar/custom-tabbar"
+  }
+}

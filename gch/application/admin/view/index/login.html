@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="common/meta" /}
+    <style type="text/css">
+        :root {
+            --primary-blue: #165DFF;
+            --page-bg: #F2F3F5;
+            --text-gray: #8C8C8C;
+            --border-color: #E5E7EB;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
+            --card-radius: 16px;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            color: #333;
+            background-color: var(--page-bg);
+            /* 简易还原背景装饰圆点 */
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(22, 93, 255, 0.06) 0 18px, transparent 19px),
+                radial-gradient(circle at 92% 82%, rgba(22, 93, 255, 0.06) 0 22px, transparent 23px);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        /* 核心登录大卡片（左右拼接一体） */
+        .login-card-wrap {
+            width: min(1000px, 100%);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            display: flex;
+        }
+        /* 左侧蓝色插画区块 */
+        .login-left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #3B7BFF 0%, #255BFF 100%);
+            min-height: 580px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .illustration-wrap img {
+            width: 100%;
+            object-fit: contain;
+        }
+        /* 右侧纯白表单区块 */
+        .login-right-panel {
+            width: 480px;
+            background: #ffffff;
+            padding: 56px 48px;
+            display: flex;
+            flex-direction: column;
+        }
+        .tit_h2{
+                text-align: center;
+                margin-bottom: 40px;
+                 font-size: 28px;
+        }
+        .brand-logo {
+            width: 130px;
+            margin: 0 auto 44px;
+            display: block;
+        }
+        /* 输入框样式 */
+        .input-row {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            height: 48px;
+            padding: 0 18px;
+            font-size: 15px;
+            background: #F8F9FA;
+            outline: none;
+            transition: border-color .2s;
+        }
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            background: #fff;
+        }
+        /* 登录主按钮 */
+        .submit-btn {
+            width: 100%;
+            height: 48px;
+            background: var(--primary-blue);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 8px 0 14px;
+            transition: filter .2s;
+        }
+        .submit-btn:active {
+            filter: brightness(0.93);
+        }
+        /* 按钮下方双链接 */
+        .link-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 36px;
+        }
+        /* 分隔线 */
+        .divider-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #BABFC8;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        .divider-line::before,.divider-line::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #EAECEF;
+        }
+        /* 第三方登录图标位 */
+        .third-login-row {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+        }
+        .third-icon-item {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background:#F1F2F4;
+        }
+        /* 验证码、记住登录适配 */
+        .captcha-flex {
+            display:flex;
+            gap:10px;
+        }
+        .captcha-flex img {
+            border-radius: 8px;
+        }
+        .checkbox-row {
+            margin-bottom: 14px;
+            font-size:14px;
+            color:#555;
+        }
+        .foot{
+            position: absolute;
+    bottom: 10px;
+     color:#666
+        }
+        .foot a{
+            color:#666
+        }
+        /* 移动端适配：左右布局改为上下排布 */
+        @media (max-width: 820px) {
+            .login-card-wrap {
+                flex-direction: column;
+            }
+            .login-right-panel {
+                width: 100%;
+            }
+            .login-left-panel {
+                min-height: 320px;
+            }
+        }
+    </style>
+    <!--@formatter:off-->
+    {if $background}
+        <style type="text/css">
+        </style>
+    {/if}
+    <!--@formatter:on-->
+</head>
+<body>
+<div class="login-card-wrap">
+    <!-- 左侧蓝色插画区域 -->
+    <div class="login-left-panel">
+        <div class="illustration-wrap">
+            <img src="__CDN__/assets/img/bj.jpeg" alt="运营插画">
+        </div>
+    </div>
+
+    <!-- 右侧表单区域 -->
+    <div class="login-right-panel">
+        <!-- <img class="brand-logo" src="__CDN__/assets/img/qian-logo.png" alt="千图"> -->
+        <h2 class="tit_h2">{$site.name}</h2>
+        <form action="" method="post" id="login-form">
+            <!--@AdminLoginFormBegin-->
+            <div id="errtips" class="hide"></div>
+            {:token()}
+
+            <!-- 用户名输入框 -->
+            <div class="input-row">
+                <input type="text" class="form-control" id="pd-form-username" placeholder="请输入用户名" name="username" autocomplete="off" value="" data-rule="{:__('Username')}:required;username"/>
+            </div>
+
+            <!-- 密码输入框 -->
+            <div class="input-row">
+                <input type="password" class="form-control" id="pd-form-password" placeholder="请输入密码" name="password" autocomplete="off" value="" data-rule="{:__('Password')}:required;password"/>
+            </div>
+
+            <!-- 验证码模块（后台开关自动渲染） -->
+            <!--@CaptchaBegin-->
+            {if $Think.config.fastadmin.login_captcha}
+            <div class="input-row">
+                <div class="captcha-flex">
+                    <input type="text" name="captcha" class="form-control" placeholder="{:__('Captcha')}" data-rule="{:__('Captcha')}:required;length({$Think.config.captcha.length|htmlentities})" autocomplete="off"/>
+                    <img src="{:rtrim('__PUBLIC__', '/')}/index.php?s=/captcha" width="100" height="48" onclick="this.src = '{:rtrim('__PUBLIC__', '/')}/index.php?s=/captcha&r=' + Math.random();"/>
+                </div>
+            </div>
+            {/if}
+            <!--@CaptchaEnd-->
+
+            {if $keeyloginhours>0}
+            <div class="checkbox-row">
+                <label>
+                    <input type="checkbox" name="keeplogin" id="keeplogin" value="1"/>
+                    {:__('Keep login')}
+                </label>
+            </div>
+            {/if}
+
+            <button type="submit" class="submit-btn">{:__('Sign in')}</button>
+
+            <div class="link-row">
+                <a href="javascript:;" class="forget-pwd">忘记密码</a>
+                
+            </div>
+            <!--@AdminLoginFormEnd-->
+        </form>
+    </div>
+</div>
+<div class="foot">
+    <span>技术支持：<a href="https://www.597kz.com">{$site.support_company} </a></span>
+</div>
+{include file="common/script" /}
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "gch-uniapp",
+  "version": "1.0.0",
+  "description": "仓货盘小程序客户端",
+  "private": true,
+  "scripts": {
+    "serve": "npm run dev:h5",
+    "build": "npm run build:h5",
+    "dev:h5": "cross-env NODE_ENV=development UNI_PLATFORM=h5 vue-cli-service uni-build --watch",
+    "dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch",
+    "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 vue-cli-service uni-build",
+    "build:mp-weixin": "cross-env NODE_ENV=production UNI_PLATFORM=mp-weixin vue-cli-service uni-build"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "^3.0.0-3081220230817001",
+    "@dcloudio/uni-app-plus": "^3.0.0-3081220230817001",
+    "@dcloudio/uni-h5": "^3.0.0-3081220230817001",
+    "@dcloudio/uni-mp-weixin": "^3.0.0-3081220230817001",
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-cli-shared": "^3.0.0-3081220230817001",
+    "@dcloudio/vue-cli-plugin-uni": "^3.0.0-3081220230817001",
+    "@vue/cli-plugin-babel": "^4.5.0",
+    "@vue/cli-service": "^4.5.0",
+    "cross-env": "^7.0.3",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "Android >= 4.4",
+    "ios >= 9"
+  ]
+}

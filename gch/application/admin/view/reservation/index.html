@@ -1,0 +1,31 @@
+<div class="panel panel-default panel-intro">
+    <div class="panel-heading">
+        {:build_heading(null,FALSE)}
+        <ul class="nav nav-tabs" data-field="status">
+            <li class="active"><a href="#t-all" data-value="" data-toggle="tab">{:__('All')}</a></li>
+            <li><a href="#t-pending" data-value="pending" data-toggle="tab">待确认</a></li>
+            <li><a href="#t-confirmed" data-value="confirmed" data-toggle="tab">已确认</a></li>
+            <li><a href="#t-cancelled" data-value="cancelled" data-toggle="tab">已取消</a></li>
+        </ul>
+    </div>
+
+    <div class="panel-body">
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="one">
+                <div class="widget-body no-padding">
+                    <div id="toolbar" class="toolbar">
+                        <a href="javascript:;" class="btn btn-primary btn-refresh"><i class="fa fa-refresh"></i></a>
+                        <a href="javascript:;" class="btn btn-success btn-edit btn-disabled disabled {:$auth->check('reservation/edit')?'':'hide'}"><i class="fa fa-pencil"></i> 编辑</a>
+                        <a href="javascript:;" class="btn btn-danger btn-del btn-disabled disabled {:$auth->check('reservation/del')?'':'hide'}"><i class="fa fa-trash"></i> 删除</a>
+                        <a href="reservation/export" class="btn btn-info {:$auth->check('reservation/export')?'':'hide'}" target="_blank"><i class="fa fa-download"></i> 导出 CSV</a>
+                    </div>
+                    <table id="table" class="table table-striped table-bordered table-hover table-nowrap"
+                           data-operate-edit="{:$auth->check('reservation/edit')}"
+                           data-operate-del="{:$auth->check('reservation/del')}"
+                           width="100%">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

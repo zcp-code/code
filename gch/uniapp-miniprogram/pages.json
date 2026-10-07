@@ -1,0 +1,38 @@
+{
+    "easycom": {
+        "autoscan": true,
+        "custom": {
+            "^uni-(.*)": "@/components/uni-$1.vue",
+            "^custom-tabbar$": "@/components/custom-tabbar/custom-tabbar.vue"
+        }
+    },
+    "pages": [
+        { "path": "pages/login/login", "style": { "navigationBarTitleText": "果仓货盘", "navigationStyle": "custom" } },
+        { "path": "pages/wxlogin/wxlogin", "style": { "navigationBarTitleText": "微信授权登录", "navigationStyle": "custom" } },
+        { "path": "pages/login/account", "style": { "navigationBarTitleText": "登录" } },
+        { "path": "pages/index/index", "style": { "navigationBarTitleText": "果仓货盘", "enablePullDownRefresh": true } },
+        { "path": "pages/shops/shops", "style": { "navigationBarTitleText": "店铺" } },
+        { "path": "pages/orders/orders", "style": { "navigationBarTitleText": "订单列表" } },
+        { "path": "pages/reservation-detail/reservation-detail", "style": { "navigationBarTitleText": "订单详情" } },
+        { "path": "pages/favorites/favorites", "style": { "navigationBarTitleText": "我的收藏" } },
+        { "path": "pages/search/search", "style": { "navigationBarTitleText": "搜索" } },
+        { "path": "pages/goods/goods", "style": { "navigationBarTitleText": "货品详情" } },
+        { "path": "pages/shop/shop", "style": { "navigationBarTitleText": "店铺详情" } },
+        { "path": "pages/reserve/reserve", "style": { "navigationBarTitleText": "确认预订" } },
+        { "path": "pages/profile/profile", "style": { "navigationBarTitleText": "我的" } },
+        { "path": "pages/change-pwd/change-pwd", "style": { "navigationBarTitleText": "修改密码" } },
+
+        { "path": "pages/wholesaler/dashboard/dashboard", "style": { "navigationBarTitleText": "工作台" } },
+        { "path": "pages/wholesaler/goods", "style": { "navigationBarTitleText": "我的货盘", "enablePullDownRefresh": true } },
+        { "path": "pages/wholesaler/publish", "style": { "navigationBarTitleText": "发布货盘" } },
+        { "path": "pages/wholesaler/reservations", "style": { "navigationBarTitleText": "预订处理", "enablePullDownRefresh": true } },
+        { "path": "pages/wholesaler/mine", "style": { "navigationBarTitleText": "批发商中心" } },
+        { "path": "pages/wholesaler/qrcode", "style": { "navigationBarTitleText": "店铺二维码" } }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "果仓货盘",
+        "navigationBarBackgroundColor": "#ff6b35",
+        "backgroundColor": "#f5f5f5"
+    }
+}

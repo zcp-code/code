@@ -1,0 +1,32 @@
+
+.goods-summary.data-v-6464a680 { display: flex;
+}
+.cover.data-v-6464a680 { width: 160rpx; height: 160rpx; border-radius: 8rpx; background: #f5f5f5;
+}
+.info.data-v-6464a680 { flex: 1; margin-left: 20rpx; display: flex; flex-direction: column; justify-content: space-between;
+}
+.name.data-v-6464a680 { font-size: 30rpx; font-weight: 500;
+}
+.price.data-v-6464a680 { color: #ff6b35; font-size: 32rpx; font-weight: 600;
+}
+.available.data-v-6464a680 { color: #999; font-size: 24rpx;
+}
+.form-row.data-v-6464a680 { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 0; border-bottom: 1rpx solid #eee;
+}
+.form-row.data-v-6464a680:last-child { border-bottom: none;
+}
+.label.data-v-6464a680 { color: #666;
+}
+.qty-control.data-v-6464a680 { display: flex; align-items: center;
+}
+.qty-btn.data-v-6464a680 { width: 60rpx; height: 60rpx; line-height: 60rpx; text-align: center; background: #f5f5f5; border-radius: 8rpx; font-size: 36rpx;
+}
+.qty-value.data-v-6464a680 { min-width: 80rpx; text-align: center; font-size: 32rpx; padding: 0 20rpx;
+}
+.total .total-price.data-v-6464a680 { color: #ff6b35; font-size: 38rpx; font-weight: 600;
+}
+.tip.data-v-6464a680 { color: #999; font-size: 26rpx; line-height: 1.6; padding: 10rpx 0;
+}
+.submit-btn.data-v-6464a680 { margin-top: 40rpx;
+}
+
