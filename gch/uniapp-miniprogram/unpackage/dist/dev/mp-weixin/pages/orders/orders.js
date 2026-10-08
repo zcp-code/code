@@ -101,7 +101,7 @@ var components
 try {
   components = {
     customTabbar: function () {
-      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 184))
+      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 200))
     },
   }
 } catch (e) {
@@ -251,7 +251,7 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
-    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 184));
+    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var _default = {
@@ -399,7 +399,18 @@ var _default = {
     formatTime: function formatTime(ts) {
       if (!ts) return '';
       var d = new Date(ts * 1000);
-      return "".concat(String(d.getMonth() + 1).padStart(2, '0'), "-").concat(String(d.getDate()).padStart(2, '0'), " ").concat(String(d.getHours()).padStart(2, '0'), ":").concat(String(d.getMinutes()).padStart(2, '0'));
+      var now = new Date();
+      var pad = function pad(n) {
+        return String(n).padStart(2, '0');
+      };
+      var sameDay = d.toDateString() === now.toDateString();
+      var yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      var isYesterday = d.toDateString() === yesterday.toDateString();
+      var hm = "".concat(pad(d.getHours()), ":").concat(pad(d.getMinutes()));
+      if (sameDay) return "\u4ECA\u5929 ".concat(hm);
+      if (isYesterday) return "\u6628\u5929 ".concat(hm);
+      return "".concat(d.getMonth() + 1, "-").concat(pad(d.getDate()), " ").concat(hm);
     },
     formatPrice: function formatPrice(p) {
       // 后端 DECIMAL 字段返回字符串(如 "5.00"),必须先转数字才能 toFixed

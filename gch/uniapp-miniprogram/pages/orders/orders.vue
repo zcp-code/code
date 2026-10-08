@@ -115,7 +115,15 @@ export default {
     formatTime(ts) {
       if (!ts) return ''
       const d = new Date(ts * 1000)
-      return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+      const now = new Date()
+      const pad = n => String(n).padStart(2, '0')
+      const sameDay = d.toDateString() === now.toDateString()
+      const yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1)
+      const isYesterday = d.toDateString() === yesterday.toDateString()
+      const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`
+      if (sameDay) return `今天 ${hm}`
+      if (isYesterday) return `昨天 ${hm}`
+      return `${d.getMonth() + 1}-${pad(d.getDate())} ${hm}`
     },
     formatPrice(p) {
       // 后端 DECIMAL 字段返回字符串(如 "5.00"),必须先转数字才能 toFixed

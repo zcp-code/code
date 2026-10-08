@@ -15,8 +15,9 @@
         <view class="shop-info">
           <view class="shop-title-line">
             <text class="shop-name">{{ s.name }}</text>
+            <text v-if="s.today_count" class="shop-badge today-new">今日上新</text>
             <text v-if="s.favorited" class="shop-badge fav">★ 已收藏</text>
-            <text v-else class="shop-badge">未收藏</text>
+            <text v-else-if="!s.today_count" class="shop-badge">未收藏</text>
           </view>
           <view class="shop-address"><text class="iconfont icon-dizhi"></text> {{ s.position || '暂无地址' }}</view>
           <view class="shop-bottom-line">
@@ -232,6 +233,7 @@ page {
 }
 .fav-circle:active { transform: scale(0.9); }
 .shop-badge.fav { color: #ff6600; background: #fff2e8; }
+.shop-badge.today-new { color: #fff; background: #ff6600; }
 .tip-text {
   text-align:center;
   color:#999;

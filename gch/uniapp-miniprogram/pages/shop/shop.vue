@@ -193,9 +193,15 @@ export default {
     formatDate(ts) {
       if (!ts) return ''
       const d = new Date(ts * 1000)
-      const today = new Date()
-      if (d.toDateString() === today.toDateString()) return '今日上新'
-      return `${d.getMonth() + 1}月${d.getDate()}日`
+      const now = new Date()
+      const pad = n => String(n).padStart(2, '0')
+      const sameDay = d.toDateString() === now.toDateString()
+      const yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1)
+      const isYesterday = d.toDateString() === yesterday.toDateString()
+      const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`
+      if (sameDay) return `今天 ${hm}`
+      if (isYesterday) return `昨天 ${hm}`
+      return `${d.getMonth() + 1}-${pad(d.getDate())} ${hm}`
     }
   }
 }
