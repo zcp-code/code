@@ -215,8 +215,6 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
-
-var FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟'];
 var _default = {
   data: function data() {
     return {
@@ -242,12 +240,6 @@ var _default = {
       if (this.type === t) return;
       this.type = t;
       this.load(true);
-    },
-    emojiOf: function emojiOf(name) {
-      var code = (name || '').split('').reduce(function (s, c) {
-        return s + c.charCodeAt(0);
-      }, 0);
-      return FOOD_EMOJI[code % FOOD_EMOJI.length];
     },
     load: function load(reset) {
       var _this = this;

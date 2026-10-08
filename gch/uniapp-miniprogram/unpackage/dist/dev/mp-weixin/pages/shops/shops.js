@@ -178,8 +178,13 @@ exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 51));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 53));
 var _request = _interopRequireWildcard(__webpack_require__(/*! @/utils/request.js */ 35));
+var _user = _interopRequireDefault(__webpack_require__(/*! @/store/user.js */ 30));
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+//
+//
+//
+//
 //
 //
 //
@@ -289,6 +294,64 @@ var _default = {
       uni.navigateTo({
         url: "/pages/shop/shop?id=".concat(id)
       });
+    },
+    // 切换收藏店铺
+    toggleFav: function toggleFav(s, e) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var r;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                // 阻止冒泡到店铺卡片跳转
+                if (e) e.stopPropagation && e.stopPropagation();
+                // 必须登录采购商才能收藏
+                if (!(!_user.default.isRealLogin || _user.default.role !== 'buyer')) {
+                  _context2.next = 3;
+                  break;
+                }
+                return _context2.abrupt("return", uni.showModal({
+                  title: '请登录',
+                  content: '店铺收藏需使用采购商账号',
+                  confirmText: '去登录',
+                  success: function success(_ref) {
+                    var confirm = _ref.confirm;
+                    if (confirm) uni.navigateTo({
+                      url: '/pages/login/account?role=buyer'
+                    });
+                  }
+                }));
+              case 3:
+                _context2.prev = 3;
+                _context2.next = 6;
+                return _request.default.post(_request.api.favoriteShop, {
+                  shop_id: s.id
+                }, {
+                  hideError: true
+                });
+              case 6:
+                r = _context2.sent;
+                s.favorited = r.favored ? 1 : 0;
+                uni.showToast({
+                  title: r.favored ? '已收藏' : '已取消收藏',
+                  icon: 'none'
+                });
+                _context2.next = 14;
+                break;
+              case 11:
+                _context2.prev = 11;
+                _context2.t0 = _context2["catch"](3);
+                uni.showToast({
+                  title: _context2.t0.message || '操作失败',
+                  icon: 'none'
+                });
+              case 14:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[3, 11]]);
+      }))();
     },
     // 新增电话拨打
     callPhone: function callPhone(shop) {

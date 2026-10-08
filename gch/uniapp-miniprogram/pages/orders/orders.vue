@@ -52,7 +52,6 @@ import http, { api } from '@/utils/request.js'
 import userStore from '@/store/user.js'
 import CustomTabbar from '@/components/custom-tabbar/custom-tabbar.vue'
 
-const FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟']
 
 export default {
   components: { CustomTabbar },
@@ -113,10 +112,6 @@ export default {
     },
     goDetail(id) { uni.navigateTo({ url: `/pages/reservation-detail/reservation-detail?id=${id}` }) },
     goLogin() { uni.navigateTo({ url: '/pages/login/account?role=buyer' }) },
-    emojiOf(name) {
-      const code = (name || '').split('').reduce((s, c) => s + c.charCodeAt(0), 0)
-      return FOOD_EMOJI[code % FOOD_EMOJI.length]
-    },
     formatTime(ts) {
       if (!ts) return ''
       const d = new Date(ts * 1000)

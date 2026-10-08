@@ -20,15 +20,15 @@
     <view class="stats-row">
       <view class="stat-card">
         <text class="stat-num">{{ stats.totalGoods || 0 }}</text>
-        <text class="stat-label">在售货盘数</text>
+        <text class="stat-label">在售货盘</text>
       </view>
       <view class="stat-card">
         <text class="stat-num">{{ stats.pendingBookings || 0 }}</text>
-        <text class="stat-label">待确认预订数</text>
+        <text class="stat-label">待确认预订</text>
       </view>
       <view class="stat-card">
         <text class="stat-num">{{ stats.confirmedBookings || 0 }}</text>
-        <text class="stat-label">已预订总量</text>
+        <text class="stat-label">已确认预订</text>
       </view>
     </view>
 
@@ -48,17 +48,14 @@
           <text class="emoji">📨</text>
           <text class="label">预订处理</text>
         </view>
-        <view class="quick-item" @tap="callBuyer">
-          <text class="emoji">📞</text>
-          <text class="label">联系采购商</text>
-        </view>
+        
       </view>
     </view>
 
     <!-- 待处理预订列表(规格 6.6) -->
     <view class="card">
       <view class="section-title">
-        待处理预订 {{ pendingList.length }} 笔待确认
+         {{ pendingList.length }} 笔待确认
         <text v-if="pendingList.length > 0" class="badge">{{ pendingList.length }}</text>
       </view>
 

@@ -1,7 +1,7 @@
 <template>
   <view class="container">
     <view class="user-card">
-      <image class="avatar" :src="profile.avatar || '/static/avatar.png'" mode="aspectFill"></image>
+      <image class="avatar" :src="profile.avatar || '/static/avatar.jpg'" mode="aspectFill"></image>
       <view class="user-info">
         <view class="nick">{{profile.real_name || profile.account || '批发商'}}</view>
         <view class="role">{{profile.shop ? '店铺:' + profile.shop.name : '批发商账号'}}</view>
@@ -11,14 +11,10 @@
     <view class="menu">
       <view class="menu-item" @tap="goQrcode">
         <text class="icon">📱</text>
-        <text class="label">我的店铺二维码</text>
+        <text class="label">店铺二维码</text>
         <text class="arrow">›</text>
       </view>
-      <view class="menu-item" @tap="changePwd">
-        <text class="icon">🔒</text>
-        <text class="label">修改密码</text>
-        <text class="arrow">›</text>
-      </view>
+ 
       <view class="menu-item" @tap="goGoods">
         <text class="icon">📦</text>
         <text class="label">我的货盘</text>
@@ -29,19 +25,15 @@
         <text class="label">预订处理</text>
         <text class="arrow">›</text>
       </view>
-      <view class="menu-item" @tap="goPublish">
-        <text class="icon">➕</text>
-        <text class="label">发布货盘</text>
-        <text class="arrow">›</text>
-      </view>
+
     </view>
 
     <view class="menu">
-      <view class="menu-item" @tap="switchRole">
-        <text class="icon">🔄</text>
-        <text class="label">切换身份</text>
-        <text class="arrow">›</text>
-      </view>
+		<view class="menu-item" @tap="changePwd">
+		  <text class="icon">🔒</text>
+		  <text class="label">修改密码</text>
+		  <text class="arrow">›</text>
+		</view>
       <view class="menu-item logout" @tap="logout">
         <text class="icon">🚪</text>
         <text class="label">退出登录</text>

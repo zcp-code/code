@@ -25,13 +25,29 @@ class Shop extends ApiBase
         $total = ShopModel::where($where)->count();
 
         $todayStart = strtotime(date('Y-m-d'));
+
+        // 当前用户(buyer)已收藏的店铺 id 集合(用于列表标记 favorited)
+        $favShopIds = [];
+        $token = $this->request->header('Token', '');
+        if (!empty($token)) {
+            $info = \extend\gch\Token::check($token, 'buyer');
+            if ($info && !empty($info['user_id'])) {
+                $buyerId = (int)$info['user_id'];
+                $favShopIds = \think\Db::name('favorite_shop')
+                    ->where('buyer_id', $buyerId)
+                    ->column('shop_id');
+            }
+        }
+
         foreach ($list as &$shop) {
             $shop->today_count = \think\Db::name('goods')
                 ->where('shop_id', $shop->id)
                 ->where('publish_time', '>=', $todayStart)
                 ->where('status', 1)
                 ->count();
+            $shop->favorited = in_array($shop->id, $favShopIds) ? 1 : 0;
         }
+        unset($shop);
 
         return $this->success(['list' => $list, 'total' => $total]);
     }

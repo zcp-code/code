@@ -62,7 +62,6 @@
 <script>
 import http, { api } from '@/utils/request.js'
 
-const FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟']
 
 export default {
   data() {
@@ -80,10 +79,6 @@ export default {
     if (this.keyword) this.doSearch()
   },
   methods: {
-    emojiOf(name) {
-      const code = (name || '').split('').reduce((s, c) => s + c.charCodeAt(0), 0)
-      return FOOD_EMOJI[code % FOOD_EMOJI.length]
-    },
     clearKeyword() {
       this.keyword = ''
       this.list = []

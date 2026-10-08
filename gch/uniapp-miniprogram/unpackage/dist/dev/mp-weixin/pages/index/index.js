@@ -296,7 +296,6 @@ var CustomTabbar = function CustomTabbar() {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 184));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
-var FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟'];
 var _default = {
   components: {
     CustomTabbar: CustomTabbar
@@ -605,13 +604,6 @@ var _default = {
           }
         }, _callee4, null, [[8, 15]]);
       }))();
-    },
-    emojiOf: function emojiOf(name) {
-      // 简单按哈希选 emoji
-      var code = (name || '').split('').reduce(function (s, c) {
-        return s + c.charCodeAt(0);
-      }, 0);
-      return FOOD_EMOJI[code % FOOD_EMOJI.length];
     },
     formatTime: function formatTime(ts) {
       if (!ts) return '';

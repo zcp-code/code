@@ -15,7 +15,8 @@
         <view class="shop-info">
           <view class="shop-title-line">
             <text class="shop-name">{{ s.name }}</text>
-            <text class="shop-badge">认证商家</text>
+            <text v-if="s.favorited" class="shop-badge fav">★ 已收藏</text>
+            <text v-else class="shop-badge">未收藏</text>
           </view>
           <view class="shop-address"><text class="iconfont icon-dizhi"></text> {{ s.position || '暂无地址' }}</view>
           <view class="shop-bottom-line">
@@ -23,6 +24,9 @@
           </view>
         </view>
         <view class="phone-circle iconfont icon-dianhua" @tap.stop="handleCall(s)"></view>
+        <view class="fav-circle" :class="{ active: s.favorited }" @tap.stop="toggleFav(s, $event)">
+            <text class="fav-icon">{{ s.favorited ? '★' : '☆' }}</text>
+        </view>
       </view>
 
       <view v-if="loading" class="tip-text">加载中...</view>
@@ -35,6 +39,7 @@
 
 <script>
 import http, { api } from '@/utils/request.js'
+import userStore from '@/store/user.js'
 import CustomTabbar from '@/components/custom-tabbar/custom-tabbar.vue'
 export default {
   components: { CustomTabbar },
@@ -66,6 +71,29 @@ export default {
       this.loading = false
     },
     goDetail(id) { uni.navigateTo({ url: `/pages/shop/shop?id=${id}` }) },
+    // 切换收藏店铺
+    async toggleFav(s, e) {
+      // 阻止冒泡到店铺卡片跳转
+      if (e) e.stopPropagation && e.stopPropagation()
+      // 必须登录采购商才能收藏
+      if (!userStore.isRealLogin || userStore.role !== 'buyer') {
+        return uni.showModal({
+          title: '请登录',
+          content: '店铺收藏需使用采购商账号',
+          confirmText: '去登录',
+          success: ({ confirm }) => {
+            if (confirm) uni.navigateTo({ url: '/pages/login/account?role=buyer' })
+          }
+        })
+      }
+      try {
+        const r = await http.post(api.favoriteShop, { shop_id: s.id }, { hideError: true })
+        s.favorited = r.favored ? 1 : 0
+        uni.showToast({ title: r.favored ? '已收藏' : '已取消收藏', icon: 'none' })
+      } catch (e) {
+        uni.showToast({ title: e.message || '操作失败', icon: 'none' })
+      }
+    },
     // 新增电话拨打
     callPhone(shop) {
       if(!shop.contact_phone) return uni.showToast({title:"暂无联系电话",icon:"none"})
@@ -178,6 +206,32 @@ page {
   margin-left:16rpx;
   margin-top:32rpx;
 }
+.fav-circle {
+  width:56rpx;
+  height:56rpx;
+  border-radius: 50%;
+  background: #f5f5f5;
+  color: #999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30rpx;
+  flex-shrink:0;
+  margin-left:12rpx;
+  margin-top:42rpx;
+  transition: transform .15s;
+}
+.fav-icon {
+  font-size: 32rpx;
+  line-height: 1;
+  color: inherit;
+}
+.fav-circle.active {
+  background: #ff6600;
+  color: #fff;
+}
+.fav-circle:active { transform: scale(0.9); }
+.shop-badge.fav { color: #ff6600; background: #fff2e8; }
 .tip-text {
   text-align:center;
   color:#999;

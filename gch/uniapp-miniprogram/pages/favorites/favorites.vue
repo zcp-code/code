@@ -43,8 +43,6 @@
 <script>
 import http, { api } from '@/utils/request.js'
 
-const FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟']
-
 export default {
   data() {
     return {
@@ -65,10 +63,6 @@ export default {
       if (this.type === t) return
       this.type = t
       this.load(true)
-    },
-    emojiOf(name) {
-      const code = (name || '').split('').reduce((s, c) => s + c.charCodeAt(0), 0)
-      return FOOD_EMOJI[code % FOOD_EMOJI.length]
     },
     async load(reset) {
       if (reset) { this.page = 1; this.list = []; this.finished = false }

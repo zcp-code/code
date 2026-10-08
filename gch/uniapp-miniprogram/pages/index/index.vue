@@ -98,7 +98,6 @@ import http, { api } from '@/utils/request.js'
 import CustomTabbar from '@/components/custom-tabbar/custom-tabbar.vue'
 import userStore from '@/store/user.js'
 
-const FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟']
 
 export default {
   components: { CustomTabbar },
@@ -228,12 +227,6 @@ export default {
         })
       } catch (e) {}
       this.submitting = false
-    },
-
-    emojiOf(name) {
-      // 简单按哈希选 emoji
-      const code = (name || '').split('').reduce((s, c) => s + c.charCodeAt(0), 0)
-      return FOOD_EMOJI[code % FOOD_EMOJI.length]
     },
 
     formatTime(ts) {

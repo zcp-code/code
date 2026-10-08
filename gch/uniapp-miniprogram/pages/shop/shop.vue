@@ -76,7 +76,6 @@
 import http, { api } from '@/utils/request.js'
 import userStore from '@/store/user.js'
 
-const FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟']
 
 export default {
   data() {
@@ -189,11 +188,6 @@ export default {
         })
       } catch (e) {}
       this.submitting = false
-    },
-
-    emojiOf(name) {
-      const code = (name || '').split('').reduce((s, c) => s + c.charCodeAt(0), 0)
-      return FOOD_EMOJI[code % FOOD_EMOJI.length]
     },
 
     formatDate(ts) {

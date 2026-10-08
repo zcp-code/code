@@ -254,7 +254,6 @@ var CustomTabbar = function CustomTabbar() {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 184));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
-var FOOD_EMOJI = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍑', '🥬', '🥦', '🥕', '🍅', '🌽', '🥔', '🥒', '🍆', '🌶️', '🧅', '🥭', '🍍', '🥥', '🦐', '🦀', '🐟', '🐠', '🍤', '🥚', '🍚', '🥟'];
 var _default = {
   components: {
     CustomTabbar: CustomTabbar
@@ -396,12 +395,6 @@ var _default = {
       uni.navigateTo({
         url: '/pages/login/account?role=buyer'
       });
-    },
-    emojiOf: function emojiOf(name) {
-      var code = (name || '').split('').reduce(function (s, c) {
-        return s + c.charCodeAt(0);
-      }, 0);
-      return FOOD_EMOJI[code % FOOD_EMOJI.length];
     },
     formatTime: function formatTime(ts) {
       if (!ts) return '';
