@@ -52,7 +52,7 @@ export default {
 .qr-wrap { width: 480rpx; height: 480rpx; margin: 0 auto; padding: 20rpx; border: 2rpx solid #eee; border-radius: 12rpx; }
 .qr-img { width: 100%; height: 100%; }
 .desc { color: #999; font-size: 26rpx; margin-top: 30rpx; }
-.shop-name { font-size: 32rpx; font-weight: 500; color: #ff6b35; margin-top: 16rpx; }
+.shop-name { font-size: 32rpx; font-weight: 500; color: #ff6600; margin-top: 16rpx; }
 .btn-primary { margin-top: 40rpx; }
 .loading { text-align: center; color: #999; padding: 100rpx 0; }
 </style>

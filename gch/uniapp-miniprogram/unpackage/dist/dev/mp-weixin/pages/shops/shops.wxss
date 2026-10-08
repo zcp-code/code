@@ -9,7 +9,7 @@ page.data-v-6b5ffe82 {
 }
 /* 顶部橙色搜索栏 */
 .search-header.data-v-6b5ffe82 {
-  background-color: #ff7722;
+  background-color: #ff6600;
   padding: 30rpx 28rpx;
 }
 .search-box.data-v-6b5ffe82 {
@@ -21,7 +21,7 @@ page.data-v-6b5ffe82 {
 }
 .search-icon.data-v-6b5ffe82 {
   font-size: 32rpx;
-  color: #ff7722;
+  color: #ff6600;
   margin-right:12rpx;
 }
 .search-input.data-v-6b5ffe82 {
@@ -64,7 +64,7 @@ page.data-v-6b5ffe82 {
 }
 .shop-badge.data-v-6b5ffe82 {
   background-color:#fff2e8;
-  color:#ff7722;
+  color:#ff6600;
   font-size:24rpx;
   padding:4rpx 10rpx;
   border-radius:6rpx;
@@ -89,7 +89,7 @@ page.data-v-6b5ffe82 {
   height:72rpx;
   border-radius: 50%;
   background:#fff2e8;
-  color:#ff7722;
+  color:#ff6600;
   display:flex;
   align-items:center;
   justify-content:center;

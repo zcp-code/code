@@ -29,7 +29,7 @@
           <text class="order-status" :class="'status-' + r.status">{{ statusText(r.status) }}</text>
         </view>
         <view class="order-body" @tap="goDetail(r.id)">
-          <view class="emoji">{{ emojiOf(r.goods_name) }}</view>
+          <image class="emoji" :src="r.cover || '/static/placeholder.png'" mode="aspectFill"></image>
           <view class="info">
             <view class="name ellipsis-2">{{ r.goods_name }}</view>
             <view class="amount">¥{{ formatPrice(r.price) }}/{{ r.unit }} × {{ r.quantity.toLocaleString() }} {{ r.unit }}</view>
@@ -190,7 +190,7 @@ export default {
 }
 .info { flex: 1; min-width: 0; }
 .name { font-size: 28rpx; font-weight: 600; color: #111; }
-.amount { color: #ff4d00; font-size: 26rpx; margin-top: 8rpx; }
+.amount { color: #ff6600; font-size: 26rpx; margin-top: 8rpx; }
 .shop { color: #999; font-size: 22rpx; margin-top: 6rpx; }
 
 .order-actions {

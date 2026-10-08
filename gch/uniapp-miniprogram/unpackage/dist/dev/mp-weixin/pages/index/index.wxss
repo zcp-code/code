@@ -2,7 +2,7 @@
 .container.data-v-57280228 { padding-bottom: 40rpx;
 }
 .header.data-v-57280228 {
-  background: linear-gradient(135deg, #ff6b35, #ff8a5b);
+  background: linear-gradient(135deg, #ff6600, #ff6600);
   padding: 30rpx 40rpx 50rpx;
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@
   text-align: center;
   box-shadow: 0 2rpx 8rpx rgba(0,0,0,.04);
 }
-.stat-num.data-v-57280228 { font-size: 36rpx; font-weight: 600; color: #ff6b35; display: block;
+.stat-num.data-v-57280228 { font-size: 36rpx; font-weight: 600; color: #ff6600; display: block;
 }
 .stat-label.data-v-57280228 { color: #999; font-size: 22rpx; margin-top: 6rpx;
 }
@@ -59,7 +59,7 @@
   box-shadow: 0 1rpx 4rpx rgba(0,0,0,.04);
 }
 .chip.active.data-v-57280228 {
-  background: #ff6b35;
+  background: #ff6600;
   color: #fff;
 }
 .goods-list.data-v-57280228 { padding: 0 30rpx;
@@ -94,7 +94,7 @@
 }
 .goods-bottom.data-v-57280228 { display: flex; align-items: center; margin-top: 12rpx;
 }
-.price.data-v-57280228 { color: #ff6b35; font-size: 34rpx; font-weight: 700;
+.price.data-v-57280228 { color: #ff6600; font-size: 34rpx; font-weight: 700;
 }
 .goods-actions.data-v-57280228 {
   display: flex;
@@ -104,8 +104,8 @@
 .btn-outline.data-v-57280228 {
   flex: 1;
   background: #fff;
-  color: #ff6b35;
-  border: 2rpx solid #ff6b35;
+  color: #ff6600;
+  border: 2rpx solid #ff6600;
   border-radius: 8rpx;
   padding: 12rpx 0;
   text-align: center;
@@ -113,7 +113,7 @@
 }
 .btn-primary.data-v-57280228 {
   flex: 1.2;
-  background: #ff6b35;
+  background: #ff6600;
   color: #fff;
   border-radius: 8rpx;
   padding: 12rpx 0;
@@ -182,7 +182,7 @@
 }
 .sheet-value.data-v-57280228 { color: #111; font-size: 28rpx;
 }
-.sheet-value.price.data-v-57280228 { color: #ff4d00; font-weight: 600;
+.sheet-value.price.data-v-57280228 { color: #ff6600; font-weight: 600;
 }
 .qty-input-wrap.data-v-57280228 {
   display: flex;

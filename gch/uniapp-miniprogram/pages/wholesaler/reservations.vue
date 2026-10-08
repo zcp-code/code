@@ -111,7 +111,7 @@ export default {
 <style scoped>
 .tabs { display: flex; background: #fff; border-radius: 12rpx; margin-bottom: 20rpx; }
 .tab { flex: 1; padding: 24rpx 0; text-align: center; color: #666; font-size: 28rpx; }
-.tab.active { color: #ff6b35; border-bottom: 4rpx solid #ff6b35; }
+.tab.active { color: #ff6600; border-bottom: 4rpx solid #ff6600; }
 .res-card { background: #fff; border-radius: 12rpx; padding: 24rpx; margin-bottom: 20rpx; }
 .res-row { display: flex; justify-content: space-between; }
 .res-no { color: #999; font-size: 24rpx; }
@@ -121,10 +121,10 @@ export default {
 .status-cancelled { color: #999; background: #f5f5f5; }
 .res-name { font-size: 28rpx; margin-top: 10rpx; }
 .res-meta { color: #999; font-size: 24rpx; margin-top: 6rpx; display: flex; justify-content: space-between; }
-.res-meta .amount { color: #ff6b35; font-weight: 500; font-size: 28rpx; }
+.res-meta .amount { color: #ff6600; font-weight: 500; font-size: 28rpx; }
 .res-actions { display: flex; gap: 16rpx; margin-top: 16rpx; }
 .btn.small { padding: 12rpx 28rpx; border-radius: 8rpx; font-size: 26rpx; }
-.btn.primary { background: #ff6b35; color: #fff; }
+.btn.primary { background: #ff6600; color: #fff; }
 .btn.warn { background: #fff; color: #f44336; border: 1rpx solid #f44336; }
 .loading, .empty { text-align: center; color: #999; padding: 60rpx 0; font-size: 26rpx; }
 </style>

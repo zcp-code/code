@@ -9,7 +9,7 @@
 }
 .desc.data-v-e2e2eec0 { color: #999; font-size: 26rpx; margin-top: 30rpx;
 }
-.shop-name.data-v-e2e2eec0 { font-size: 32rpx; font-weight: 500; color: #ff6b35; margin-top: 16rpx;
+.shop-name.data-v-e2e2eec0 { font-size: 32rpx; font-weight: 500; color: #ff6600; margin-top: 16rpx;
 }
 .btn-primary.data-v-e2e2eec0 { margin-top: 40rpx;
 }

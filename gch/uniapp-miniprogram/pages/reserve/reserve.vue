@@ -79,7 +79,7 @@ export default {
 .cover { width: 160rpx; height: 160rpx; border-radius: 8rpx; background: #f5f5f5; }
 .info { flex: 1; margin-left: 20rpx; display: flex; flex-direction: column; justify-content: space-between; }
 .name { font-size: 30rpx; font-weight: 500; }
-.price { color: #ff6b35; font-size: 32rpx; font-weight: 600; }
+.price { color: #ff6600; font-size: 32rpx; font-weight: 600; }
 .available { color: #999; font-size: 24rpx; }
 .form-row { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 0; border-bottom: 1rpx solid #eee; }
 .form-row:last-child { border-bottom: none; }
@@ -87,7 +87,7 @@ export default {
 .qty-control { display: flex; align-items: center; }
 .qty-btn { width: 60rpx; height: 60rpx; line-height: 60rpx; text-align: center; background: #f5f5f5; border-radius: 8rpx; font-size: 36rpx; }
 .qty-value { min-width: 80rpx; text-align: center; font-size: 32rpx; padding: 0 20rpx; }
-.total .total-price { color: #ff6b35; font-size: 38rpx; font-weight: 600; }
+.total .total-price { color: #ff6600; font-size: 38rpx; font-weight: 600; }
 .tip { color: #999; font-size: 26rpx; line-height: 1.6; padding: 10rpx 0; }
 .submit-btn { margin-top: 40rpx; }
 </style>

@@ -3,7 +3,7 @@
     <!-- 顶部:橙底 + logo + 店名 + 📍 地址(规格 §6.3) -->
     <view class="header">
       <view class="header-row">
-        <view class="shop-logo">{{ shop.emoji || '🏬' }}</view>
+        <image class="shop-logo" :src="shop.logo || '/static/placeholder.png'" mode="aspectFill"></image>
         <view class="shop-info">
           <view class="shop-name">{{ shop.name }}</view>
           <view class="shop-loc">📍 {{ shop.position || '暂无地址' }}</view>
@@ -27,7 +27,7 @@
       <view v-else-if="goodsList.length === 0" class="empty">📦 该店铺暂无货盘</view>
 
       <view v-for="g in goodsList" :key="g.id" class="goods-card">
-        <view class="emoji-cover">{{ emojiOf(g.name) }}</view>
+        <image class="emoji-cover" :src="g.cover || '/static/placeholder.png'" mode="aspectFill"></image>
         <view class="info">
           <view class="name ellipsis-2">{{ g.name }}</view>
           <view class="meta">{{ g.publish_time_label || '今日上新' }}</view>
@@ -212,7 +212,7 @@ export default {
 
 /* 顶部(规格 §6.3) */
 .header {
-  background: linear-gradient(135deg, #ff6600, #ff8a2b);
+  background: linear-gradient(135deg, #ff6600, #ff6600);
   padding: 40rpx 30rpx;
   color: #fff;
 }
@@ -302,7 +302,7 @@ export default {
 .name { font-size: 30rpx; font-weight: 600; color: #111; }
 .meta { color: #999; font-size: 22rpx; margin-top: 6rpx; }
 .stock { color: #999; font-size: 22rpx; margin-top: 4rpx; }
-.price { color: #ff4d00; font-size: 32rpx; font-weight: 700; margin-top: 10rpx; }
+.price { color: #ff6600; font-size: 32rpx; font-weight: 700; margin-top: 10rpx; }
 .card-actions {
   display: flex;
   justify-content: flex-end;
@@ -362,7 +362,7 @@ export default {
 }
 .sheet-label { color: #666; font-size: 28rpx; }
 .sheet-value { color: #111; font-size: 28rpx; }
-.sheet-value.price { color: #ff4d00; font-weight: 600; }
+.sheet-value.price { color: #ff6600; font-weight: 600; }
 .qty-input-wrap {
   display: flex;
   align-items: center;

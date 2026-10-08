@@ -9,7 +9,7 @@
 }
 .price-row.data-v-5566b618 { display: flex; align-items: baseline; margin-bottom: 12rpx;
 }
-.price.data-v-5566b618 { color: #ff4d00; font-size: 48rpx; font-weight: 700;
+.price.data-v-5566b618 { color: #ff6600; font-size: 48rpx; font-weight: 700;
 }
 .unit.data-v-5566b618 { color: #999; font-size: 28rpx; margin-left: 6rpx;
 }
@@ -110,7 +110,7 @@
 }
 .sheet-value.data-v-5566b618 { color: #111; font-size: 28rpx;
 }
-.sheet-value.price.data-v-5566b618 { color: #ff4d00; font-weight: 600;
+.sheet-value.price.data-v-5566b618 { color: #ff6600; font-weight: 600;
 }
 .qty-input-wrap.data-v-5566b618 {
   display: flex;

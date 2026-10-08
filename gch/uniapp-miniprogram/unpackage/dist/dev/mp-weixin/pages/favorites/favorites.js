@@ -108,12 +108,10 @@ var render = function () {
     !g0 && !(g1 === 0) && _vm.type === "goods"
       ? _vm.__map(_vm.list, function (g, __i0__) {
           var $orig = _vm.__get_orig(g)
-          var m0 = _vm.emojiOf(g.name)
           var g2 = (g.total_stock || 0).toLocaleString()
           var g3 = Number(g.price).toFixed(2)
           return {
             $orig: $orig,
-            m0: m0,
             g2: g2,
             g3: g3,
           }

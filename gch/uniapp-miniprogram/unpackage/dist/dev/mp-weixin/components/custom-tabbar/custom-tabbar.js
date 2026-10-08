@@ -145,7 +145,7 @@ var _default = {
   data: function data() {
     return {
       color: '#999999',
-      selectedColor: '#ff6b35',
+      selectedColor: '#ff6600',
       bgColor: '#ffffff'
     };
   },

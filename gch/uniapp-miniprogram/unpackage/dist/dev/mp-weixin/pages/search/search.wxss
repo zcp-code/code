@@ -18,7 +18,7 @@
   width: 36rpx; height: 36rpx; line-height: 30rpx; text-align: center;
   background: #ccc; color: #fff; border-radius: 50%; font-size: 28rpx;
 }
-.search-cancel.data-v-4cedc0c6 { color: #ff6b35; font-size: 28rpx;
+.search-cancel.data-v-4cedc0c6 { color: #ff6600; font-size: 28rpx;
 }
 .tabs.data-v-4cedc0c6 {
   display: flex; background: #fff;
@@ -26,7 +26,7 @@
 }
 .tab.data-v-4cedc0c6 { flex: 1; padding: 20rpx 0; text-align: center; color: #666; font-size: 28rpx;
 }
-.tab.active.data-v-4cedc0c6 { color: #ff6b35; border-bottom: 4rpx solid #ff6b35; font-weight: 500;
+.tab.active.data-v-4cedc0c6 { color: #ff6600; border-bottom: 4rpx solid #ff6600; font-weight: 500;
 }
 .list.data-v-4cedc0c6 { padding: 20rpx 24rpx;
 }
@@ -50,7 +50,7 @@
 }
 .meta.data-v-4cedc0c6 { color: #999; font-size: 22rpx; margin-top: 6rpx;
 }
-.price.data-v-4cedc0c6 { color: #ff4d00; font-size: 28rpx; margin-top: 8rpx; font-weight: 500;
+.price.data-v-4cedc0c6 { color: #ff6600; font-size: 28rpx; margin-top: 8rpx; font-weight: 500;
 }
 .empty-card.data-v-4cedc0c6 {
   background: #fff; border-radius: 12rpx;

@@ -4,7 +4,7 @@
 
 /* 顶部(规格 §6.3) */
 .header.data-v-71bf3ec6 {
-  background: linear-gradient(135deg, #ff6600, #ff8a2b);
+  background: linear-gradient(135deg, #ff6600, #ff6600);
   padding: 40rpx 30rpx;
   color: #fff;
 }
@@ -102,7 +102,7 @@
 }
 .stock.data-v-71bf3ec6 { color: #999; font-size: 22rpx; margin-top: 4rpx;
 }
-.price.data-v-71bf3ec6 { color: #ff4d00; font-size: 32rpx; font-weight: 700; margin-top: 10rpx;
+.price.data-v-71bf3ec6 { color: #ff6600; font-size: 32rpx; font-weight: 700; margin-top: 10rpx;
 }
 .card-actions.data-v-71bf3ec6 {
   display: flex;
@@ -171,7 +171,7 @@
 }
 .sheet-value.data-v-71bf3ec6 { color: #111; font-size: 28rpx;
 }
-.sheet-value.price.data-v-71bf3ec6 { color: #ff4d00; font-weight: 600;
+.sheet-value.price.data-v-71bf3ec6 { color: #ff6600; font-weight: 600;
 }
 .qty-input-wrap.data-v-71bf3ec6 {
   display: flex;

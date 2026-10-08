@@ -127,12 +127,10 @@ var render = function () {
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.list, function (g, __i1__) {
     var $orig = _vm.__get_orig(g)
-    var m0 = _vm.emojiOf(g.name)
-    var m1 = _vm.formatTime(g.publish_time)
+    var m0 = _vm.formatTime(g.publish_time)
     return {
       $orig: $orig,
       m0: m0,
-      m1: m1,
     }
   })
   var g0 = !_vm.loading ? _vm.finished && _vm.list.length > 0 : null

@@ -65,7 +65,7 @@
 }
 .name.data-v-8a71bbb4 { font-size: 28rpx; font-weight: 600; color: #111;
 }
-.amount.data-v-8a71bbb4 { color: #ff4d00; font-size: 26rpx; margin-top: 8rpx;
+.amount.data-v-8a71bbb4 { color: #ff6600; font-size: 26rpx; margin-top: 8rpx;
 }
 .shop.data-v-8a71bbb4 { color: #999; font-size: 22rpx; margin-top: 6rpx;
 }

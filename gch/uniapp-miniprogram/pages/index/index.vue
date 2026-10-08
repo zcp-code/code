@@ -40,7 +40,7 @@
     <view class="goods-list">
 		<!-- @tap="goDetail(g.id)" -->
       <view v-for="g in list" :key="g.id" class="goods-card" >
-        <view class="emoji-cover">{{ emojiOf(g.name) }}</view>
+        <image class="emoji-cover" :src="g.cover || '/static/placeholder.png'" mode="aspectFill"></image>
         <view class="goods-info">
           <view class="goods-name ellipsis-2">{{ g.name }}</view>
           <view class="goods-meta">{{ g.shop_name }} · {{ formatTime(g.publish_time) }}</view>
@@ -251,7 +251,7 @@ export default {
 .container { padding-bottom: 40rpx; }
 
 .header {
-  background: linear-gradient(135deg, #ff6b35, #ff8a5b);
+  background: linear-gradient(135deg, #ff6600, #ff6600);
   padding: 30rpx 40rpx 50rpx;
   display: flex;
   flex-direction: column;
@@ -287,7 +287,7 @@ export default {
   text-align: center;
   box-shadow: 0 2rpx 8rpx rgba(0,0,0,.04);
 }
-.stat-num { font-size: 36rpx; font-weight: 600; color: #ff6b35; display: block; }
+.stat-num { font-size: 36rpx; font-weight: 600; color: #ff6600; display: block; }
 .stat-label { color: #999; font-size: 22rpx; margin-top: 6rpx; }
 
 .category-scroll {
@@ -305,7 +305,7 @@ export default {
   box-shadow: 0 1rpx 4rpx rgba(0,0,0,.04);
 }
 .chip.active {
-  background: #ff6b35;
+  background: #ff6600;
   color: #fff;
 }
 
@@ -335,7 +335,7 @@ export default {
 .goods-meta { color: #999; font-size: 22rpx; margin-top: 6rpx; }
 .goods-stock { color: #999; font-size: 22rpx; margin-top: 4rpx; }
 .goods-bottom { display: flex; align-items: center; margin-top: 12rpx; }
-.price { color: #ff6b35; font-size: 34rpx; font-weight: 700; }
+.price { color: #ff6600; font-size: 34rpx; font-weight: 700; }
 .goods-actions {
   display: flex;
   gap: 12rpx;
@@ -344,8 +344,8 @@ export default {
 .btn-outline {
   flex: 1;
   background: #fff;
-  color: #ff6b35;
-  border: 2rpx solid #ff6b35;
+  color: #ff6600;
+  border: 2rpx solid #ff6600;
   border-radius: 8rpx;
   padding: 12rpx 0;
   text-align: center;
@@ -353,7 +353,7 @@ export default {
 }
 .btn-primary {
   flex: 1.2;
-  background: #ff6b35;
+  background: #ff6600;
   color: #fff;
   border-radius: 8rpx;
   padding: 12rpx 0;
@@ -415,7 +415,7 @@ export default {
 }
 .sheet-label { color: #666; font-size: 28rpx; }
 .sheet-value { color: #111; font-size: 28rpx; }
-.sheet-value.price { color: #ff4d00; font-weight: 600; }
+.sheet-value.price { color: #ff6600; font-weight: 600; }
 .qty-input-wrap {
   display: flex;
   align-items: center;

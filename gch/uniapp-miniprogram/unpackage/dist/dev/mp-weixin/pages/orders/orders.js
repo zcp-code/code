@@ -131,17 +131,15 @@ var render = function () {
     ? _vm.__map(_vm.list, function (r, __i0__) {
         var $orig = _vm.__get_orig(r)
         var m0 = _vm.statusText(r.status)
-        var m1 = _vm.emojiOf(r.goods_name)
-        var m2 = _vm.formatPrice(r.price)
+        var m1 = _vm.formatPrice(r.price)
         var g2 = r.quantity.toLocaleString()
-        var m3 = _vm.formatTime(r.createtime)
+        var m2 = _vm.formatTime(r.createtime)
         return {
           $orig: $orig,
           m0: m0,
           m1: m1,
-          m2: m2,
           g2: g2,
-          m3: m3,
+          m2: m2,
         }
       })
     : null

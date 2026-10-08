@@ -23,9 +23,11 @@ class Wholesaler extends Backend
     {
         if ($this->request->isAjax()) {
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
-            $total = $this->model->where($where)->count();
-            $list  = $this->model->alias('w')
-                ->join(['shop s', 's.id = w.shop_id', 'LEFT'])
+            $join = [
+                ['shop s', 's.id = w.shop_id', 'LEFT'],
+            ];
+            $total = $this->model->alias('w')->join($join)->where($where)->count();
+            $list  = $this->model->alias('w')->join($join)
                 ->where($where)
                 ->order($sort, $order)->limit($offset, $limit)
                 ->field('w.*, s.name as shop_name')

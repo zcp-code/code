@@ -168,7 +168,7 @@ export default {
 .banner-empty { display: flex; align-items: center; justify-content: center; height: 400rpx; color: #ccc; font-size: 30rpx; }
 
 .price-row { display: flex; align-items: baseline; margin-bottom: 12rpx; }
-.price { color: #ff4d00; font-size: 48rpx; font-weight: 700; }
+.price { color: #ff6600; font-size: 48rpx; font-weight: 700; }
 .unit { color: #999; font-size: 28rpx; margin-left: 6rpx; }
 .available { margin-left: auto; color: #999; font-size: 24rpx; }
 .name { font-size: 32rpx; font-weight: 600; line-height: 1.4; }
@@ -255,7 +255,7 @@ export default {
 }
 .sheet-label { color: #666; font-size: 28rpx; }
 .sheet-value { color: #111; font-size: 28rpx; }
-.sheet-value.price { color: #ff4d00; font-weight: 600; }
+.sheet-value.price { color: #ff6600; font-weight: 600; }
 
 .qty-input-wrap {
   display: flex;

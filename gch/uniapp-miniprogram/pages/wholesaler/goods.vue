@@ -99,7 +99,7 @@ export default {
 <style scoped>
 .tabs { display: flex; background: #fff; border-radius: 12rpx; margin-bottom: 20rpx; }
 .tab { flex: 1; padding: 24rpx 0; text-align: center; color: #666; font-size: 28rpx; }
-.tab.active { color: #ff6b35; border-bottom: 4rpx solid #ff6b35; }
+.tab.active { color: #ff6600; border-bottom: 4rpx solid #ff6600; }
 .goods-card { display: flex; background: #fff; border-radius: 12rpx; padding: 20rpx; margin-bottom: 20rpx; }
 .cover { width: 160rpx; height: 160rpx; border-radius: 8rpx; background: #f5f5f5; }
 .info { flex: 1; margin-left: 20rpx; display: flex; flex-direction: column; }
@@ -111,7 +111,7 @@ export default {
 .status-0 { color: #999; background: #f5f5f5; }
 .status-2 { color: #ff9800; background: #fff3e0; }
 .actions .btn { padding: 10rpx 24rpx; border-radius: 8rpx; font-size: 24rpx; }
-.btn.warn { background: #fff5f0; color: #ff6b35; border: 1rpx solid #ff6b35; }
+.btn.warn { background: #fff5f0; color: #ff6600; border: 1rpx solid #ff6600; }
 .loading, .empty { text-align: center; color: #999; padding: 60rpx 0; font-size: 26rpx; }
-.fab { position: fixed; right: 30rpx; bottom: 60rpx; width: 100rpx; height: 100rpx; line-height: 100rpx; text-align: center; background: #ff6b35; color: #fff; border-radius: 50%; font-size: 60rpx; box-shadow: 0 4rpx 20rpx rgba(255,107,53,.4); }
+.fab { position: fixed; right: 30rpx; bottom: 60rpx; width: 100rpx; height: 100rpx; line-height: 100rpx; text-align: center; background: #ff6600; color: #fff; border-radius: 50%; font-size: 60rpx; box-shadow: 0 4rpx 20rpx rgba(255,107,53,.4); }
 </style>

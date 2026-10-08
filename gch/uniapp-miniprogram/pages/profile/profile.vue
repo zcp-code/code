@@ -256,7 +256,7 @@ page {
 
 /* ========== 顶部橙色头部 ========== */
 .header {
-  background: linear-gradient(135deg, #ff6600 0%, #ff8a2b 100%);
+  background: linear-gradient(135deg, #ff6600 0%, #ff6600 100%);
   padding: 90rpx 32rpx 110rpx;
   color: #fff;
   border-radius: 0 0 32rpx 32rpx;

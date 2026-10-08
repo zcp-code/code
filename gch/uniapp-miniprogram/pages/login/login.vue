@@ -63,7 +63,7 @@ export default {
 <style scoped>
 .entry {
   min-height: 100vh;
-  background: linear-gradient(180deg, #ff8a2b 0%, #ff6600 50%, #f04a00 100%);
+  background: linear-gradient(180deg, #ff6600 0%, #ff6600 50%, #f04a00 100%);
   padding: 120rpx 60rpx 60rpx;
   display: flex;
   flex-direction: column;

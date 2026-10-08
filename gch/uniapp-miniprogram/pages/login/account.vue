@@ -136,7 +136,7 @@ page {
 
 /* ========== 顶部橙色品牌区 ========== */
 .brand-section {
-  background: linear-gradient(180deg, #ff8a2b 0%, #ff6600 100%);
+  background: linear-gradient(180deg, #ff6600 0%, #ff6600 100%);
   padding: 120rpx 40rpx 200rpx;
   display: flex;
   flex-direction: column;
@@ -233,7 +233,7 @@ page {
 
 /* ========== 主登录按钮 ========== */
 .btn-primary {
-  background: linear-gradient(135deg, #ff8a2b, #ff6600);
+  background: linear-gradient(135deg, #ff6600, #ff6600);
   color: #ffffff;
   font-size: 32rpx;
   font-weight: 600;

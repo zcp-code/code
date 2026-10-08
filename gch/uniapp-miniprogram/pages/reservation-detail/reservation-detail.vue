@@ -105,7 +105,7 @@ export default {
 .card { background: #fff; border-radius: 12rpx; padding: 20rpx 24rpx; margin-bottom: 20rpx; }
 .row { display: flex; padding: 20rpx 0; border-bottom: 1rpx solid #f5f5f5; }
 .row:last-child { border-bottom: none; }
-.row.total .value { color: #ff6b35; font-size: 36rpx; font-weight: 600; }
+.row.total .value { color: #ff6600; font-size: 36rpx; font-weight: 600; }
 .row .label { width: 180rpx; color: #999; }
 .row .value { flex: 1; font-size: 28rpx; }
 .action-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 20rpx; background: #fff; box-shadow: 0 -2rpx 8rpx rgba(0,0,0,.04); }

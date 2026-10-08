@@ -37,7 +37,7 @@
     <!-- 货品结果 -->
     <view v-else-if="type === 'goods'" class="list">
       <view v-for="g in list" :key="g.id" class="card" @tap="goGoods(g.id)">
-        <view class="emoji-cover">{{ emojiOf(g.name) }}</view>
+        <image class="emoji-cover" :src="g.cover || '/static/placeholder.png'" mode="aspectFill"></image>
         <view class="info">
           <view class="name ellipsis-2">{{ g.name }}</view>
           <view class="meta">{{ g.shop_name || '-' }} · 库存 {{ (g.total_stock || 0).toLocaleString() }} {{ g.unit }}</view>
@@ -147,14 +147,14 @@ export default {
   width: 36rpx; height: 36rpx; line-height: 30rpx; text-align: center;
   background: #ccc; color: #fff; border-radius: 50%; font-size: 28rpx;
 }
-.search-cancel { color: #ff6b35; font-size: 28rpx; }
+.search-cancel { color: #ff6600; font-size: 28rpx; }
 
 .tabs {
   display: flex; background: #fff;
   border-bottom: 1rpx solid #eee;
 }
 .tab { flex: 1; padding: 20rpx 0; text-align: center; color: #666; font-size: 28rpx; }
-.tab.active { color: #ff6b35; border-bottom: 4rpx solid #ff6b35; font-weight: 500; }
+.tab.active { color: #ff6600; border-bottom: 4rpx solid #ff6600; font-weight: 500; }
 
 .list { padding: 20rpx 24rpx; }
 
@@ -174,7 +174,7 @@ export default {
 .info { flex: 1; min-width: 0; }
 .name { font-size: 28rpx; font-weight: 600; color: #111; }
 .meta { color: #999; font-size: 22rpx; margin-top: 6rpx; }
-.price { color: #ff4d00; font-size: 28rpx; margin-top: 8rpx; font-weight: 500; }
+.price { color: #ff6600; font-size: 28rpx; margin-top: 8rpx; font-weight: 500; }
 
 .empty-card {
   background: #fff; border-radius: 12rpx;

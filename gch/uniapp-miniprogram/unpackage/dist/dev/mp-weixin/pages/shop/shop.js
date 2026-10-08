@@ -107,12 +107,10 @@ var render = function () {
   var l0 = _vm.shop
     ? _vm.__map(_vm.goodsList, function (g, __i0__) {
         var $orig = _vm.__get_orig(g)
-        var m0 = _vm.emojiOf(g.name)
         var g2 = g.total_stock.toLocaleString()
         var g3 = Number(g.price).toFixed(2)
         return {
           $orig: $orig,
-          m0: m0,
           g2: g2,
           g3: g3,
         }

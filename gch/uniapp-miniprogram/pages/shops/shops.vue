@@ -88,7 +88,7 @@ page {
 
 /* 顶部橙色搜索栏 */
 .search-header {
-  background-color: #ff7722;
+  background-color: #ff6600;
   padding: 30rpx 28rpx;
 }
 .search-box {
@@ -100,7 +100,7 @@ page {
 }
 .search-icon {
   font-size: 32rpx;
-  color: #ff7722;
+  color: #ff6600;
   margin-right:12rpx;
 }
 .search-input {
@@ -144,7 +144,7 @@ page {
 }
 .shop-badge {
   background-color:#fff2e8;
-  color:#ff7722;
+  color:#ff6600;
   font-size:24rpx;
   padding:4rpx 10rpx;
   border-radius:6rpx;
@@ -169,7 +169,7 @@ page {
   height:72rpx;
   border-radius: 50%;
   background:#fff2e8;
-  color:#ff7722;
+  color:#ff6600;
   display:flex;
   align-items:center;
   justify-content:center;

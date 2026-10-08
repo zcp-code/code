@@ -3,7 +3,7 @@
 }
 .tab.data-v-7df0fb94 { flex: 1; padding: 24rpx 0; text-align: center; color: #666; font-size: 28rpx;
 }
-.tab.active.data-v-7df0fb94 { color: #ff6b35; border-bottom: 4rpx solid #ff6b35; font-weight: 500;
+.tab.active.data-v-7df0fb94 { color: #ff6600; border-bottom: 4rpx solid #ff6600; font-weight: 500;
 }
 .list.data-v-7df0fb94 { padding: 20rpx 24rpx; padding-bottom: 40rpx;
 }
@@ -27,7 +27,7 @@
 }
 .meta.data-v-7df0fb94 { color: #999; font-size: 22rpx; margin-top: 6rpx;
 }
-.price.data-v-7df0fb94 { color: #ff4d00; font-size: 28rpx; margin-top: 8rpx; font-weight: 500;
+.price.data-v-7df0fb94 { color: #ff6600; font-size: 28rpx; margin-top: 8rpx; font-weight: 500;
 }
 .empty-card.data-v-7df0fb94 {
   background: #fff; border-radius: 12rpx;

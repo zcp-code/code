@@ -34,32 +34,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     '<span class="label label-success">启用</span>'][v];
                         }},
                         {field: 'createtime', title: '创建时间', formatter: Table.api.formatter.datetime, operate: 'RANGE', addclass: 'datetimerange', sortable: true},
-                        {field: 'operate', title: __('Operate'), table: table, events: {
-                            'click .btn-resetpwdone': function (e, value, row, index) {
-                                e.stopPropagation();
-                                layer.confirm('确认重置密码？', function (i) {
-                                    layer.close(i);
-                                    $.ajax({
-                                        url: 'wholesaler/resetPwd',
-                                        data: {ids: row.id},
-                                        type: 'POST',
-                                        dataType: 'json',
-                                        success: function (ret) {
-                                            Layer.alert(ret.msg, {icon: ret.code === 1 ? 1 : 2});
-                                        }
-                                    });
-                                });
-                            }
-                        }, formatter: function (value, row, index) {
-                            var html = '';
-                            if (Config.auth.check('wholesaler/edit')) {
-                                html += '<a href="javascript:;" class="btn btn-xs btn-success btn-editone"><i class="fa fa-pencil"></i> 编辑</a> ';
-                            }
-                            if (Config.auth.check('wholesaler/resetPwd')) {
-                                html += '<a href="javascript:;" class="btn btn-xs btn-warning btn-resetpwdone"><i class="fa fa-key"></i> 重置密码</a> ';
-                            }
-                            return html;
-                        }}
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ]
             });

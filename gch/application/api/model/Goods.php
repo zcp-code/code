@@ -30,6 +30,32 @@ class Goods extends Model
     }
 
     /**
+     * 访问器:第一张图片完整 URL(列表渲染封面用)
+     * 触发时机:模型序列化时(任何 select 出来的 Goods 实例访问 cover 属性)
+     */
+    public function getCoverAttr($value, $data)
+    {
+        // 查 goods_image 表,缓存到静态数组避免 N+1
+        static $cache = [];
+        $gid = $data['id'] ?? 0;
+        if (!$gid) return '';
+        if (!isset($cache[$gid])) {
+            $img = \think\Db::name('goods_image')->where('goods_id', $gid)->order('sort asc')->value('url');
+            $cache[$gid] = $img ?: '';
+        }
+        $url = $cache[$gid];
+        if (!$url) return '';
+        // 已是完整 URL(http 开头)直接返回;否则拼上 request domain
+        if (stripos($url, 'http') === 0) return $url;
+        try {
+            $domain = \think\Request::instance()->domain();
+            return $domain . $url;
+        } catch (\Throwable $e) {
+            return $url;
+        }
+    }
+
+    /**
      * 关联店铺
      */
     public function shop()

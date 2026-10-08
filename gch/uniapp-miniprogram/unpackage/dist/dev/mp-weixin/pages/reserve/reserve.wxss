@@ -7,7 +7,7 @@
 }
 .name.data-v-6464a680 { font-size: 30rpx; font-weight: 500;
 }
-.price.data-v-6464a680 { color: #ff6b35; font-size: 32rpx; font-weight: 600;
+.price.data-v-6464a680 { color: #ff6600; font-size: 32rpx; font-weight: 600;
 }
 .available.data-v-6464a680 { color: #999; font-size: 24rpx;
 }
@@ -23,7 +23,7 @@
 }
 .qty-value.data-v-6464a680 { min-width: 80rpx; text-align: center; font-size: 32rpx; padding: 0 20rpx;
 }
-.total .total-price.data-v-6464a680 { color: #ff6b35; font-size: 38rpx; font-weight: 600;
+.total .total-price.data-v-6464a680 { color: #ff6600; font-size: 38rpx; font-weight: 600;
 }
 .tip.data-v-6464a680 { color: #999; font-size: 26rpx; line-height: 1.6; padding: 10rpx 0;
 }

@@ -13,7 +13,7 @@
 }
 .row.data-v-3dcca906:last-child { border-bottom: none;
 }
-.row.total .value.data-v-3dcca906 { color: #ff6b35; font-size: 36rpx; font-weight: 600;
+.row.total .value.data-v-3dcca906 { color: #ff6600; font-size: 36rpx; font-weight: 600;
 }
 .row .label.data-v-3dcca906 { width: 180rpx; color: #999;
 }

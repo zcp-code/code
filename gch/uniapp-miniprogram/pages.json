@@ -32,7 +32,7 @@
     "globalStyle": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "果仓货盘",
-        "navigationBarBackgroundColor": "#ff6b35",
+        "navigationBarBackgroundColor": "#ff6600",
         "backgroundColor": "#f5f5f5"
     }
 }
