@@ -125,23 +125,33 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
+  var g0 = _vm.loading && _vm.list.length === 0
+  var g1 = !g0 ? _vm.list.length : null
   var l0 = _vm.__map(_vm.list, function (r, __i0__) {
     var $orig = _vm.__get_orig(r)
     var m0 = _vm.statusLabel(r.status)
     var m1 = _vm.formatTime(r.createtime)
+    var g2 = Number(r.price).toFixed(2)
+    var g3 = r.quantity.toLocaleString()
+    var g4 = (Number(r.price) * r.quantity).toFixed(2)
     return {
       $orig: $orig,
       m0: m0,
       m1: m1,
+      g2: g2,
+      g3: g3,
+      g4: g4,
     }
   })
-  var g0 = !_vm.loading ? _vm.list.length : null
+  var g5 = _vm.finished && _vm.list.length > 0
   _vm.$mp.data = Object.assign(
     {},
     {
       $root: {
-        l0: l0,
         g0: g0,
+        g1: g1,
+        l0: l0,
+        g5: g5,
       },
     }
   )
@@ -224,6 +234,45 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
@@ -240,7 +289,13 @@ var _default = {
       page: 1,
       limit: 20,
       loading: false,
-      finished: false
+      finished: false,
+      counts: {
+        all: 0,
+        pending: 0,
+        confirmed: 0,
+        cancelled: 0
+      }
     };
   },
   onLoad: function onLoad() {
@@ -248,9 +303,10 @@ var _default = {
   },
   onShow: function onShow() {
     this.load(true);
+    this.loadCounts();
   },
   onPullDownRefresh: function onPullDownRefresh() {
-    this.load(true).then(function () {
+    Promise.all([this.load(true), this.loadCounts()]).then(function () {
       return uni.stopPullDownRefresh();
     });
   },
@@ -259,6 +315,7 @@ var _default = {
   },
   methods: {
     switchTab: function switchTab(s) {
+      if (this.status === s) return;
       this.status = s;
       this.load(true);
     },
@@ -320,8 +377,8 @@ var _default = {
                 _context.prev = 12;
                 _context.t0 = _context["catch"](2);
                 uni.showToast({
-                  title: _context.t0.message || "操作失败",
-                  icon: "none"
+                  title: _context.t0.message || '操作失败',
+                  icon: 'none'
                 });
               case 15:
                 _this.loading = false;
@@ -333,121 +390,208 @@ var _default = {
         }, _callee, null, [[2, 12]]);
       }))();
     },
+    loadCounts: function loadCounts() {
+      var _this2 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var states;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                // 各状态总数(用于 tab 角标)
+                states = ['', 'pending', 'confirmed', 'cancelled'];
+                _context3.next = 3;
+                return Promise.all(states.map( /*#__PURE__*/function () {
+                  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(s) {
+                    var d, key;
+                    return _regenerator.default.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            _context2.prev = 0;
+                            _context2.next = 3;
+                            return _request.default.get(_request.api.wholesalerReservations, {
+                              status: s,
+                              page: 1,
+                              limit: 1
+                            }, {
+                              hideError: true
+                            });
+                          case 3:
+                            d = _context2.sent;
+                            key = s === '' ? 'all' : s;
+                            _this2.counts[key] = d.total || 0;
+                            _context2.next = 10;
+                            break;
+                          case 8:
+                            _context2.prev = 8;
+                            _context2.t0 = _context2["catch"](0);
+                          case 10:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, null, [[0, 8]]);
+                  }));
+                  return function (_x) {
+                    return _ref.apply(this, arguments);
+                  };
+                }()));
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
     goDetail: function goDetail(id) {
       uni.navigateTo({
         url: "/pages/reservation-detail/reservation-detail?id=".concat(id)
       });
     },
-    confirm: function confirm(r) {
-      var _this2 = this;
-      uni.showModal({
-        title: '确认预订',
-        content: "\u786E\u8BA4\u300C".concat(r.goods_name, "\u300D\u7684\u9884\u8BA2?"),
-        success: function () {
-          var _success = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(_ref) {
-            var confirm;
-            return _regenerator.default.wrap(function _callee2$(_context2) {
-              while (1) {
-                switch (_context2.prev = _context2.next) {
-                  case 0:
-                    confirm = _ref.confirm;
-                    if (confirm) {
-                      _context2.next = 3;
-                      break;
-                    }
-                    return _context2.abrupt("return");
-                  case 3:
-                    _context2.prev = 3;
-                    _context2.next = 6;
-                    return _request.default.post(_request.api.wholesalerReservationConfirm, {
-                      id: r.id
-                    }, {
-                      hideError: true
-                    });
-                  case 6:
-                    uni.showToast({
-                      title: '已确认',
-                      icon: 'success'
-                    });
-                    _this2.load(true);
-                    _context2.next = 13;
-                    break;
-                  case 10:
-                    _context2.prev = 10;
-                    _context2.t0 = _context2["catch"](3);
-                    uni.showToast({
-                      title: _context2.t0.message || "操作失败",
-                      icon: "none"
-                    });
-                  case 13:
-                  case "end":
-                    return _context2.stop();
-                }
-              }
-            }, _callee2, null, [[3, 10]]);
-          }));
-          function success(_x) {
-            return _success.apply(this, arguments);
-          }
-          return success;
-        }()
+    callBuyerFor: function callBuyerFor(r) {
+      uni.showToast({
+        title: '演示:拨打采购商电话',
+        icon: 'none'
       });
     },
-    cancel: function cancel(r) {
+    confirm: function confirm(r) {
       var _this3 = this;
-      uni.showModal({
-        title: '取消预订',
-        content: "\u786E\u8BA4\u53D6\u6D88\u300C".concat(r.goods_name, "\u300D\uFF1F"),
-        success: function () {
-          var _success2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(_ref2) {
-            var confirm;
-            return _regenerator.default.wrap(function _callee3$(_context3) {
-              while (1) {
-                switch (_context3.prev = _context3.next) {
-                  case 0:
-                    confirm = _ref2.confirm;
-                    if (confirm) {
-                      _context3.next = 3;
-                      break;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                uni.showModal({
+                  title: '确认预订',
+                  content: "\u786E\u8BA4\u300C".concat(r.goods_name, "\u300D \xD7").concat(r.quantity).concat(r.unit, "\uFF1F\n\u603B\u4EF7 \xA5").concat((Number(r.price) * r.quantity).toFixed(2)),
+                  success: function () {
+                    var _success = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(_ref2) {
+                      var confirm;
+                      return _regenerator.default.wrap(function _callee4$(_context4) {
+                        while (1) {
+                          switch (_context4.prev = _context4.next) {
+                            case 0:
+                              confirm = _ref2.confirm;
+                              if (confirm) {
+                                _context4.next = 3;
+                                break;
+                              }
+                              return _context4.abrupt("return");
+                            case 3:
+                              _context4.prev = 3;
+                              _context4.next = 6;
+                              return _request.default.post(_request.api.wholesalerReservationConfirm, {
+                                id: r.id
+                              }, {
+                                hideError: true
+                              });
+                            case 6:
+                              uni.showToast({
+                                title: '已确认',
+                                icon: 'success'
+                              });
+                              _this3.load(true);
+                              _this3.loadCounts();
+                              _context4.next = 14;
+                              break;
+                            case 11:
+                              _context4.prev = 11;
+                              _context4.t0 = _context4["catch"](3);
+                              uni.showToast({
+                                title: _context4.t0.message || '操作失败',
+                                icon: 'none'
+                              });
+                            case 14:
+                            case "end":
+                              return _context4.stop();
+                          }
+                        }
+                      }, _callee4, null, [[3, 11]]);
+                    }));
+                    function success(_x2) {
+                      return _success.apply(this, arguments);
                     }
-                    return _context3.abrupt("return");
-                  case 3:
-                    _context3.prev = 3;
-                    _context3.next = 6;
-                    return _request.default.post(_request.api.wholesalerReservationCancel, {
-                      id: r.id,
-                      reason: '批发商取消'
-                    }, {
-                      hideError: true
-                    });
-                  case 6:
-                    uni.showToast({
-                      title: '已取消',
-                      icon: 'success'
-                    });
-                    _this3.load(true);
-                    _context3.next = 13;
-                    break;
-                  case 10:
-                    _context3.prev = 10;
-                    _context3.t0 = _context3["catch"](3);
-                    uni.showToast({
-                      title: _context3.t0.message || "操作失败",
-                      icon: "none"
-                    });
-                  case 13:
-                  case "end":
-                    return _context3.stop();
-                }
-              }
-            }, _callee3, null, [[3, 10]]);
-          }));
-          function success(_x2) {
-            return _success2.apply(this, arguments);
+                    return success;
+                  }()
+                });
+              case 1:
+              case "end":
+                return _context5.stop();
+            }
           }
-          return success;
-        }()
-      });
+        }, _callee5);
+      }))();
+    },
+    cancel: function cancel(r) {
+      var _this4 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7() {
+        return _regenerator.default.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                uni.showModal({
+                  title: '取消预订',
+                  content: "\u786E\u8BA4\u53D6\u6D88\u300C".concat(r.goods_name, "\u300D\u7684\u9884\u8BA2?"),
+                  success: function () {
+                    var _success2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(_ref3) {
+                      var confirm;
+                      return _regenerator.default.wrap(function _callee6$(_context6) {
+                        while (1) {
+                          switch (_context6.prev = _context6.next) {
+                            case 0:
+                              confirm = _ref3.confirm;
+                              if (confirm) {
+                                _context6.next = 3;
+                                break;
+                              }
+                              return _context6.abrupt("return");
+                            case 3:
+                              _context6.prev = 3;
+                              _context6.next = 6;
+                              return _request.default.post(_request.api.wholesalerReservationCancel, {
+                                id: r.id,
+                                reason: '批发商取消'
+                              }, {
+                                hideError: true
+                              });
+                            case 6:
+                              uni.showToast({
+                                title: '已取消',
+                                icon: 'success'
+                              });
+                              _this4.load(true);
+                              _this4.loadCounts();
+                              _context6.next = 14;
+                              break;
+                            case 11:
+                              _context6.prev = 11;
+                              _context6.t0 = _context6["catch"](3);
+                              uni.showToast({
+                                title: _context6.t0.message || '操作失败',
+                                icon: 'none'
+                              });
+                            case 14:
+                            case "end":
+                              return _context6.stop();
+                          }
+                        }
+                      }, _callee6, null, [[3, 11]]);
+                    }));
+                    function success(_x3) {
+                      return _success2.apply(this, arguments);
+                    }
+                    return success;
+                  }()
+                });
+              case 1:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7);
+      }))();
     }
   }
 };

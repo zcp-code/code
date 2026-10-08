@@ -135,7 +135,7 @@ export default {
 </script>
 
 <style scoped>
-.container { padding-bottom: 40rpx; }
+.container { padding-bottom: 140rpx; }
 
 .title-bar {
   background: #fff;

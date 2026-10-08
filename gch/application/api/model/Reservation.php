@@ -157,8 +157,21 @@ class Reservation extends Model
             ->where($where)
             ->order('r.id desc')
             ->page($page, $limit)
-            ->field('r.*, s.name as shop_name, w.real_name as wholesaler_name, b.real_name as buyer_name')
+            ->field('r.*, s.name as shop_name, w.real_name as wholesaler_name, b.real_name as buyer_name, ' .
+                  '(SELECT url FROM ' . $prefix . 'goods_image WHERE goods_id = r.goods_id ORDER BY sort ASC LIMIT 1) AS cover')
             ->select();
+
+        // 把 cover 转完整 URL(若是相对路径)
+        $domain = '';
+        try { $domain = \think\Request::instance()->domain(); } catch (\Throwable $e) {}
+        foreach ($list as &$r) {
+            $r->cover = $r->cover ?: '';
+            if ($r->cover && stripos($r->cover, 'http') !== 0 && $domain) {
+                $r->cover = $domain . $r->cover;
+            }
+        }
+        unset($r);
+
         $total = self::alias('r')->join($join)->where($where)->count();
         return ['list' => $list, 'total' => $total];
     }

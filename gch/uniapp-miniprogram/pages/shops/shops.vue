@@ -5,43 +5,90 @@
       <view class="search-box">
         <text class="search-icon iconfont icon-sousuo"></text>
         <input class="search-input" placeholder="搜索店铺名称" v-model="keyword" @confirm="load(true)" />
+        <text v-if="keyword" class="clear-icon" @tap="keyword=''">×</text>
+      </view>
+    </view>
+
+    <!-- 数据概览条 -->
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-num">{{ list.length }}</text>
+        <text class="stat-label">家店铺</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-num">{{ totalToday }}</text>
+        <text class="stat-label">今日上新</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-num">{{ favCount }}</text>
+        <text class="stat-label">已收藏</text>
       </view>
     </view>
 
     <!-- 店铺列表 -->
     <view class="shop-list">
-      <view v-for="s in list" :key="s.id" class="shop-card" @tap="goDetail(s.id)">
-        <image class="shop-logo" :src="s.logo || '/static/placeholder.png'" mode="aspectFill"></image>
-        <view class="shop-info">
-          <view class="shop-title-line">
-            <text class="shop-name">{{ s.name }}</text>
-            <text v-if="s.today_count" class="shop-badge today-new">今日上新</text>
-            <text v-if="s.favorited" class="shop-badge fav">★ 已收藏</text>
-            <text v-else-if="!s.today_count" class="shop-badge">未收藏</text>
-          </view>
-          <view class="shop-address"><text class="iconfont icon-dizhi"></text> {{ s.position || '暂无地址' }}</view>
-          <view class="shop-bottom-line">
-            <view class="new-tag" v-if="s.today_count">今日到货 {{ s.today_count }} 种</view>
+      <view v-if="loading && list.length === 0" class="state-card">
+        <text class="state-icon">⏳</text>
+        <text class="state-text">加载中...</text>
+      </view>
+      <view v-else-if="list.length === 0" class="state-card">
+        <text class="state-icon">🏬</text>
+        <text class="state-text">暂无店铺</text>
+        <text class="state-tip">试试搜索其他关键词</text>
+      </view>
+
+      <view v-for="s in list" :key="s.id" class="shop-card">
+        <view class="card-row" @tap="goDetail(s.id)">
+          <image class="shop-logo" :src="s.logo || '/static/placeholder.png'" mode="aspectFill"></image>
+          <view class="shop-info">
+            <view class="shop-title-line">
+              <text class="shop-name ellipsis">{{ s.name }}</text>
+              <text v-if="s.today_count" class="shop-badge today-new">今日上新</text>
+              <text v-if="s.favorited" class="shop-badge fav">★ 已收藏</text>
+              <text v-else-if="!s.today_count" class="shop-badge">未收藏</text>
+            </view>
+            <view class="shop-address">
+              <text class="iconfont icon-dizhi"></text>
+              <text class="addr-text ellipsis">{{ s.position || '暂无地址' }}</text>
+            </view>
+            <view class="shop-meta">
+              <text v-if="s.today_count" class="meta-tag new">
+                📦 今日到货 {{ s.today_count }} 种
+              </text>
+              <text v-if="s.business_hours" class="meta-tag time">
+                🕐 {{ s.business_hours }}
+              </text>
+            </view>
           </view>
         </view>
-        <view class="phone-circle iconfont icon-dianhua" @tap.stop="handleCall(s)"></view>
-        <view class="fav-circle" :class="{ active: s.favorited }" @tap.stop="toggleFav(s, $event)">
-            <text class="fav-icon">{{ s.favorited ? '★' : '☆' }}</text>
+
+        <!-- 底部操作条 -->
+        <view class="card-actions">
+          <view class="action-btn call" @tap.stop="callPhone(s)">
+            <text class="iconfont icon-dianhua"></text>
+            <text>电话</text>
+          </view>
+          <view class="action-btn" :class="{ fav: s.favorited }" @tap.stop="toggleFav(s, $event)">
+            <text>{{ s.favorited ? '★ 已收藏' : '☆ 收藏' }}</text>
+          </view>
+          <view class="action-btn primary" @tap.stop="goDetail(s.id)">
+            <text>进店 →</text>
+          </view>
         </view>
       </view>
 
-      <view v-if="loading" class="tip-text">加载中...</view>
-      <view v-else-if="list.length === 0" class="tip-text">暂无店铺</view>
+      <view v-if="finished && list.length > 0" class="more-tip">— 没有更多了 —</view>
     </view>
+
     <custom-tabbar />
   </view>
 </template>
-
 
 <script>
 import http, { api } from '@/utils/request.js'
 import userStore from '@/store/user.js'
 import CustomTabbar from '@/components/custom-tabbar/custom-tabbar.vue'
+
 export default {
   components: { CustomTabbar },
   data() {
@@ -53,6 +100,10 @@ export default {
       loading: false,
       finished: false
     }
+  },
+  computed: {
+    totalToday() { return this.list.reduce((s, x) => s + (x.today_count || 0), 0) },
+    favCount()    { return this.list.filter(x => x.favorited).length }
   },
   onShow() { this.load(true) },
   onReachBottom() { if (!this.finished && !this.loading) this.load(false) },
@@ -68,15 +119,12 @@ export default {
         this.list = list
         this.page++
         this.finished = list.length >= data.total
-      } catch (e) {}
+      } catch (e) { uni.showToast({ title: e.message || '操作失败', icon: 'none' }) }
       this.loading = false
     },
     goDetail(id) { uni.navigateTo({ url: `/pages/shop/shop?id=${id}` }) },
-    // 切换收藏店铺
     async toggleFav(s, e) {
-      // 阻止冒泡到店铺卡片跳转
-      if (e) e.stopPropagation && e.stopPropagation()
-      // 必须登录采购商才能收藏
+      if (e && e.stopPropagation) e.stopPropagation()
       if (!userStore.isRealLogin || userStore.role !== 'buyer') {
         return uni.showModal({
           title: '请登录',
@@ -91,154 +139,211 @@ export default {
         const r = await http.post(api.favoriteShop, { shop_id: s.id }, { hideError: true })
         s.favorited = r.favored ? 1 : 0
         uni.showToast({ title: r.favored ? '已收藏' : '已取消收藏', icon: 'none' })
-      } catch (e) {
-        uni.showToast({ title: e.message || '操作失败', icon: 'none' })
-      }
+      } catch (e) { uni.showToast({ title: e.message || '操作失败', icon: 'none' }) }
     },
-    // 新增电话拨打
-    callPhone(shop) {
-      if(!shop.contact_phone) return uni.showToast({title:"暂无联系电话",icon:"none"})
-      uni.makePhoneCall({phoneNumber: shop.contact_phone})
+    callPhone(s, e) {
+      if (e && e.stopPropagation) e.stopPropagation()
+      if (!s.contact_phone) return uni.showToast({ title: '暂无联系电话', icon: 'none' })
+      uni.makePhoneCall({ phoneNumber: s.contact_phone })
     }
   }
 }
-
 </script>
 
 <style scoped>
-page {
-  background-color: #f6f7f9;
-}
-.container {
-  min-height: 100vh;
-  padding-bottom: 120rpx;
-  background-color: #f6f7f9;
-}
+page { background-color: #f5f5f5; }
+.container { min-height: 100vh; padding-bottom: 120rpx; background-color: #f5f5f5; }
 
-/* 顶部橙色搜索栏 */
+/* === 搜索栏 === */
 .search-header {
-  background-color: #ff6600;
-  padding: 30rpx 28rpx;
+  background: linear-gradient(135deg, #ff6600, #ff8a5b);
+  padding: 32rpx 28rpx 56rpx;
 }
 .search-box {
-  display: flex;
-  align-items: center;
-  background: #ffffff;
+  display: flex; align-items: center;
+  background: #fff;
   border-radius: 40rpx;
   padding: 16rpx 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,.08);
 }
 .search-icon {
   font-size: 32rpx;
   color: #ff6600;
-  margin-right:12rpx;
+  margin-right: 12rpx;
 }
 .search-input {
   flex: 1;
   font-size: 28rpx;
   background: transparent;
 }
-
-/* 店铺列表容器 */
-.shop-list {
-  padding: 20rpx 24rpx;
+.clear-icon {
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 36rpx;
+  text-align: center;
+  background: #ccc;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 28rpx;
 }
-.shop-card {
+
+/* === 数据概览条(向上覆盖搜索栏底) === */
+.stats-row {
   display: flex;
-  align-items: flex-start;
-  background: #ffffff;
-  border-radius: 24rpx;
-  padding: 24rpx;
+  gap: 16rpx;
+  padding: 0 24rpx;
+  margin: -30rpx 0 0;
+}
+.stat-item {
+  flex: 1;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx 0;
+  text-align: center;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,.06);
+}
+.stat-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ff6600;
+  display: block;
+}
+.stat-label {
+  color: #999;
+  font-size: 22rpx;
+  margin-top: 4rpx;
+}
+
+/* === 状态卡片(加载/空) === */
+.state-card {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 80rpx 0;
+  text-align: center;
   margin-bottom: 20rpx;
 }
+.state-icon { font-size: 80rpx; display: block; margin-bottom: 12rpx; }
+.state-text { color: #999; font-size: 28rpx; display: block; }
+.state-tip { color: #ccc; font-size: 24rpx; margin-top: 8rpx; display: block; }
+
+/* === 店铺列表 === */
+.shop-list {
+  padding: 20rpx 24rpx 0;
+}
+
+/* 店铺卡片 */
+.shop-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,.04);
+  overflow: hidden;
+}
+.card-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 24rpx;
+}
 .shop-logo {
-  width:140rpx;
-  height:140rpx;
-  border-radius: 20rpx;
-  background: #fff2e8;
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 16rpx;
+  background: #f5f5f5;
   flex-shrink: 0;
 }
 .shop-info {
   flex: 1;
-  margin-left:20rpx;
+  margin-left: 20rpx;
+  min-width: 0;
 }
 .shop-title-line {
   display: flex;
   align-items: center;
-  gap:12rpx;
+  gap: 10rpx;
+  flex-wrap: wrap;
 }
 .shop-name {
-  font-size:34rpx;
-  font-weight:700;
-  color:#222;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #222;
+  max-width: 50%;
 }
 .shop-badge {
-  background-color:#fff2e8;
-  color:#ff6600;
-  font-size:24rpx;
-  padding:4rpx 10rpx;
-  border-radius:6rpx;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
 }
-.shop-address {
-  font-size:24rpx;
-  color:#666;
-  margin-top:8rpx;
-}
-.shop-bottom-line {
-  margin-top:12rpx;
-}
-.new-tag {
-  background-color:#e8f8ef;
-  color:#27ae60;
-  font-size:24rpx;
-  padding:6rpx 10rpx;
-  border-radius:6rpx;
-}
-.phone-circle {
-  width:72rpx;
-  height:72rpx;
-  border-radius: 50%;
-  background:#fff2e8;
-  color:#ff6600;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:32rpx;
-  flex-shrink:0;
-  margin-left:16rpx;
-  margin-top:32rpx;
-}
-.fav-circle {
-  width:56rpx;
-  height:56rpx;
-  border-radius: 50%;
-  background: #f5f5f5;
-  color: #999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:30rpx;
-  flex-shrink:0;
-  margin-left:12rpx;
-  margin-top:42rpx;
-  transition: transform .15s;
-}
-.fav-icon {
-  font-size: 32rpx;
-  line-height: 1;
-  color: inherit;
-}
-.fav-circle.active {
-  background: #ff6600;
-  color: #fff;
-}
-.fav-circle:active { transform: scale(0.9); }
 .shop-badge.fav { color: #ff6600; background: #fff2e8; }
 .shop-badge.today-new { color: #fff; background: #ff6600; }
-.tip-text {
-  text-align:center;
-  color:#999;
-  font-size:26rpx;
-  padding:80rpx 0;
+.shop-badge:not(.fav):not(.today-new) {
+  color: #999;
+  background: #f5f5f5;
+}
+.shop-address {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 10rpx;
+  gap: 8rpx;
+}
+.addr-text { flex: 1; }
+.shop-meta {
+  margin-top: 12rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.meta-tag {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+  color: #555;
+  background: #f5f5f5;
+}
+.meta-tag.new {
+  color: #27ae60;
+  background: #e8f5e9;
+  font-weight: 500;
+}
+.meta-tag.time {
+  color: #666;
+}
+
+/* === 底部操作条 === */
+.card-actions {
+  display: flex;
+  border-top: 1rpx solid #f5f5f5;
+  background: #fafafa;
+}
+.action-btn {
+  flex: 1;
+  padding: 20rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  transition: background .15s;
+}
+.action-btn:not(:last-child) { border-right: 1rpx solid #f5f5f5; }
+.action-btn:active { background: #f0f0f0; }
+.action-btn.call { color: #ff6600; }
+.action-btn.fav { color: #ff6600; background: #fff2e8; }
+.action-btn.primary {
+  color: #fff;
+  background: #ff6600;
+  font-weight: 500;
+}
+.action-btn.primary:active { background: #e55a00; }
+
+.more-tip {
+  text-align: center;
+  color: #ccc;
+  font-size: 24rpx;
+  padding: 24rpx 0;
 }
 </style>
-

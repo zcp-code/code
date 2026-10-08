@@ -126,19 +126,24 @@ var render = function () {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   var g0 = _vm.pendingList.length
-  var g1 = _vm.pendingList.length
-  var g2 = g1 > 0 ? _vm.pendingList.length : null
-  var g3 = _vm.pendingList.length
+  var g1 = g0 > 0 ? _vm.pendingList.length : null
+  var g2 = _vm.loading && _vm.pendingList.length === 0
+  var g3 = !g2 ? _vm.pendingList.length : null
   var l0 = _vm.__map(_vm.pendingList, function (r, __i0__) {
     var $orig = _vm.__get_orig(r)
+    var m0 = _vm.formatTime(r.createtime)
     var g4 = Number(r.price).toFixed(2)
     var g5 = r.quantity.toLocaleString()
+    var g6 = (Number(r.price) * r.quantity).toFixed(2)
     return {
       $orig: $orig,
+      m0: m0,
       g4: g4,
       g5: g5,
+      g6: g6,
     }
   })
+  var g7 = _vm.pendingList.length
   _vm.$mp.data = Object.assign(
     {},
     {
@@ -148,6 +153,7 @@ var render = function () {
         g2: g2,
         g3: g3,
         l0: l0,
+        g7: g7,
       },
     }
   )
@@ -292,6 +298,19 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
@@ -304,6 +323,7 @@ var _default = {
   data: function data() {
     return {
       shopName: '示范水果店',
+      shopLogo: '',
       account: '',
       stats: {
         todayGoods: 0,
@@ -312,14 +332,17 @@ var _default = {
         pendingBookings: 0,
         confirmedBookings: 0
       },
-      pendingList: []
+      pendingList: [],
+      loading: false
     };
   },
   onShow: function onShow() {
     if (_user.default.isWholesaler) {
-      var _userStore$profile, _userStore$profile2, _userStore$profile2$s;
+      var _userStore$profile, _userStore$profile2, _userStore$profile3, _userStore$profile3$s, _userStore$profile4, _userStore$profile5, _userStore$profile5$s;
       this.account = ((_userStore$profile = _user.default.profile) === null || _userStore$profile === void 0 ? void 0 : _userStore$profile.account) || '';
-      this.shopName = ((_userStore$profile2 = _user.default.profile) === null || _userStore$profile2 === void 0 ? void 0 : (_userStore$profile2$s = _userStore$profile2.shop) === null || _userStore$profile2$s === void 0 ? void 0 : _userStore$profile2$s.name) || '示范水果店';
+      // Wholesaler login 现在直接返回 shop_name + shop_logo(扁平字段),前端无需再调 profile
+      this.shopName = ((_userStore$profile2 = _user.default.profile) === null || _userStore$profile2 === void 0 ? void 0 : _userStore$profile2.shop_name) || ((_userStore$profile3 = _user.default.profile) === null || _userStore$profile3 === void 0 ? void 0 : (_userStore$profile3$s = _userStore$profile3.shop) === null || _userStore$profile3$s === void 0 ? void 0 : _userStore$profile3$s.name) || '示范水果店';
+      this.shopLogo = ((_userStore$profile4 = _user.default.profile) === null || _userStore$profile4 === void 0 ? void 0 : _userStore$profile4.shop_logo) || ((_userStore$profile5 = _user.default.profile) === null || _userStore$profile5 === void 0 ? void 0 : (_userStore$profile5$s = _userStore$profile5.shop) === null || _userStore$profile5$s === void 0 ? void 0 : _userStore$profile5$s.logo) || '';
       this.loadAll();
     }
   },
@@ -331,11 +354,11 @@ var _default = {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
-                return _this.loadStats();
-              case 2:
-                _context.next = 4;
-                return _this.loadPending();
+                _this.loading = true;
+                _context.next = 3;
+                return Promise.all([_this.loadStats(), _this.loadPending()]);
+              case 3:
+                _this.loading = false;
               case 4:
               case "end":
                 return _context.stop();
@@ -386,8 +409,6 @@ var _default = {
               case 12:
                 confirmedRes = _context2.sent;
                 _this2.stats.confirmedBookings = confirmedRes.total || 0;
-
-                // 今日数据(简化:全部 pending 算今日)
                 _this2.stats.todayGoods = goodsRes.total || 0;
                 _this2.stats.todayPending = pendingRes.total || 0;
                 _context2.next = 21;
@@ -396,8 +417,8 @@ var _default = {
                 _context2.prev = 18;
                 _context2.t0 = _context2["catch"](0);
                 uni.showToast({
-                  title: _context2.t0.message || "操作失败",
-                  icon: "none"
+                  title: _context2.t0.message || '操作失败',
+                  icon: 'none'
                 });
               case 21:
               case "end":
@@ -433,8 +454,8 @@ var _default = {
                 _context3.prev = 7;
                 _context3.t0 = _context3["catch"](0);
                 uni.showToast({
-                  title: _context3.t0.message || "操作失败",
-                  icon: "none"
+                  title: _context3.t0.message || '操作失败',
+                  icon: 'none'
                 });
               case 10:
               case "end":
@@ -448,16 +469,11 @@ var _default = {
       var urls = {
         publish: '/pages/wholesaler/publish',
         goods: '/pages/wholesaler/goods',
-        reservations: '/pages/wholesaler/reservations'
+        reservations: '/pages/wholesaler/reservations',
+        qrcode: '/pages/wholesaler/qrcode'
       };
       uni.navigateTo({
         url: urls[page]
-      });
-    },
-    callBuyer: function callBuyer() {
-      uni.showToast({
-        title: '请在订单详情中查看采购商电话',
-        icon: 'none'
       });
     },
     callBuyerFor: function callBuyerFor(r) {
@@ -465,6 +481,22 @@ var _default = {
         title: '演示:拨打采购商电话',
         icon: 'none'
       });
+    },
+    formatTime: function formatTime(ts) {
+      if (!ts) return '';
+      var d = new Date(ts * 1000);
+      var now = new Date();
+      var pad = function pad(n) {
+        return String(n).padStart(2, '0');
+      };
+      var sameDay = d.toDateString() === now.toDateString();
+      var yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      var isYesterday = d.toDateString() === yesterday.toDateString();
+      var hm = "".concat(pad(d.getHours()), ":").concat(pad(d.getMinutes()));
+      if (sameDay) return "\u4ECA\u5929 ".concat(hm);
+      if (isYesterday) return "\u6628\u5929 ".concat(hm);
+      return "".concat(d.getMonth() + 1, "-").concat(pad(d.getDate()), " ").concat(hm);
     },
     confirm: function confirm(r) {
       var _this4 = this;
@@ -475,7 +507,7 @@ var _default = {
               case 0:
                 uni.showModal({
                   title: '确认预订',
-                  content: "\u786E\u8BA4\u9884\u8BA2\u300C".concat(r.goods_name, "\u300D?"),
+                  content: "\u786E\u8BA4\u300C".concat(r.goods_name, "\u300D \xD7").concat(r.quantity).concat(r.unit, "\uFF1F\n\u603B\u4EF7 \xA5").concat((Number(r.price) * r.quantity).toFixed(2)),
                   success: function () {
                     var _success = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(_ref) {
                       var confirm;
@@ -509,8 +541,8 @@ var _default = {
                               _context4.prev = 10;
                               _context4.t0 = _context4["catch"](3);
                               uni.showToast({
-                                title: _context4.t0.message || "操作失败",
-                                icon: "none"
+                                title: _context4.t0.message || '操作失败',
+                                icon: 'none'
                               });
                             case 13:
                             case "end":
@@ -567,7 +599,7 @@ var _default = {
                               });
                             case 6:
                               uni.showToast({
-                                title: '已取消预订',
+                                title: '已取消',
                                 icon: 'success'
                               });
                               _this5.loadAll();
@@ -577,8 +609,8 @@ var _default = {
                               _context6.prev = 10;
                               _context6.t0 = _context6["catch"](3);
                               uni.showToast({
-                                title: _context6.t0.message || "操作失败",
-                                icon: "none"
+                                title: _context6.t0.message || '操作失败',
+                                icon: 'none'
                               });
                             case 13:
                             case "end":

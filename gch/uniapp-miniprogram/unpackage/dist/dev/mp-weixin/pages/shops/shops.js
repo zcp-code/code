@@ -125,12 +125,23 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var g0 = !_vm.loading ? _vm.list.length : null
+  var g0 = _vm.list.length
+  var g1 = _vm.loading && _vm.list.length === 0
+  var g2 = !g1 ? _vm.list.length : null
+  var g3 = _vm.finished && _vm.list.length > 0
+  if (!_vm._isMounted) {
+    _vm.e0 = function ($event) {
+      _vm.keyword = ""
+    }
+  }
   _vm.$mp.data = Object.assign(
     {},
     {
       $root: {
         g0: g0,
+        g1: g1,
+        g2: g2,
+        g3: g3,
       },
     }
   )
@@ -221,6 +232,52 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
@@ -239,6 +296,18 @@ var _default = {
       loading: false,
       finished: false
     };
+  },
+  computed: {
+    totalToday: function totalToday() {
+      return this.list.reduce(function (s, x) {
+        return s + (x.today_count || 0);
+      }, 0);
+    },
+    favCount: function favCount() {
+      return this.list.filter(function (x) {
+        return x.favorited;
+      }).length;
+    }
   },
   onShow: function onShow() {
     this.load(true);
@@ -276,14 +345,18 @@ var _default = {
                 _this.list = list;
                 _this.page++;
                 _this.finished = list.length >= data.total;
-                _context.next = 14;
+                _context.next = 15;
                 break;
               case 12:
                 _context.prev = 12;
                 _context.t0 = _context["catch"](2);
-              case 14:
-                _this.loading = false;
+                uni.showToast({
+                  title: _context.t0.message || '操作失败',
+                  icon: 'none'
+                });
               case 15:
+                _this.loading = false;
+              case 16:
               case "end":
                 return _context.stop();
             }
@@ -296,7 +369,6 @@ var _default = {
         url: "/pages/shop/shop?id=".concat(id)
       });
     },
-    // 切换收藏店铺
     toggleFav: function toggleFav(s, e) {
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
         var r;
@@ -304,9 +376,7 @@ var _default = {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                // 阻止冒泡到店铺卡片跳转
-                if (e) e.stopPropagation && e.stopPropagation();
-                // 必须登录采购商才能收藏
+                if (e && e.stopPropagation) e.stopPropagation();
                 if (!(!_user.default.isRealLogin || _user.default.role !== 'buyer')) {
                   _context2.next = 3;
                   break;
@@ -354,14 +424,14 @@ var _default = {
         }, _callee2, null, [[3, 11]]);
       }))();
     },
-    // 新增电话拨打
-    callPhone: function callPhone(shop) {
-      if (!shop.contact_phone) return uni.showToast({
-        title: "暂无联系电话",
-        icon: "none"
+    callPhone: function callPhone(s, e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      if (!s.contact_phone) return uni.showToast({
+        title: '暂无联系电话',
+        icon: 'none'
       });
       uni.makePhoneCall({
-        phoneNumber: shop.contact_phone
+        phoneNumber: s.contact_phone
       });
     }
   }

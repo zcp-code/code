@@ -102,24 +102,26 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var g0 = _vm.shop ? _vm.goodsList.length : null
-  var g1 = _vm.shop && !_vm.loading ? _vm.goodsList.length : null
+  var g0 = _vm.shop ? _vm.loading && _vm.goodsList.length === 0 : null
+  var g1 = _vm.shop && !g0 ? _vm.goodsList.length : null
   var l0 = _vm.shop
     ? _vm.__map(_vm.goodsList, function (g, __i0__) {
         var $orig = _vm.__get_orig(g)
-        var g2 = g.total_stock.toLocaleString()
-        var g3 = Number(g.price).toFixed(2)
+        var g2 = Number(g.price).toFixed(2)
         return {
           $orig: $orig,
           g2: g2,
-          g3: g3,
         }
       })
     : null
-  var g4 =
+  var g3 =
     _vm.shop && _vm.bookGoods ? Number(_vm.bookGoods.price).toFixed(2) : null
-  var g5 =
+  var g4 =
     _vm.shop && _vm.bookGoods ? _vm.bookGoods.available.toLocaleString() : null
+  var g5 =
+    _vm.shop && _vm.bookGoods
+      ? ((Number(_vm.bookGoods.price) || 0) * _vm.bookQty).toFixed(2)
+      : null
   _vm.$mp.data = Object.assign(
     {},
     {
@@ -127,6 +129,7 @@ var render = function () {
         g0: g0,
         g1: g1,
         l0: l0,
+        g3: g3,
         g4: g4,
         g5: g5,
       },
@@ -193,28 +196,37 @@ var _default = {
       fromQrcode: false,
       showSheet: false,
       bookGoods: null,
-      bookQty: 500,
+      bookQty: 1,
       submitting: false
     };
   },
   computed: {
     isBuyer: function isBuyer() {
       return _user.default.isBuyer;
+    },
+    totalToday: function totalToday() {
+      var todayStart = Math.floor(new Date().setHours(0, 0, 0, 0) / 1000);
+      return this.goodsList.filter(function (g) {
+        return g.publish_time >= todayStart;
+      }).length;
     }
   },
   onLoad: function onLoad(q) {
     this.id = q.id;
     this.fromQrcode = q.from === 'qrcode';
-    if (this.fromQrcode) {
-      uni.showToast({
-        title: '已为您打开店铺',
-        icon: 'none'
-      });
-    }
+    if (this.fromQrcode) uni.showToast({
+      title: '已为您打开店铺',
+      icon: 'none'
+    });
     this.loadShop();
     this.loadGoods();
   },
   methods: {
+    isToday: function isToday(ts) {
+      if (!ts) return false;
+      var todayStart = Math.floor(new Date().setHours(0, 0, 0, 0) / 1000);
+      return ts >= todayStart;
+    },
     loadShop: function loadShop() {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
@@ -285,6 +297,11 @@ var _default = {
         }, _callee2, null, [[1, 8]]);
       }))();
     },
+    goDetail: function goDetail(id) {
+      uni.navigateTo({
+        url: "/pages/goods/goods?id=".concat(id)
+      });
+    },
     toggleFav: function toggleFav() {
       var _this3 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
@@ -310,7 +327,7 @@ var _default = {
               case 5:
                 _this3.favorited = !_this3.favorited;
                 uni.showToast({
-                  title: _this3.favorited ? '已收藏店铺' : '已取消收藏',
+                  title: _this3.favorited ? '已收藏' : '已取消收藏',
                   icon: 'none'
                 });
                 _context3.next = 11;
@@ -334,20 +351,17 @@ var _default = {
           icon: 'none'
         });
       }
-      // 规格 8.5 toast:正在拨打 {店名} 的电话…
       uni.showToast({
         title: "\u6B63\u5728\u62E8\u6253 ".concat(this.shop.name, " \u7684\u7535\u8BDD\u2026"),
         icon: 'none'
       });
       setTimeout(function () {
-        uni.makePhoneCall({
+        return uni.makePhoneCall({
           phoneNumber: _this4.shop.contact_phone
         });
       }, 600);
     },
-    // 一键预定
     quickReserve: function quickReserve(g) {
-      // 必须真 token + buyer 角色
       if (!_user.default.canOrder) {
         return uni.showModal({
           title: '请先登录',
@@ -362,11 +376,24 @@ var _default = {
         });
       }
       this.bookGoods = g;
-      this.bookQty = Math.max(1, Math.min(500, Math.floor(g.available / 20) || 500));
+      // 智能默认数量:可订库存的 5%(至少 1,最多 500)
+      var defaultQty = Math.max(1, Math.min(500, Math.floor(g.available / 20) || 10));
+      this.bookQty = defaultQty;
       this.showSheet = true;
     },
     closeSheet: function closeSheet() {
       this.showSheet = false;
+    },
+    incQty: function incQty() {
+      if (!this.bookGoods) return;
+      var max = this.bookGoods.available;
+      if (this.bookQty < max) this.bookQty++;else uni.showToast({
+        title: '已达可订库存上限',
+        icon: 'none'
+      });
+    },
+    decQty: function decQty() {
+      if (this.bookQty > 1) this.bookQty--;
     },
     submitBook: function submitBook() {
       var _this5 = this;
@@ -423,14 +450,18 @@ var _default = {
                     });
                   }
                 });
-                _context4.next = 17;
+                _context4.next = 18;
                 break;
               case 15:
                 _context4.prev = 15;
                 _context4.t0 = _context4["catch"](8);
-              case 17:
-                _this5.submitting = false;
+                uni.showToast({
+                  title: _context4.t0.message || '操作失败',
+                  icon: 'none'
+                });
               case 18:
+                _this5.submitting = false;
+              case 19:
               case "end":
                 return _context4.stop();
             }

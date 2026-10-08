@@ -127,10 +127,12 @@ var render = function () {
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.list, function (g, __i0__) {
     var $orig = _vm.__get_orig(g)
-    var m0 = _vm.statusLabel(g.status)
+    var m0 = _vm.formatTime(g.publish_time)
+    var m1 = _vm.statusLabel(g.status)
     return {
       $orig: $orig,
       m0: m0,
+      m1: m1,
     }
   })
   var g0 = !_vm.loading ? _vm.finished && _vm.list.length > 0 : null
@@ -229,7 +231,6 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
-//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
@@ -241,7 +242,8 @@ var _default = {
   },
   data: function data() {
     return {
-      status: '',
+      period: 'today',
+      // today / history
       list: [],
       page: 1,
       limit: 20,
@@ -264,8 +266,9 @@ var _default = {
     if (!this.finished && !this.loading) this.load(false);
   },
   methods: {
-    switchTab: function switchTab(s) {
-      this.status = s;
+    switchTab: function switchTab(p) {
+      if (this.period === p) return;
+      this.period = p;
       this.load(true);
     },
     statusLabel: function statusLabel(s) {
@@ -275,10 +278,26 @@ var _default = {
         '2': '售罄'
       }[s] || '未知';
     },
+    formatTime: function formatTime(ts) {
+      if (!ts) return '';
+      var d = new Date(ts * 1000);
+      var now = new Date();
+      var pad = function pad(n) {
+        return String(n).padStart(2, '0');
+      };
+      var sameDay = d.toDateString() === now.toDateString();
+      var yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      var isYesterday = d.toDateString() === yesterday.toDateString();
+      var hm = "".concat(pad(d.getHours()), ":").concat(pad(d.getMinutes()));
+      if (sameDay) return "\u4ECA\u5929 ".concat(hm);
+      if (isYesterday) return "\u6628\u5929 ".concat(hm);
+      return "".concat(d.getMonth() + 1, "-").concat(pad(d.getDate()), " ").concat(hm);
+    },
     load: function load(reset) {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var data, list;
+        var todayStart, params, data, list;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -290,37 +309,41 @@ var _default = {
                 }
                 _this.loading = true;
                 _context.prev = 2;
-                _context.next = 5;
-                return _request.default.get(_request.api.wholesalerGoodsList, {
+                // 今日/历史 用 publish_time 过滤;status 不传(看全部状态,1/0/2 都显示)
+                todayStart = Math.floor(new Date().setHours(0, 0, 0, 0) / 1000);
+                params = {
                   page: _this.page,
-                  limit: _this.limit,
-                  status: _this.status
-                }, {
+                  limit: _this.limit
+                };
+                if (_this.period === 'today') params.published_since = todayStart;
+                if (_this.period === 'history') params.published_before = todayStart;
+                _context.next = 9;
+                return _request.default.get(_request.api.wholesalerGoodsList, params, {
                   hideError: true
                 });
-              case 5:
+              case 9:
                 data = _context.sent;
                 list = _this.list.concat(data.list || []);
                 _this.list = list;
                 _this.page++;
                 _this.finished = list.length >= data.total;
-                _context.next = 15;
+                _context.next = 19;
                 break;
-              case 12:
-                _context.prev = 12;
+              case 16:
+                _context.prev = 16;
                 _context.t0 = _context["catch"](2);
                 uni.showToast({
-                  title: _context.t0.message || "操作失败",
-                  icon: "none"
+                  title: _context.t0.message || '操作失败',
+                  icon: 'none'
                 });
-              case 15:
+              case 19:
                 _this.loading = false;
-              case 16:
+              case 20:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[2, 12]]);
+        }, _callee, null, [[2, 16]]);
       }))();
     },
     goPublish: function goPublish() {
@@ -374,8 +397,8 @@ var _default = {
                               _context2.prev = 10;
                               _context2.t0 = _context2["catch"](3);
                               uni.showToast({
-                                title: _context2.t0.message || "操作失败",
-                                icon: "none"
+                                title: _context2.t0.message || '操作失败',
+                                icon: 'none'
                               });
                             case 13:
                             case "end":

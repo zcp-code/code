@@ -52,15 +52,27 @@ class Wholesaler extends ApiBase
         if (!$ok) return $this->error($msg, 400);
 
         $tk = Token::create('wholesaler', $wh->id, $this->clientIp());
+        // 顺手把店铺名/店铺 logo 也带上,前端不用再多调一次 profile
+        $shopName = '';
+        $shopLogo = '';
+        if ($wh->shop_id) {
+            $shop = Shop::get($wh->shop_id);
+            if ($shop) {
+                $shopName = $shop->name;
+                $shopLogo = $shop->logo;
+            }
+        }
         return $this->success([
             'token'  => $tk['token'],
             'expire' => $tk['expire_time'],
             'role'   => 'wholesaler',
             'wholesaler' => [
-                'id'        => $wh->id,
-                'account'   => $wh->account,
-                'real_name' => $wh->real_name,
-                'shop_id'   => $wh->shop_id,
+                'id'         => $wh->id,
+                'account'    => $wh->account,
+                'real_name'  => $wh->real_name,
+                'shop_id'    => $wh->shop_id,
+                'shop_name'  => $shopName,
+                'shop_logo'  => $shopLogo,
             ],
         ], '登录成功');
     }
@@ -184,9 +196,14 @@ class Wholesaler extends ApiBase
         $page  = (int)$this->request->param('page', 1);
         $limit = (int)$this->request->param('limit', 20);
         $status = $this->request->param('status', '');
+        $publishedSince  = $this->request->param('published_since',  0);
+        $publishedBefore = $this->request->param('published_before', 0);
 
         $where = ['wholesaler_id' => $this->user['user_id']];
         if ($status !== '') $where['status'] = (int)$status;
+        // 今日/历史 tab:按 publish_time 过滤
+        if ($publishedSince)  $where['publish_time'] = ['>=', (int)$publishedSince];
+        if ($publishedBefore) $where['publish_time'] = ['<',  (int)$publishedBefore];
 
         $list  = GoodsModel::where($where)->order('id desc')->page($page, $limit)->select();
         $total = GoodsModel::where($where)->count();

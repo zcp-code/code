@@ -218,6 +218,51 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
@@ -229,11 +274,17 @@ var _default = {
   },
   data: function data() {
     return {
-      profile: {}
+      profile: {},
+      stats: {
+        totalGoods: 0,
+        pendingBookings: 0,
+        confirmedBookings: 0
+      }
     };
   },
   onShow: function onShow() {
     this.load();
+    this.loadStats();
   },
   methods: {
     load: function load() {
@@ -256,8 +307,8 @@ var _default = {
                 _context.prev = 6;
                 _context.t0 = _context["catch"](0);
                 uni.showToast({
-                  title: _context.t0.message || "操作失败",
-                  icon: "none"
+                  title: _context.t0.message || '操作失败',
+                  icon: 'none'
                 });
               case 9:
               case "end":
@@ -265,6 +316,60 @@ var _default = {
             }
           }
         }, _callee, null, [[0, 6]]);
+      }))();
+    },
+    loadStats: function loadStats() {
+      var _this2 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var goods, pending, confirmed;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.prev = 0;
+                _context2.next = 3;
+                return _request.default.get(_request.api.wholesalerGoodsList, {
+                  page: 1,
+                  limit: 1
+                }, {
+                  hideError: true
+                });
+              case 3:
+                goods = _context2.sent;
+                _this2.stats.totalGoods = goods.total || 0;
+                _context2.next = 7;
+                return _request.default.get(_request.api.wholesalerReservations, {
+                  status: 'pending',
+                  page: 1,
+                  limit: 1
+                }, {
+                  hideError: true
+                });
+              case 7:
+                pending = _context2.sent;
+                _this2.stats.pendingBookings = pending.total || 0;
+                _context2.next = 11;
+                return _request.default.get(_request.api.wholesalerReservations, {
+                  status: 'confirmed',
+                  page: 1,
+                  limit: 1
+                }, {
+                  hideError: true
+                });
+              case 11:
+                confirmed = _context2.sent;
+                _this2.stats.confirmedBookings = confirmed.total || 0;
+                _context2.next = 17;
+                break;
+              case 15:
+                _context2.prev = 15;
+                _context2.t0 = _context2["catch"](0);
+              case 17:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[0, 15]]);
       }))();
     },
     goQrcode: function goQrcode() {
@@ -300,7 +405,6 @@ var _default = {
           var confirm = _ref.confirm;
           if (!confirm) return;
           _user.default.switchTo('buyer');
-          // 清兼容 key(防止外部残留)
           try {
             uni.removeStorageSync('GCH_AUTH_token');
           } catch (e) {}
@@ -314,63 +418,59 @@ var _default = {
       });
     },
     logout: function logout() {
-      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
-        return _regenerator.default.wrap(function _callee3$(_context3) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        return _regenerator.default.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 uni.showModal({
                   title: '退出',
                   content: '确认退出登录？',
                   success: function success(_ref2) {
-                    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+                    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
                       var confirm;
-                      return _regenerator.default.wrap(function _callee2$(_context2) {
+                      return _regenerator.default.wrap(function _callee3$(_context3) {
                         while (1) {
-                          switch (_context2.prev = _context2.next) {
+                          switch (_context3.prev = _context3.next) {
                             case 0:
                               confirm = _ref2.confirm;
                               if (confirm) {
-                                _context2.next = 3;
+                                _context3.next = 3;
                                 break;
                               }
-                              return _context2.abrupt("return");
+                              return _context3.abrupt("return");
                             case 3:
-                              _context2.prev = 3;
-                              _context2.next = 6;
+                              _context3.prev = 3;
+                              _context3.next = 6;
                               return _request.default.post(_request.api.wholesalerLogout, {}, {
                                 hideError: true
                               });
                             case 6:
-                              _context2.next = 11;
+                              _context3.next = 10;
                               break;
                             case 8:
-                              _context2.prev = 8;
-                              _context2.t0 = _context2["catch"](3);
-                              uni.showToast({
-                                title: _context2.t0.message || "操作失败",
-                                icon: "none"
-                              });
-                            case 11:
+                              _context3.prev = 8;
+                              _context3.t0 = _context3["catch"](3);
+                            case 10:
                               _user.default.clearAll();
                               uni.reLaunch({
                                 url: '/pages/login/login'
                               });
-                            case 13:
+                            case 12:
                             case "end":
-                              return _context2.stop();
+                              return _context3.stop();
                           }
                         }
-                      }, _callee2, null, [[3, 8]]);
+                      }, _callee3, null, [[3, 8]]);
                     }))();
                   }
                 });
               case 1:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3);
+        }, _callee4);
       }))();
     }
   }
