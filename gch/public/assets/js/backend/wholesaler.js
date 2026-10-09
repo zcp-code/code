@@ -29,7 +29,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'mobile', title: '手机号'},
                         {field: 'contact_phone', title: '店铺电话'},
                         {field: 'last_login_time', title: '最后登录', formatter: Table.api.formatter.datetime, operate: false},
-                        {field: 'status', title: '状态', searchList: {1:'启用',0:'停用'}, formatter: function(v){
+                        // 顶部搜索的状态下拉禁用(与 tab 重复,且 wholesaler join shop 后 status 列会 ambiguous) — tab 单独处理
+                        {field: 'status', title: '状态', operate: false, formatter: function(v){
                             return ['<span class="label label-default">停用</span>',
                                     '<span class="label label-success">启用</span>'][v];
                         }},
@@ -62,17 +63,25 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 });
             });
 
-            // TAB 切换
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                var status = $(this).data('value');
-                var options = table.bootstrapTable('getOptions');
-                options.pageNumber = 1;
-                options.queryParams = function (params) {
-                    if (status !== '' && status !== undefined) params.status = status;
-                    return params;
-                };
-                table.bootstrapTable('refresh', {});
-                return false;
+            // TAB 切换(状态筛选) — 用 click 直接绑,绕过 shown.bs.tab 兼容问题
+            $(document).on('click', 'a[data-toggle="tab"]', function (e) {
+                e.preventDefault();
+                var $a = $(this);
+                var status = $a.data('value');
+                // 等 Bootstrap 切完 tab 再触发 refresh
+                setTimeout(function() {
+                    var options = table.bootstrapTable('getOptions');
+                    options.pageNumber = 1;
+                    options.queryParams = function (params) {
+                        if (status !== '' && status !== undefined && status !== null) {
+                            params.status = status;
+                        } else {
+                            delete params.status;
+                        }
+                        return params;
+                    };
+                    table.bootstrapTable('refresh', { queryParams: options.queryParams, pageNumber: 1 });
+                }, 100);
             });
         },
         add: function () {

@@ -10,6 +10,21 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+// ============================================================
+// 安全: /admin/... 重定向到随机入口 MaQbwKnULZ.php
+// 消除 FastAdmin 警告 + 隐藏真实后台入口防止 /admin/ 被探测
+// FastAdmin 推荐做法: 用改名后的入口访问后台(public/MaQbwKnULZ.php)
+// ============================================================
+\think\Route::any('admin', function () {
+    header('Location: /MaQbwKnULZ.php', true, 302);
+    exit;
+});
+\think\Route::any('admin/:any', function () {
+    $newUrl = preg_replace('#^/?admin/#', '/MaQbwKnULZ.php/', $_SERVER['REQUEST_URI'], 1);
+    header('Location: ' . $newUrl, true, 302);
+    exit;
+});
+
 return [
     //别名配置,别名只能是映射到控制器且访问时必须加上请求的方法
     '__alias__'   => [

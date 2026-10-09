@@ -22,6 +22,15 @@ class Reservation extends Backend
         if ($this->request->isAjax()) {
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 
+            // TAB 状态筛选 — buildparams() 返回的 $where 是 Closure 不能直接改数组,需在外层再包一层追加条件
+            $status = $this->request->param('status', '');
+            $where = function ($query) use ($where, $status) {
+                $where($query);   // 先应用 buildparams 原始条件
+                if ($status !== '' && $status !== null && in_array($status, ['pending', 'confirmed', 'cancelled'], true)) {
+                    $query->where('r.status', $status);   // ← varchar 字段,不强转
+                }
+            };
+
             $alias = 'r';
             $join = [
                 ['shop s', 's.id = r.shop_id', 'LEFT'],

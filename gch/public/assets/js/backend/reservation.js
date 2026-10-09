@@ -28,7 +28,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'wholesaler_name', title: '批发商', operate: false},
                         {field: 'price', title: '单价', formatter: function(v){ return '¥' + parseFloat(v).toFixed(2); }},
                         {field: 'quantity', title: '数量'},
-                        {field: 'status', title: '状态', searchList: {pending:'待确认',confirmed:'已确认',cancelled:'已取消'}, formatter: function(v){
+                        // 顶部搜索的状态下拉禁用(与 tab 重复,且 join 多表后 status 列会 ambiguous) — tab 单独处理
+                        {field: 'status', title: '状态', operate: false, formatter: function(v){
                             return ['<span class="label label-warning">待确认</span>',
                                     '<span class="label label-success">已确认</span>',
                                     '<span class="label label-default">已取消</span>'][
@@ -45,17 +46,25 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             Table.api.bindevent(table);
 
-            // TAB 切换
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                var status = $(this).data('value');
-                var options = table.bootstrapTable('getOptions');
-                options.pageNumber = 1;
-                options.queryParams = function (params) {
-                    if (status !== '' && status !== undefined) params.status = status;
-                    return params;
-                };
-                table.bootstrapTable('refresh', {});
-                return false;
+            // TAB 切换(状态筛选) — 用 click 直接绑,绕过 shown.bs.tab 兼容问题
+            $(document).on('click', 'a[data-toggle="tab"]', function (e) {
+                e.preventDefault();
+                var $a = $(this);
+                var status = $a.data('value');
+                // 等 Bootstrap 切完 tab 再触发 refresh
+                setTimeout(function() {
+                    var options = table.bootstrapTable('getOptions');
+                    options.pageNumber = 1;
+                    options.queryParams = function (params) {
+                        if (status !== '' && status !== undefined && status !== null) {
+                            params.status = status;
+                        } else {
+                            delete params.status;
+                        }
+                        return params;
+                    };
+                    table.bootstrapTable('refresh', { queryParams: options.queryParams, pageNumber: 1 });
+                }, 100);
             });
         },
         edit: function () {

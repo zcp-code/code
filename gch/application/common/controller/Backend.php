@@ -208,7 +208,8 @@ class Backend extends Controller
             'controllername' => $controllername,
             'actionname'     => $actionname,
             'jsname'         => 'backend/' . str_replace('.', '/', $controllername),
-            'moduleurl'      => rtrim(url("/{$modulename}", '', false), '/'),
+            // moduleurl 必须用实际入口脚本名(支持 MaQbwKnULZ.php 改名入口),否则 JS 生成的 lang/ajax URL 仍是 /admin/... 会触发路由重定向,requirejs 加载 lang 模块会失败
+            'moduleurl'      => isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] ? rtrim($_SERVER['SCRIPT_NAME'], '/') : rtrim(url("/{$modulename}", '', false), '/'),
             'language'       => $lang,
             'referer'        => Session::get("referer")
         ];

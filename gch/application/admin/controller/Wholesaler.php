@@ -23,6 +23,16 @@ class Wholesaler extends Backend
     {
         if ($this->request->isAjax()) {
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+
+            // TAB 状态筛选 — buildparams() 返回的 $where 是 Closure 不能直接改数组,需在外层再包一层追加条件
+            $status = $this->request->param('status', '');
+            $where = function ($query) use ($where, $status) {
+                $where($query);   // 先应用 buildparams 原始条件
+                if ($status !== '' && $status !== null && in_array($status, ['0', '1'], true)) {
+                    $query->where('w.status', (int)$status);   // ← tinyint 字段,需强转 int
+                }
+            };
+
             $join = [
                 ['shop s', 's.id = w.shop_id', 'LEFT'],
             ];

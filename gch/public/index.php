@@ -10,6 +10,18 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 // [ 应用入口文件 ]
+
+// ============================================================
+// 安全: FastAdmin 改名后台入口(MaQbwKnULZ.php)识别
+// 防止 web server (Apache/Nginx) rewrite 把 /MaQbwKnULZ.php/xxx 重定向到 index.php 后,
+// TP5 把 MaQbwKnULZ.php 当成 module 名 → "模块不存在:maqbwknulz.php"
+// 这里手动 delegate 到真正的入口文件,让脚本内 Route::bind('admin') 接管
+// ============================================================
+if (isset($_SERVER['REQUEST_URI']) && preg_match('#/MaQbwKnULZ\.php#i', $_SERVER['REQUEST_URI'])) {
+    require __DIR__ . '/MaQbwKnULZ.php';
+    exit;
+}
+
 // 定义应用目录
 define('APP_PATH', __DIR__ . '/../application/');
 

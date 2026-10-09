@@ -10,6 +10,8 @@ use app\api\model\Goods as GoodsModel;
 class Goods extends Backend
 {
     protected $model = null;
+    // 指定搜索字段:join 多张表都有 status 列,必须带别名
+    protected $searchFields = 'g.id,g.name';
 
     public function _initialize()
     {
@@ -20,7 +22,17 @@ class Goods extends Backend
     public function index()
     {
         if ($this->request->isAjax()) {
-            list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+            // buildparams 返回 $where 是 Closure 不能当数组用 → 自己构造 where(join 多表时必须带别名)
+            $status = $this->request->param('status', '');
+            $sort   = $this->request->get('sort', 'id');
+            $order  = $this->request->get('order', 'DESC');
+            $offset = max(0, $this->request->get('offset/d', 0));
+            $limit  = max(0, $this->request->get('limit/d', 20));
+
+            $where = [];
+            if ($status !== '' && $status !== null) {
+                $where['g.status'] = (int)$status;   // ← 带 g. 别名,避免 join 后 ambiguous
+            }
 
             $alias = 'g';
             $join  = [

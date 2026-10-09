@@ -47,25 +47,21 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 为表格绑定事件
             Table.api.bindevent(table);
 
-            //绑定TAB事件
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                // var options = table.bootstrapTable(tableOptions);
+            //绑定TAB事件(按 tab href 取 type 过滤) — 用 click 直接绑,绕过 shown.bs.tab 兼容问题
+            $(document).on('click', 'a[data-toggle="tab"]', function (e) {
+                e.preventDefault();
                 var typeStr = $(this).attr("href").replace('#', '');
-                var options = table.bootstrapTable('getOptions');
-                options.pageNumber = 1;
-                options.queryParams = function (params) {
-                    // params.filter = JSON.stringify({type: typeStr});
-                    params.type = typeStr;
-
-                    return params;
-                };
-                table.bootstrapTable('refresh', {});
-                return false;
-
+                // 等 Bootstrap 切完 tab 再触发 refresh
+                setTimeout(function() {
+                    var options = table.bootstrapTable('getOptions');
+                    options.pageNumber = 1;
+                    options.queryParams = function (params) {
+                        params.type = typeStr;
+                        return params;
+                    };
+                    table.bootstrapTable('refresh', { queryParams: options.queryParams, pageNumber: 1 });
+                }, 100);
             });
-
-            //必须默认触发shown.bs.tab事件
-            // $('ul.nav-tabs li.active a[data-toggle="tab"]').trigger("shown.bs.tab");
 
         },
         add: function () {
