@@ -122,9 +122,37 @@ export default {
     }
   },
   onLoad(q) {
-    this.id = q.id
-    this.fromQrcode = q.from === 'qrcode'
-    if (this.fromQrcode) uni.showToast({ title: '已为您打开店铺', icon: 'none' })
+    // 兼容三种入口:
+    //   1. 普通跳转:?id=5
+    //   2. 扫码进入:?scene=id%3D5  (微信 wxacode getUnlimited 把 scene 整个丢到 query.scene)
+    //   3. 旧式 wxacode:?id=5(直接带 query.id)
+    if (q.id) {
+      this.id = q.id
+      this.fromQrcode = !!q.scene || q.from === 'qrcode'
+    } else if (q.scene) {
+      // scene 格式 "id=5" 或 base64 编码,解析出 id
+      let sceneStr = q.scene
+      try {
+        const decoded = decodeURIComponent(q.scene)
+        if (/^\d+$/.test(decoded)) {
+          this.id = parseInt(decoded, 10)
+        } else {
+          const m = decoded.match(/id=(\d+)/)
+          this.id = m ? parseInt(m[1], 10) : 0
+        }
+      } catch (e) {
+        const m = String(q.scene).match(/id=(\d+)/)
+        this.id = m ? parseInt(m[1], 10) : 0
+      }
+      this.fromQrcode = true
+    }
+    if (this.fromQrcode && this.id) {
+      uni.showToast({ title: '已为您打开店铺', icon: 'none' })
+    }
+    if (!this.id) {
+      uni.showToast({ title: '店铺参数错误', icon: 'none' })
+      return
+    }
     this.loadShop()
     this.loadGoods()
   },

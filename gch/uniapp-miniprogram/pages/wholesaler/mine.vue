@@ -37,30 +37,7 @@
         </view>
         <text class="arrow">›</text>
       </view>
-      <view class="menu-item" @tap="goGoods">
-        <view class="menu-icon icon-orange">📦</view>
-        <view class="menu-text">
-          <view class="menu-label">我的货盘</view>
-          <view class="menu-desc">今日 / 历史货品管理</view>
-        </view>
-        <text class="arrow">›</text>
-      </view>
-      <view class="menu-item" @tap="goReservations">
-        <view class="menu-icon icon-green">📋</view>
-        <view class="menu-text">
-          <view class="menu-label">预订处理</view>
-          <view class="menu-desc">查看待确认 / 已确认订单</view>
-        </view>
-        <text class="arrow">›</text>
-      </view>
-      <view class="menu-item" @tap="goPublish">
-        <view class="menu-icon icon-purple">📤</view>
-        <view class="menu-text">
-          <view class="menu-label">发布货盘</view>
-          <view class="menu-desc">新货品上架</view>
-        </view>
-        <text class="arrow">›</text>
-      </view>
+
     </view>
 
     <!-- 设置 -->
@@ -73,13 +50,7 @@
         </view>
         <text class="arrow">›</text>
       </view>
-      <view class="menu-item" @tap="switchRole">
-        <view class="menu-icon icon-orange">🔄</view>
-        <view class="menu-text">
-          <view class="menu-label">切换身份</view>
-        </view>
-        <text class="arrow">›</text>
-      </view>
+
     </view>
 
     <!-- 退出登录 -->

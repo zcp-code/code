@@ -343,21 +343,25 @@ class Wholesaler extends ApiBase
     public function reservation_detail($id = 0)
     {
         $this->_requireAuth();
-        $id = (int)$id;
-        $r = ReservationModel::get($id);
-        if (!$r) return $this->error('订单不存在', 404);
-        if ($r->wholesaler_id != $this->user['user_id']) {
+        // 不依赖方法参数 $id(怕 opcache 缓存了旧字节码),从 request 显式取
+        $id = (int)$this->request->param('id') ?: (int)$id;
+        $data = \think\Db::name('reservation')->where('id', $id)->find();
+        if (!$data) return $this->error('订单不存在 [#id=' . $id . ']', 404);
+        if ($data['wholesaler_id'] != $this->user['user_id']) {
             return $this->error('无权访问', 403);
         }
-        $buyer = Buyer::get($r->buyer_id);
-        $r->buyer = $buyer ? [
-            'id'        => $buyer->id,
-            'account'   => $buyer->account,
-            'real_name' => $buyer->real_name,
-            'mobile'    => $buyer->mobile,
+        // 关联采购商信息
+        $buyer = \think\Db::name('buyer')->where('id', $data['buyer_id'])->find();
+        $data['buyer'] = $buyer ? [
+            'id'        => $buyer['id'],
+            'account'   => $buyer['account'],
+            'real_name' => $buyer['real_name'],
+            'mobile'    => $buyer['mobile'],
         ] : null;
-        $r->shop;
-        return $this->success($r);
+        // 关联店铺信息(简化版,只取名字)
+        $shop = \think\Db::name('shop')->where('id', $data['shop_id'])->find();
+        $data['shop_name'] = $shop ? $shop['name'] : '';
+        return $this->success($data);
     }
 
     public function reservation_confirm()

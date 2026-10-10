@@ -33,9 +33,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'total_stock', title: '总库存'},
                         {field: 'reserved_quantity', title: '已订'},
                         {field: 'available', title: '可订', operate: false},
-                        {field: 'status', title: '状态', searchList: {1:'在售',0:'已下架',2:'售罄'}, formatter: function(v){
-                            return ['<span class="label label-success">在售</span>',
-                                    '<span class="label label-default">已下架</span>',
+                        // 顶部搜索的状态下拉禁用(与 tab 重复,且 goods join 多表后 status 列会 ambiguous) — tab 单独处理
+                        {field: 'status', title: '状态', operate: false, formatter: function(v){
+                            // v=0 已下架, v=1 在售, v=2 售罄(searchList 同)
+                            return ['<span class="label label-default">已下架</span>',
+                                    '<span class="label label-success">在售</span>',
                                     '<span class="label label-warning">售罄</span>'][v];
                         }},
                         {field: 'publish_time', title: '发布时间', formatter: Table.api.formatter.datetime, operate: 'RANGE', addclass: 'datetimerange', sortable: true},

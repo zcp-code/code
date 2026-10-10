@@ -15,14 +15,47 @@ class Dev extends ApiBase
 
     /**
      * POST /api/dev/login
-     * 入参:role = buyer | wholesaler
-     * 入参:account(可选,默认 buyer001 / wh001)
+     * 入参:role = buyer | wholesaler | visitor
+     * 入参:account(可选,默认 buyer001 / wh001,visitor 时可省)
+     * 入参:openid(可选,visitor 用,默认 'mock_visitor_001')
      * 出参:{token, role, user_id, expire}
      */
     public function login()
     {
-        $role = $this->request->param('role', 'buyer');
+        $role    = $this->request->param('role', 'buyer');
         $account = $this->request->param('account', '');
+        $openid  = $this->request->param('openid', '');
+
+        // 游客角色 — dev 演示模式:复用/创建一个 mock visitor 记录
+        if ($role === 'visitor') {
+            $openid = $openid ?: 'mock_visitor_' . substr(md5(uniqid('', true)), 0, 16);
+            $visitor = Db::name('visitor')->where('openid', $openid)->find();
+            if (!$visitor) {
+                $vid = Db::name('visitor')->insertGetId([
+                    'openid'   => $openid,
+                    'unionid'  => '',
+                    'nickname' => '演示游客',
+                    'avatar'   => '',
+                    'status'   => 1,
+                    'createtime' => time(),
+                    'updatetime' => time(),
+                ]);
+            } else {
+                $vid = $visitor['id'];
+            }
+            $tk = Token::create('visitor', $vid, $this->clientIp());
+            return $this->success([
+                'token'   => $tk['token'],
+                'expire'  => $tk['expire_time'],
+                'role'    => 'visitor',
+                'user_id' => $vid,
+                'visitor' => [
+                    'id'       => $vid,
+                    'nickname' => $visitor ? ($visitor['nickname'] ?? '演示游客') : '演示游客',
+                    'avatar'   => $visitor['avatar'] ?? '',
+                ]
+            ], 'dev 游客登录成功');
+        }
 
         // 找默认账号
         if ($role === 'wholesaler') {

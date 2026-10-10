@@ -127,22 +127,31 @@ var render = function () {
   var _c = _vm._self._c || _h
   var g0 = !!_vm.isLogin ? _vm.loading && _vm.list.length === 0 : null
   var g1 = !!_vm.isLogin && !g0 ? _vm.list.length : null
-  var l0 = !!_vm.isLogin
-    ? _vm.__map(_vm.list, function (r, __i0__) {
-        var $orig = _vm.__get_orig(r)
-        var m0 = _vm.statusText(r.status)
-        var m1 = _vm.formatPrice(r.price)
-        var g2 = r.quantity.toLocaleString()
-        var m2 = _vm.formatTime(r.createtime)
-        return {
-          $orig: $orig,
-          m0: m0,
-          m1: m1,
-          g2: g2,
-          m2: m2,
-        }
-      })
-    : null
+  var l0 =
+    !!_vm.isLogin && !g0 && !(g1 === 0)
+      ? _vm.__map(_vm.list, function (r, __i1__) {
+          var $orig = _vm.__get_orig(r)
+          var m0 = _vm.statusText(r.status)
+          var m1 = _vm.formatPrice(r.price)
+          var g2 = (r.quantity || 0).toLocaleString()
+          var g3 = (r.quantity || 0).toLocaleString()
+          var m2 = _vm.formatTotal(r.price, r.quantity)
+          var m3 = _vm.formatTime(r.createtime)
+          return {
+            $orig: $orig,
+            m0: m0,
+            m1: m1,
+            g2: g2,
+            g3: g3,
+            m2: m2,
+            m3: m3,
+          }
+        })
+      : null
+  var g4 =
+    !!_vm.isLogin && !g0 && !(g1 === 0) && !!_vm.finished
+      ? _vm.list.length
+      : null
   _vm.$mp.data = Object.assign(
     {},
     {
@@ -150,6 +159,7 @@ var render = function () {
         g0: g0,
         g1: g1,
         l0: l0,
+        g4: g4,
       },
     }
   )
@@ -196,70 +206,43 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 51));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 53));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
 var _request = _interopRequireWildcard(__webpack_require__(/*! @/utils/request.js */ 35));
 var _user = _interopRequireDefault(__webpack_require__(/*! @/store/user.js */ 30));
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
+var STATUS_TABS = [{
+  value: '',
+  label: '全部'
+}, {
+  value: 'pending',
+  label: '待确认'
+}, {
+  value: 'confirmed',
+  label: '已确认'
+}, {
+  value: 'cancelled',
+  label: '已取消'
+}];
 var _default = {
   components: {
     CustomTabbar: CustomTabbar
   },
   data: function data() {
     return {
+      tabs: STATUS_TABS.map(function (t) {
+        return _objectSpread(_objectSpread({}, t), {}, {
+          count: 0
+        });
+      }),
+      currentTab: '',
       list: [],
       page: 1,
       limit: 20,
@@ -268,63 +251,159 @@ var _default = {
     };
   },
   computed: {
-    // 真实登录才显示(token ≥ 32 字符 + role=buyer)
-    // mock token < 32 时不显示订单(避免 401)
     isLogin: function isLogin() {
       var t = _user.default.token || '';
       return t.length >= 32 && _user.default.role === 'buyer';
+    },
+    currentTabLabel: function currentTabLabel() {
+      var _this = this;
+      var t = STATUS_TABS.find(function (x) {
+        return x.value === _this.currentTab;
+      });
+      return t ? t.label : '';
+    }
+  },
+  onLoad: function onLoad(q) {
+    // 从个人中心等地方跳过来时,带 status=pending|confirmed|cancelled 自动选中对应 tab
+    if (q && q.status && STATUS_TABS.some(function (t) {
+      return t.value === q.status;
+    })) {
+      this.currentTab = q.status;
     }
   },
   onShow: function onShow() {
-    if (this.isLogin) this.load(true);
+    if (this.isLogin) this.refreshCurrentTab();
   },
   onPullDownRefresh: function onPullDownRefresh() {
-    if (this.isLogin) this.load(true).then(function () {
+    if (!this.isLogin) {
+      uni.stopPullDownRefresh();
+      return;
+    }
+    this.refreshCurrentTab().then(function () {
       return uni.stopPullDownRefresh();
     });
   },
   methods: {
-    load: function load(reset) {
-      var _this = this;
+    refreshCurrentTab: function refreshCurrentTab() {
+      var _this2 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var data, list;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (reset) {
-                  _this.page = 1;
-                  _this.list = [];
-                  _this.finished = false;
-                }
-                _this.loading = true;
-                _context.prev = 2;
+                _this2.page = 1;
+                _this2.list = [];
+                _this2.finished = false;
+                // 并行:加载当前 tab + 加载 tab 计数
                 _context.next = 5;
-                return _request.default.get(_request.api.reservationList, {
-                  page: _this.page,
-                  limit: _this.limit
-                }, {
-                  hideError: true
-                });
+                return Promise.all([_this2.load(false), _this2.loadCounts()]);
               case 5:
-                data = _context.sent;
-                list = _this.list.concat(data.list || []);
-                _this.list = list;
-                _this.page++;
-                _this.finished = list.length >= data.total;
-                _context.next = 14;
-                break;
-              case 12:
-                _context.prev = 12;
-                _context.t0 = _context["catch"](2);
-              case 14:
-                _this.loading = false;
-              case 15:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[2, 12]]);
+        }, _callee);
+      }))();
+    },
+    switchTab: function switchTab(value) {
+      if (this.currentTab === value) return;
+      this.currentTab = value;
+      this.refreshCurrentTab();
+    },
+    loadCounts: function loadCounts() {
+      var _this3 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var results;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.prev = 0;
+                _context2.next = 3;
+                return Promise.all(STATUS_TABS.filter(function (t) {
+                  return t.value !== '';
+                }).map(function (t) {
+                  return _request.default.get(_request.api.reservationList, {
+                    status: t.value,
+                    page: 1,
+                    limit: 1
+                  }, {
+                    hideError: true
+                  });
+                }));
+              case 3:
+                results = _context2.sent;
+                _this3.tabs = _this3.tabs.map(function (t) {
+                  if (t.value === '') return t;
+                  var idx = STATUS_TABS.findIndex(function (x) {
+                    return x.value === t.value;
+                  }) - 1; // 对齐 results 数组
+                  return _objectSpread(_objectSpread({}, t), {}, {
+                    count: results[idx] ? results[idx].total || 0 : 0
+                  });
+                });
+                _context2.next = 9;
+                break;
+              case 7:
+                _context2.prev = 7;
+                _context2.t0 = _context2["catch"](0);
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[0, 7]]);
+      }))();
+    },
+    load: function load(append) {
+      var _this4 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var params, data, rows;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!_this4.loading) {
+                  _context3.next = 2;
+                  break;
+                }
+                return _context3.abrupt("return");
+              case 2:
+                _this4.loading = true;
+                _context3.prev = 3;
+                // 动态拼参数 — "全部" tab 时不带 status 字段,避免被某些运行时序列化成 "undefined" 字符串导致后端查不到数据
+                params = {
+                  page: _this4.page,
+                  limit: _this4.limit
+                };
+                if (_this4.currentTab) params.status = _this4.currentTab;
+                _context3.next = 8;
+                return _request.default.get(_request.api.reservationList, params, {
+                  hideError: true
+                });
+              case 8:
+                data = _context3.sent;
+                rows = data.list || [];
+                _this4.list = append ? _this4.list.concat(rows) : rows;
+                if (!append) {
+                  _this4.page = 2;
+                } else {
+                  _this4.page++;
+                }
+                _this4.finished = _this4.list.length >= (data.total || 0);
+                _context3.next = 17;
+                break;
+              case 15:
+                _context3.prev = 15;
+                _context3.t0 = _context3["catch"](3);
+              case 17:
+                _this4.loading = false;
+              case 18:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[3, 15]]);
       }))();
     },
     statusText: function statusText(s) {
@@ -335,26 +414,29 @@ var _default = {
       }[s] || s;
     },
     cancelOrder: function cancelOrder(r) {
-      var _this2 = this;
+      var _this5 = this;
       uni.showModal({
         title: '取消预订',
         content: "\u786E\u8BA4\u53D6\u6D88\u300C".concat(r.goods_name, "\u300D?"),
+        confirmText: '确认取消',
+        cancelText: '再想想',
+        confirmColor: '#ff6600',
         success: function () {
-          var _success = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(_ref) {
+          var _success = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(_ref) {
             var confirm;
-            return _regenerator.default.wrap(function _callee2$(_context2) {
+            return _regenerator.default.wrap(function _callee4$(_context4) {
               while (1) {
-                switch (_context2.prev = _context2.next) {
+                switch (_context4.prev = _context4.next) {
                   case 0:
                     confirm = _ref.confirm;
                     if (confirm) {
-                      _context2.next = 3;
+                      _context4.next = 3;
                       break;
                     }
-                    return _context2.abrupt("return");
+                    return _context4.abrupt("return");
                   case 3:
-                    _context2.prev = 3;
-                    _context2.next = 6;
+                    _context4.prev = 3;
+                    _context4.next = 6;
                     return _request.default.post(_request.api.reservationCancel, {
                       id: r.id,
                       reason: '买家取消'
@@ -366,18 +448,18 @@ var _default = {
                       title: '已取消预订',
                       icon: 'success'
                     });
-                    _this2.load(true);
-                    _context2.next = 12;
+                    _this5.refreshCurrentTab();
+                    _context4.next = 12;
                     break;
                   case 10:
-                    _context2.prev = 10;
-                    _context2.t0 = _context2["catch"](3);
+                    _context4.prev = 10;
+                    _context4.t0 = _context4["catch"](3);
                   case 12:
                   case "end":
-                    return _context2.stop();
+                    return _context4.stop();
                 }
               }
-            }, _callee2, null, [[3, 10]]);
+            }, _callee4, null, [[3, 10]]);
           }));
           function success(_x) {
             return _success.apply(this, arguments);
@@ -410,12 +492,16 @@ var _default = {
       var hm = "".concat(pad(d.getHours()), ":").concat(pad(d.getMinutes()));
       if (sameDay) return "\u4ECA\u5929 ".concat(hm);
       if (isYesterday) return "\u6628\u5929 ".concat(hm);
-      return "".concat(d.getMonth() + 1, "-").concat(pad(d.getDate()), " ").concat(hm);
+      return "".concat(d.getFullYear(), "-").concat(pad(d.getMonth() + 1), "-").concat(pad(d.getDate()), " ").concat(hm);
     },
     formatPrice: function formatPrice(p) {
-      // 后端 DECIMAL 字段返回字符串(如 "5.00"),必须先转数字才能 toFixed
       var n = parseFloat(p);
       return isNaN(n) ? '0.00' : n.toFixed(2);
+    },
+    formatTotal: function formatTotal(price, qty) {
+      var p = parseFloat(price),
+        q = parseInt(qty, 10) || 0;
+      return (isNaN(p) ? 0 : p * q).toFixed(2);
     }
   }
 };

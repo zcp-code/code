@@ -19,7 +19,8 @@
     "pages/wholesaler/publish",
     "pages/wholesaler/reservations",
     "pages/wholesaler/mine",
-    "pages/wholesaler/qrcode"
+    "pages/wholesaler/qrcode",
+    "pages/wholesaler-order-detail/wholesaler-order-detail"
   ],
   "subPackages": [],
   "window": {

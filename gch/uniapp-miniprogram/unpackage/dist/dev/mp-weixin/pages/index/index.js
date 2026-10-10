@@ -514,12 +514,24 @@ var _default = {
     },
     // 一键预定(规格 §7.2)— 直接在首页弹 sheet,不跳转
     quickReserve: function quickReserve(g) {
-      // 必须真 token + buyer 角色(避免 fake token 提交报 401)
-      if (!_user.default.canOrder) {
-        return uni.showModal({
-          title: '请先登录',
-          content: '下单需使用账号密码登录采购商账号',
+      // 三态判定:
+      //   1. 真 buyer → 直接下单
+      //   2. 游客(微信授权过) → 提示「需要登录采购商」,跳转登录页
+      //   3. 啥都没 → 提示「需要登录」,给两个选项(微信授权 / 采购商登录)
+      if (_user.default.canOrder) {
+        this.bookGoods = g;
+        this.bookQty = Math.max(1, Math.min(500, Math.floor(g.available / 20) || 500));
+        this.showSheet = true;
+        return;
+      }
+      if (_user.default.isVisitor) {
+        // 游客状态:让用户去登录采购商
+        uni.showModal({
+          title: '需要登录采购商账号',
+          content: '下单预订需要采购商身份,请使用账号密码登录',
           confirmText: '去登录',
+          cancelText: '继续逛逛',
+          confirmColor: '#ff6600',
           success: function success(_ref) {
             var confirm = _ref.confirm;
             if (confirm) uni.navigateTo({
@@ -527,10 +539,24 @@ var _default = {
             });
           }
         });
+      } else {
+        // 啥都没登录:给两个入口(微信授权进入 / 直接采购商登录)
+        uni.showActionSheet({
+          itemList: ['微信授权进入(游客浏览)', '采购商账号登录'],
+          success: function success(_ref2) {
+            var tapIndex = _ref2.tapIndex;
+            if (tapIndex === 0) {
+              uni.navigateTo({
+                url: '/pages/wxlogin/wxlogin'
+              });
+            } else if (tapIndex === 1) {
+              uni.navigateTo({
+                url: '/pages/login/account?role=buyer'
+              });
+            }
+          }
+        });
       }
-      this.bookGoods = g;
-      this.bookQty = Math.max(1, Math.min(500, Math.floor(g.available / 20) || 500));
-      this.showSheet = true;
     },
     closeBookSheet: function closeBookSheet() {
       this.showSheet = false;

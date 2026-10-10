@@ -173,6 +173,17 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
@@ -181,13 +192,16 @@ var _default = {
   },
   methods: {
     /**
-     * 演示模式:M2 之前直接调后端 /api/dev/login 生成 buyer 真 token
-     * 之后接入真实 wx.login() → /api/wxlogin → 后端 wxlogin_test_mode 自动返 token
+     * 微信授权登录(已认证 appid):
+     *   1. 调 wx.login() 拿临时 code
+     *   2. 调 uni.getUserProfile() 拿昵称头像(M2+ 已收紧,需要用户主动授权)
+     *   3. 把 code + nickname + avatar 发给后端 /api/wxlogin
+     *   4. 后端 code2Session 换 openid,创建/更新 visitor,签发 token
      */
     onWxLogin: function onWxLogin() {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var data, profile;
+        var loginRes, nickname, avatar, profile, data, profile_data;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -201,23 +215,59 @@ var _default = {
                 _this.submitting = true;
                 _context.prev = 3;
                 _context.next = 6;
-                return _request.default.post('/api/dev/login', {
-                  role: 'buyer',
-                  account: 'buyer001'
+                return new Promise(function (resolve, reject) {
+                  uni.login({
+                    provider: 'weixin',
+                    success: resolve,
+                    fail: reject
+                  });
+                });
+              case 6:
+                loginRes = _context.sent;
+                // 2. 用户信息(昵称 + 头像)— 老版本基础库 2.x 必填,新版本可选
+                nickname = '游客用户', avatar = '';
+                _context.prev = 8;
+                _context.next = 11;
+                return new Promise(function (resolve, reject) {
+                  uni.getUserProfile({
+                    desc: '用于显示您的访客头像和昵称',
+                    success: resolve,
+                    fail: function fail() {
+                      return resolve(null);
+                    } // 用户拒绝也继续走,只用 code
+                  });
+                });
+              case 11:
+                profile = _context.sent;
+                if (profile) {
+                  nickname = profile.userInfo.nickName || nickname;
+                  avatar = profile.userInfo.avatarUrl || '';
+                }
+                _context.next = 17;
+                break;
+              case 15:
+                _context.prev = 15;
+                _context.t0 = _context["catch"](8);
+              case 17:
+                _context.next = 19;
+                return _request.default.post('/api/wxlogin', {
+                  code: loginRes.code,
+                  nickname: nickname,
+                  avatar: avatar
                 }, {
                   hideError: true
                 });
-              case 6:
+              case 19:
                 data = _context.sent;
-                // 写入 userStore
-                profile = {
+                // 4. 写入 userStore
+                profile_data = data.visitor || {
                   id: data.user_id,
-                  account: 'buyer001',
-                  real_name: '演示采购'
+                  nickname: nickname,
+                  avatar: avatar
                 };
-                _user.default.setLogin(data.token, data.role, profile);
+                _user.default.setLogin(data.token, data.role, profile_data);
                 uni.showToast({
-                  title: '微信授权登录成功(演示)',
+                  title: '已进入浏览模式',
                   icon: 'success'
                 });
                 setTimeout(function () {
@@ -225,23 +275,23 @@ var _default = {
                     url: '/pages/index/index'
                   });
                 }, 600);
-                _context.next = 16;
+                _context.next = 29;
                 break;
-              case 13:
-                _context.prev = 13;
-                _context.t0 = _context["catch"](3);
+              case 26:
+                _context.prev = 26;
+                _context.t1 = _context["catch"](3);
                 uni.showToast({
-                  title: _context.t0.message || '登录失败',
+                  title: _context.t1.message || '登录失败',
                   icon: 'none'
                 });
-              case 16:
+              case 29:
                 _this.submitting = false;
-              case 17:
+              case 30:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[3, 13]]);
+        }, _callee, null, [[3, 26], [8, 15]]);
       }))();
     },
     goBack: function goBack() {

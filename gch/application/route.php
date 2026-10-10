@@ -55,7 +55,7 @@ return [
     // ============================================================
 
     // 公共（无需登录）
-    'api/wxlogin'                       => 'api/WxLogin/index',
+    'api/wxlogin'                       => 'api/Wxlogin/index',
     'api/common/config'                 => 'api/Common/config',
     'api/common/upload'                 => 'api/Common/upload',
 

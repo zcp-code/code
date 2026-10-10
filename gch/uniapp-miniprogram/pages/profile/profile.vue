@@ -43,27 +43,30 @@
      <view class="order-card">
        <view class="card-head">
          <text class="card-title">我的订单</text>
-         <text class="card-more" @tap="goMyOrders">查看全部 ›</text>
+         <text class="card-more" @tap="goMyOrders()">查看全部 ›</text>
        </view>
- 
+
        <view class="order-grid">
-         <view class="order-item" @tap="goMyOrders">
+         <view class="order-item" @tap="goMyOrders('pending')">
            <view class="order-icon wait">
              <text class="iconfont icon-daiqueren1"></text>
+             <view v-if="orderStatusCounts.pending > 0" class="order-badge">{{ orderStatusCounts.pending }}</view>
            </view>
            <text class="order-text">待确认</text>
          </view>
- 
-         <view class="order-item" @tap="goMyOrders">
+
+         <view class="order-item" @tap="goMyOrders('confirmed')">
            <view class="order-icon confirm">
              <text class="iconfont icon-yiqueren"></text>
+             <view v-if="orderStatusCounts.confirmed > 0" class="order-badge">{{ orderStatusCounts.confirmed }}</view>
            </view>
            <text class="order-text">已确认</text>
          </view>
- 
-         <view class="order-item" @tap="goMyOrders">
+
+         <view class="order-item" @tap="goMyOrders('cancelled')">
            <view class="order-icon cancel">
              <text class="iconfont icon-yiquxiao2"></text>
+             <view v-if="orderStatusCounts.cancelled > 0" class="order-badge gray">{{ orderStatusCounts.cancelled }}</view>
            </view>
            <text class="order-text">已取消</text>
          </view>
@@ -72,14 +75,7 @@
  
      <!-- 第一组功能 -->
      <view class="cell-group">
-       <view class="cell" @tap="goMyOrders">
-         <view class="cell-icon orange">
-           <text>📋</text>
-         </view>
-         <text class="cell-label">我的订单</text>
-         <text class="cell-count" v-if="orderCount > 0">{{ orderCount }} 笔</text>
-         <text class="cell-arrow iconfont icon-xiangyou"></text>
-       </view>
+      
  
        <view class="cell" @tap="goFavorites">
          <view class="cell-icon red">
@@ -144,6 +140,7 @@ export default {
     return {
       userInfo: {},
       orderCount: 0,
+      orderStatusCounts: { pending: 0, confirmed: 0, cancelled: 0 },
       favCount: 0
     }
   },
@@ -180,9 +177,22 @@ export default {
     },
     async loadCounts() {
       if (this.isBuyer) {
+        // 总订单数 + 各状态计数(并行请求,每种状态只拉 1 条)
         try {
           const data = await http.get(api.reservationList, { page: 1, limit: 1 }, { hideError: true })
           this.orderCount = (data.total || 0)
+        } catch (e) {}
+        try {
+          const results = await Promise.all([
+            http.get(api.reservationList, { status: 'pending',   page: 1, limit: 1 }, { hideError: true }),
+            http.get(api.reservationList, { status: 'confirmed', page: 1, limit: 1 }, { hideError: true }),
+            http.get(api.reservationList, { status: 'cancelled', page: 1, limit: 1 }, { hideError: true })
+          ])
+          this.orderStatusCounts = {
+            pending:   results[0]?.total || 0,
+            confirmed: results[1]?.total || 0,
+            cancelled: results[2]?.total || 0
+          }
         } catch (e) {}
         try {
           const data = await http.get(api.favorites, { type: 'shop', page: 1, limit: 1 }, { hideError: true })
@@ -209,7 +219,10 @@ export default {
       })
     },
     goAccountLogin() { uni.navigateTo({ url: '/pages/login/account?role=buyer' }) },
-    goMyOrders() { uni.navigateTo({ url: '/pages/orders/orders' }) },
+    goMyOrders(status) {
+      const url = status ? `/pages/orders/orders?status=${status}` : '/pages/orders/orders'
+      uni.navigateTo({ url })
+    },
     goFavorites() { uni.navigateTo({ url: '/pages/favorites/favorites' }) },
     goChangePwd() {
       const role = this.isWholesaler ? 'wholesaler' : 'buyer'
@@ -428,20 +441,43 @@ page {
 
 .order-icon.wait {
   background: #fff2e8;
+  position: relative;
 }
 
 .order-icon.confirm {
   background: #e8f8ef;
+  position: relative;
 }
 
 .order-icon.cancel {
   background: #f5f5f5;
+  position: relative;
 }
 
 .order-text {
   font-size: 24rpx;
   color: #666666;
 }
+
+.order-badge {
+  position: absolute;
+  top: -4rpx;
+  right: -8rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  padding: 0 8rpx;
+  background: #ff3b30;
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 2rpx solid #fff;
+}
+.order-badge.gray { background: #9ca3af; }
 
 /* ========== 功能卡片组 ========== */
 .cell-group {

@@ -303,10 +303,6 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
-//
-//
-//
-//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
     return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
@@ -320,6 +316,11 @@ var _default = {
     return {
       userInfo: {},
       orderCount: 0,
+      orderStatusCounts: {
+        pending: 0,
+        confirmed: 0,
+        cancelled: 0
+      },
       favCount: 0
     };
   },
@@ -363,13 +364,13 @@ var _default = {
     loadCounts: function loadCounts() {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var data, _data;
+        var data, _results$, _results$2, _results$3, results, _data;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 if (!_this.isBuyer) {
-                  _context.next = 19;
+                  _context.next = 28;
                   break;
                 }
                 _context.prev = 1;
@@ -391,6 +392,40 @@ var _default = {
               case 10:
                 _context.prev = 10;
                 _context.next = 13;
+                return Promise.all([_request.default.get(_request.api.reservationList, {
+                  status: 'pending',
+                  page: 1,
+                  limit: 1
+                }, {
+                  hideError: true
+                }), _request.default.get(_request.api.reservationList, {
+                  status: 'confirmed',
+                  page: 1,
+                  limit: 1
+                }, {
+                  hideError: true
+                }), _request.default.get(_request.api.reservationList, {
+                  status: 'cancelled',
+                  page: 1,
+                  limit: 1
+                }, {
+                  hideError: true
+                })]);
+              case 13:
+                results = _context.sent;
+                _this.orderStatusCounts = {
+                  pending: ((_results$ = results[0]) === null || _results$ === void 0 ? void 0 : _results$.total) || 0,
+                  confirmed: ((_results$2 = results[1]) === null || _results$2 === void 0 ? void 0 : _results$2.total) || 0,
+                  cancelled: ((_results$3 = results[2]) === null || _results$3 === void 0 ? void 0 : _results$3.total) || 0
+                };
+                _context.next = 19;
+                break;
+              case 17:
+                _context.prev = 17;
+                _context.t1 = _context["catch"](10);
+              case 19:
+                _context.prev = 19;
+                _context.next = 22;
                 return _request.default.get(_request.api.favorites, {
                   type: 'shop',
                   page: 1,
@@ -398,20 +433,20 @@ var _default = {
                 }, {
                   hideError: true
                 });
-              case 13:
+              case 22:
                 _data = _context.sent;
                 _this.favCount = _data.total || 0;
-                _context.next = 19;
+                _context.next = 28;
                 break;
-              case 17:
-                _context.prev = 17;
-                _context.t1 = _context["catch"](10);
-              case 19:
+              case 26:
+                _context.prev = 26;
+                _context.t2 = _context["catch"](19);
+              case 28:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[1, 8], [10, 17]]);
+        }, _callee, null, [[1, 8], [10, 17], [19, 26]]);
       }))();
     },
     wxLogin: function wxLogin() {
@@ -496,9 +531,10 @@ var _default = {
         url: '/pages/login/account?role=buyer'
       });
     },
-    goMyOrders: function goMyOrders() {
+    goMyOrders: function goMyOrders(status) {
+      var url = status ? "/pages/orders/orders?status=".concat(status) : '/pages/orders/orders';
       uni.navigateTo({
-        url: '/pages/orders/orders'
+        url: url
       });
     },
     goFavorites: function goFavorites() {

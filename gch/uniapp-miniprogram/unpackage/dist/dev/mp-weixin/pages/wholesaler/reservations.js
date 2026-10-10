@@ -447,7 +447,7 @@ var _default = {
     },
     goDetail: function goDetail(id) {
       uni.navigateTo({
-        url: "/pages/reservation-detail/reservation-detail?id=".concat(id)
+        url: "/pages/wholesaler-order-detail/wholesaler-order-detail?id=".concat(id)
       });
     },
     callBuyerFor: function callBuyerFor(r) {

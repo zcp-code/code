@@ -79,11 +79,76 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
+      tabs: [{
+        value: 'goods',
+        label: '货品',
+        count: 0
+      }, {
+        value: 'shop',
+        label: '店铺',
+        count: 0
+      }],
       type: 'goods',
-      // goods / shop
       list: [],
       page: 1,
       limit: 20,
@@ -92,65 +157,143 @@ var _default = {
     };
   },
   onShow: function onShow() {
-    this.load(true);
+    this.refresh();
   },
   onPullDownRefresh: function onPullDownRefresh() {
-    this.load(true).then(function () {
+    this.refresh().then(function () {
       return uni.stopPullDownRefresh();
     });
   },
+  onReachBottom: function onReachBottom() {
+    if (!this.finished && !this.loading && this.list.length > 0) this.load(false);
+  },
   methods: {
-    switchTab: function switchTab(t) {
-      if (this.type === t) return;
-      this.type = t;
-      this.load(true);
-    },
-    load: function load(reset) {
+    refresh: function refresh() {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var data, list;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (reset) {
-                  _this.page = 1;
-                  _this.list = [];
-                  _this.finished = false;
-                }
-                _this.loading = true;
-                _context.prev = 2;
+                _this.page = 1;
+                _this.list = [];
+                _this.finished = false;
                 _context.next = 5;
-                return _request.default.get(_request.api.favorites, {
-                  type: _this.type,
-                  page: _this.page,
-                  limit: _this.limit
-                }, {
-                  hideError: true
-                });
+                return Promise.all([_this.load(false), _this.loadCounts()]);
               case 5:
-                data = _context.sent;
-                list = _this.list.concat(data.list || []);
-                _this.list = list;
-                _this.page++;
-                _this.finished = list.length >= data.total;
-                _context.next = 15;
-                break;
-              case 12:
-                _context.prev = 12;
-                _context.t0 = _context["catch"](2);
-                uni.showToast({
-                  title: _context.t0.message || '操作失败',
-                  icon: 'none'
-                });
-              case 15:
-                _this.loading = false;
-              case 16:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[2, 12]]);
+        }, _callee);
+      }))();
+    },
+    switchTab: function switchTab(t) {
+      if (this.type === t) return;
+      this.type = t;
+      this.refresh();
+    },
+    loadCounts: function loadCounts() {
+      var _this2 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return Promise.all(['goods', 'shop'].map( /*#__PURE__*/function () {
+                  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(t) {
+                    var d, idx;
+                    return _regenerator.default.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            _context2.prev = 0;
+                            _context2.next = 3;
+                            return _request.default.get(_request.api.favorites, {
+                              type: t,
+                              page: 1,
+                              limit: 1
+                            }, {
+                              hideError: true
+                            });
+                          case 3:
+                            d = _context2.sent;
+                            idx = _this2.tabs.findIndex(function (x) {
+                              return x.value === t;
+                            });
+                            if (idx >= 0) _this2.tabs[idx].count = d.total || 0;
+                            _context2.next = 10;
+                            break;
+                          case 8:
+                            _context2.prev = 8;
+                            _context2.t0 = _context2["catch"](0);
+                          case 10:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, null, [[0, 8]]);
+                  }));
+                  return function (_x) {
+                    return _ref.apply(this, arguments);
+                  };
+                }()));
+              case 2:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    load: function load(append) {
+      var _this3 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var data, rows;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                if (!_this3.loading) {
+                  _context4.next = 2;
+                  break;
+                }
+                return _context4.abrupt("return");
+              case 2:
+                _this3.loading = true;
+                _context4.prev = 3;
+                _context4.next = 6;
+                return _request.default.get(_request.api.favorites, {
+                  type: _this3.type,
+                  page: _this3.page,
+                  limit: _this3.limit
+                }, {
+                  hideError: true
+                });
+              case 6:
+                data = _context4.sent;
+                rows = data.list || [];
+                _this3.list = append ? _this3.list.concat(rows) : rows;
+                if (append) _this3.page++;else _this3.page = 2;
+                _this3.finished = _this3.list.length >= (data.total || 0);
+                _context4.next = 16;
+                break;
+              case 13:
+                _context4.prev = 13;
+                _context4.t0 = _context4["catch"](3);
+                uni.showToast({
+                  title: _context4.t0.message || '操作失败',
+                  icon: 'none'
+                });
+              case 16:
+                _this3.loading = false;
+              case 17:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[3, 13]]);
       }))();
     },
     goGoods: function goGoods(id) {
@@ -162,6 +305,26 @@ var _default = {
       uni.navigateTo({
         url: '/pages/shop/shop?id=' + id
       });
+    },
+    formatPrice: function formatPrice(p) {
+      var n = parseFloat(p);
+      return isNaN(n) ? '0.00' : n.toFixed(2);
+    },
+    formatTime: function formatTime(ts) {
+      if (!ts) return '';
+      var d = new Date(ts * 1000);
+      var now = new Date();
+      var pad = function pad(n) {
+        return String(n).padStart(2, '0');
+      };
+      var sameDay = d.toDateString() === now.toDateString();
+      var yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      var isYesterday = d.toDateString() === yesterday.toDateString();
+      var hm = "".concat(pad(d.getHours()), ":").concat(pad(d.getMinutes()));
+      if (sameDay) return "\u4ECA\u5929 ".concat(hm);
+      if (isYesterday) return "\u6628\u5929 ".concat(hm);
+      return "".concat(d.getMonth() + 1, "-").concat(pad(d.getDate()));
     }
   }
 };
@@ -305,16 +468,45 @@ var render = function () {
   var g1 = !g0 ? _vm.list.length : null
   var l0 =
     !g0 && !(g1 === 0) && _vm.type === "goods"
-      ? _vm.__map(_vm.list, function (g, __i0__) {
+      ? _vm.__map(_vm.list, function (g, __i1__) {
           var $orig = _vm.__get_orig(g)
           var g2 = (g.total_stock || 0).toLocaleString()
-          var g3 = Number(g.price).toFixed(2)
+          var m0 = _vm.formatPrice(g.price)
+          var m1 = _vm.formatTime(g.fav_time)
           return {
             $orig: $orig,
             g2: g2,
-            g3: g3,
+            m0: m0,
+            m1: m1,
           }
         })
+      : null
+  var g3 =
+    !g0 && !(g1 === 0) && _vm.type === "goods"
+      ? !_vm.finished && _vm.list.length > 0
+      : null
+  var g4 =
+    !g0 && !(g1 === 0) && _vm.type === "goods" && !g3 ? _vm.list.length : null
+  var l1 =
+    !g0 && !(g1 === 0) && !(_vm.type === "goods")
+      ? _vm.__map(_vm.list, function (s, __i2__) {
+          var $orig = _vm.__get_orig(s)
+          var g5 = (s.name || "店").substring(0, 1)
+          var m2 = _vm.formatTime(s.fav_time)
+          return {
+            $orig: $orig,
+            g5: g5,
+            m2: m2,
+          }
+        })
+      : null
+  var g6 =
+    !g0 && !(g1 === 0) && !(_vm.type === "goods")
+      ? !_vm.finished && _vm.list.length > 0
+      : null
+  var g7 =
+    !g0 && !(g1 === 0) && !(_vm.type === "goods") && !g6
+      ? _vm.list.length
       : null
   _vm.$mp.data = Object.assign(
     {},
@@ -323,6 +515,11 @@ var render = function () {
         g0: g0,
         g1: g1,
         l0: l0,
+        g3: g3,
+        g4: g4,
+        l1: l1,
+        g6: g6,
+        g7: g7,
       },
     }
   )

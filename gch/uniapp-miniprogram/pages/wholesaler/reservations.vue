@@ -140,7 +140,7 @@ export default {
         } catch (e) {}
       }))
     },
-    goDetail(id) { uni.navigateTo({ url: `/pages/reservation-detail/reservation-detail?id=${id}` }) },
+    goDetail(id) { uni.navigateTo({ url: `/pages/wholesaler-order-detail/wholesaler-order-detail?id=${id}` }) },
     callBuyerFor(r) {
       uni.showToast({ title: '演示:拨打采购商电话', icon: 'none' })
     },

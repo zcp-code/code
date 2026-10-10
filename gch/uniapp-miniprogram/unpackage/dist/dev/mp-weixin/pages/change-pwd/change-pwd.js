@@ -102,6 +102,17 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
+  if (!_vm._isMounted) {
+    _vm.e0 = function ($event) {
+      _vm.showOld = !_vm.showOld
+    }
+    _vm.e1 = function ($event) {
+      _vm.showNew = !_vm.showNew
+    }
+    _vm.e2 = function ($event) {
+      _vm.showConfirm = !_vm.showConfirm
+    }
+  }
 }
 var recyclableRender = false
 var staticRenderFns = []
@@ -174,6 +185,81 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
@@ -183,89 +269,89 @@ var _default = {
         new_password: '',
         confirm: ''
       },
-      submitting: false
+      submitting: false,
+      showOld: false,
+      showNew: false,
+      showConfirm: false
     };
   },
   onLoad: function onLoad(q) {
     this.role = q.role || 'buyer';
   },
+  computed: {
+    // 密码强度:0=无,1=弱,2=中,3=强,4=极强
+    strengthLevel: function strengthLevel() {
+      var p = this.form.new_password;
+      if (!p) return 0;
+      var score = 0;
+      if (p.length >= 8) score++;
+      if (/[a-z]/.test(p) && /[A-Z]/.test(p)) score++;else if (/[a-zA-Z]/.test(p)) score += 0.5;
+      if (/\d/.test(p)) score++;
+      if (/[^a-zA-Z0-9]/.test(p)) score++;
+      return Math.min(4, Math.floor(score));
+    },
+    strengthText: function strengthText() {
+      return ['', '弱', '中', '强', '极强'][this.strengthLevel] || '';
+    },
+    canSubmit: function canSubmit() {
+      var f = this.form;
+      return f.old_password && f.new_password.length >= 8 && f.new_password.length <= 20 && f.new_password === f.confirm;
+    }
+  },
   methods: {
     submit: function submit() {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var f, url;
+        var url;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                f = _this.form;
-                if (!(!f.old_password || !f.new_password)) {
-                  _context.next = 3;
+                if (!(_this.submitting || !_this.canSubmit)) {
+                  _context.next = 2;
                   break;
                 }
-                return _context.abrupt("return", uni.showToast({
-                  title: '请填写完整',
-                  icon: 'none'
-                }));
-              case 3:
-                if (!(f.new_password.length < 8 || f.new_password.length > 20)) {
-                  _context.next = 5;
-                  break;
-                }
-                return _context.abrupt("return", uni.showToast({
-                  title: '新密码需 8-20 位',
-                  icon: 'none'
-                }));
-              case 5:
-                if (!(f.new_password !== f.confirm)) {
-                  _context.next = 7;
-                  break;
-                }
-                return _context.abrupt("return", uni.showToast({
-                  title: '两次输入不一致',
-                  icon: 'none'
-                }));
-              case 7:
+                return _context.abrupt("return");
+              case 2:
                 _this.submitting = true;
-                _context.prev = 8;
+                _context.prev = 3;
                 url = _this.role === 'wholesaler' ? _request.api.wholesalerChangePwd : _request.api.buyerChangePwd;
-                _context.next = 12;
+                _context.next = 7;
                 return _request.default.post(url, {
-                  old_password: f.old_password,
-                  new_password: f.new_password
+                  old_password: _this.form.old_password,
+                  new_password: _this.form.new_password
                 }, {
                   hideError: true
                 });
-              case 12:
-                // 清全部状态(token + role + profile),跳登录页
+              case 7:
                 _user.default.clearAll();
                 uni.showModal({
                   title: '修改成功',
-                  content: '请重新登录',
+                  content: '请使用新密码重新登录',
                   showCancel: false,
                   success: function success() {
-                    uni.reLaunch({
+                    return uni.reLaunch({
                       url: '/pages/login/login'
                     });
                   }
                 });
-                _context.next = 19;
+                _context.next = 14;
                 break;
-              case 16:
-                _context.prev = 16;
-                _context.t0 = _context["catch"](8);
+              case 11:
+                _context.prev = 11;
+                _context.t0 = _context["catch"](3);
                 uni.showToast({
                   title: _context.t0.message || '操作失败',
                   icon: 'none'
                 });
-              case 19:
+              case 14:
                 _this.submitting = false;
-              case 20:
+              case 15:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[8, 16]]);
+        }, _callee, null, [[3, 11]]);
       }))();
     }
   }

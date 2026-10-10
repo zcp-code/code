@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 80rpx;
+  margin-bottom: 60rpx;
 }
 .big-icon.data-v-57c73f58 { font-size: 140rpx;
 }
@@ -25,6 +25,22 @@
   color: #999;
   font-size: 26rpx;
   margin-top: 16rpx;
+}
+.info-card.data-v-57c73f58 {
+  width: 100%;
+  background: linear-gradient(180deg, #fff7ed, #fef3c7);
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 50rpx;
+}
+.info-row.data-v-57c73f58 {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+.info-icon.data-v-57c73f58 { font-size: 32rpx; margin-right: 16rpx;
+}
+.info-text.data-v-57c73f58 { font-size: 26rpx; color: #4b5563;
 }
 .btn-wx.data-v-57c73f58 {
   background: #07c160;

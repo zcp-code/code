@@ -7,12 +7,12 @@ use extend\gch\Wechat;
 use think\Env;
 
 /**
- * 游客微信授权登录
+ * 游客微信授权登录(同 WxLogin.php 的小写 l 版本,解决 opcache 旧类名缓存)
  * POST /api/wxlogin
  * 入参:code, nickname, avatar
  *
- * 测试模式(M2 之前):检测 .env 中 `wxlogin_test_mode=1`,直接 mock openid,
- * 不调真实微信 API(测试 AppID 调 code2Session 会报 invalid appid)
+ * 测试模式:检测 .env 中 `wxlogin_test_mode=1`,直接 mock openid,
+ * 不开启 = 真实调微信 code2Session(需要有效 appid + secret)
  */
 class Wxlogin extends ApiBase
 {
@@ -20,9 +20,9 @@ class Wxlogin extends ApiBase
 
     public function index()
     {
-        $code     = $this->request->param('code', '');
-        $nickname = $this->request->param('nickname', '游客');
-        $avatar   = $this->request->param('avatar', '');
+        $code     = $this->request->post('code', '');
+        $nickname = $this->request->post('nickname', '游客');
+        $avatar   = $this->request->post('avatar', '');
 
         if (empty($code)) {
             return $this->error('缺少 code');

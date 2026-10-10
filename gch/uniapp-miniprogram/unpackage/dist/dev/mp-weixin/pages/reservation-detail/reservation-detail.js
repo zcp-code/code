@@ -103,12 +103,19 @@ var render = function () {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   var m0 = _vm.detail ? _vm.statusLabel(_vm.detail.status) : null
-  var m1 = _vm.detail ? _vm.formatTime(_vm.detail.createtime) : null
-  var m2 =
+  var m1 = _vm.detail ? _vm.formatPrice(_vm.detail.price) : null
+  var g0 = _vm.detail ? (_vm.detail.quantity || 0).toLocaleString() : null
+  var m2 = _vm.detail
+    ? _vm.formatTotal(_vm.detail.price, _vm.detail.quantity)
+    : null
+  var g1 = _vm.detail ? (_vm.detail.quantity || 0).toLocaleString() : null
+  var m3 = _vm.detail ? _vm.formatPrice(_vm.detail.price) : null
+  var m4 = _vm.detail ? _vm.formatTime(_vm.detail.createtime) : null
+  var m5 =
     _vm.detail && _vm.detail.confirm_time
       ? _vm.formatTime(_vm.detail.confirm_time)
       : null
-  var m3 =
+  var m6 =
     _vm.detail && _vm.detail.cancel_time
       ? _vm.formatTime(_vm.detail.cancel_time)
       : null
@@ -118,8 +125,13 @@ var render = function () {
       $root: {
         m0: m0,
         m1: m1,
+        g0: g0,
         m2: m2,
+        g1: g1,
         m3: m3,
+        m4: m4,
+        m5: m5,
+        m6: m6,
       },
     }
   )
@@ -220,6 +232,73 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
@@ -234,7 +313,6 @@ var _default = {
     this.load();
   },
   computed: {
-    // 按当前角色选择 API:批发商走 wholesaler 路径,否则走 buyer 路径
     detailUrl: function detailUrl() {
       return this.role === 'wholesaler' ? _request.api.wholesalerReservationDetail(this.id) : _request.api.reservationDetail(this.id);
     },
@@ -243,6 +321,21 @@ var _default = {
     },
     cancelReason: function cancelReason() {
       return this.role === 'wholesaler' ? '批发商取消' : '买家主动取消';
+    },
+    heroIcon: function heroIcon() {
+      return {
+        pending: '⏳',
+        confirmed: '✅',
+        cancelled: '✕'
+      }[this.detail.status] || '•';
+    },
+    heroDesc: function heroDesc() {
+      var map = {
+        pending: '已收到预订,等待批发商确认',
+        confirmed: '批发商已确认,可通过联系商家沟通取货',
+        cancelled: '本次预订已取消'
+      };
+      return map[this.detail.status] || '';
     }
   },
   methods: {
@@ -275,21 +368,61 @@ var _default = {
     },
     statusLabel: function statusLabel(s) {
       return {
-        pending: '待确认',
+        pending: '待批发商确认',
         confirmed: '已确认',
         cancelled: '已取消'
       }[s] || s;
     },
+    onGoodsTap: function onGoodsTap() {
+      if (this.detail && this.detail.goods_id) {
+        uni.navigateTo({
+          url: "/pages/goods/detail?id=".concat(this.detail.goods_id)
+        });
+      }
+    },
+    contactShop: function contactShop() {
+      // 简易占位:实际可复制店铺电话 / 调起 wx.makePhoneCall
+      uni.showToast({
+        title: '请到店铺页联系商家',
+        icon: 'none'
+      });
+    },
+    copy: function copy(text, msg) {
+      uni.setClipboardData({
+        data: text,
+        success: function success() {
+          return uni.showToast({
+            title: msg || '已复制',
+            icon: 'success'
+          });
+        }
+      });
+    },
     formatTime: function formatTime(ts) {
       if (!ts) return '';
       var d = new Date(ts * 1000);
-      return "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, '0'), "-").concat(String(d.getDate()).padStart(2, '0'), " ").concat(String(d.getHours()).padStart(2, '0'), ":").concat(String(d.getMinutes()).padStart(2, '0'));
+      var pad = function pad(n) {
+        return String(n).padStart(2, '0');
+      };
+      return "".concat(d.getFullYear(), "-").concat(pad(d.getMonth() + 1), "-").concat(pad(d.getDate()), " ").concat(pad(d.getHours()), ":").concat(pad(d.getMinutes()));
+    },
+    formatPrice: function formatPrice(p) {
+      var n = parseFloat(p);
+      return isNaN(n) ? '0.00' : n.toFixed(2);
+    },
+    formatTotal: function formatTotal(price, qty) {
+      var p = parseFloat(price),
+        q = parseInt(qty, 10) || 0;
+      return (isNaN(p) ? 0 : p * q).toFixed(2);
     },
     cancel: function cancel() {
       var _this2 = this;
       uni.showModal({
         title: '取消预订',
-        content: '确认取消？',
+        content: '确认取消本次预订?取消后无法恢复。',
+        confirmText: '确认取消',
+        cancelText: '再想想',
+        confirmColor: '#ff6600',
         success: function () {
           var _success = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(_ref) {
             var confirm;
@@ -317,7 +450,9 @@ var _default = {
                       title: '已取消',
                       icon: 'success'
                     });
-                    _this2.load();
+                    setTimeout(function () {
+                      return _this2.load();
+                    }, 600);
                     _context2.next = 12;
                     break;
                   case 10:

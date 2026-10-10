@@ -27,7 +27,8 @@
         { "path": "pages/wholesaler/publish", "style": { "navigationBarTitleText": "发布货盘" } },
         { "path": "pages/wholesaler/reservations", "style": { "navigationBarTitleText": "预订处理", "enablePullDownRefresh": true } },
         { "path": "pages/wholesaler/mine", "style": { "navigationBarTitleText": "批发商中心" } },
-        { "path": "pages/wholesaler/qrcode", "style": { "navigationBarTitleText": "店铺二维码" } }
+        { "path": "pages/wholesaler/qrcode", "style": { "navigationBarTitleText": "店铺二维码" } },
+        { "path": "pages/wholesaler-order-detail/wholesaler-order-detail", "style": { "navigationBarTitleText": "订单详情" } }
     ],
     "globalStyle": {
         "navigationBarTextStyle": "white",

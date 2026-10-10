@@ -9620,7 +9620,7 @@ var state = _vue.default.observable({
   token: _cache.token || '',
   role: _cache.role || '',
   profile: _cache.profile || null,
-  apiBase: _cache.apiBase || 'http://127.0.0.1:1992'
+  apiBase: _cache.apiBase || 'http://192.168.0.15:1992'
 });
 
 // Pinia 风格 store:用 getter 暴露 state,模板自动响应

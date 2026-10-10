@@ -6,12 +6,23 @@
       <view class="slogan">产地直连 · 批发采购更省心</view>
     </view>
 
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-icon">👀</text>
+        <text class="info-text">授权后可浏览所有货品和店铺</text>
+      </view>
+      <view class="info-row">
+        <text class="info-icon">🛒</text>
+        <text class="info-text">下单预订需登录采购商账号</text>
+      </view>
+    </view>
+
     <button class="btn-wx" :disabled="submitting" @tap="onWxLogin">
       <text class="wx-icon">💬</text>
-      <text>{{ submitting ? '授权中...' : '微信授权登录' }}</text>
+      <text>{{ submitting ? '授权中...' : '微信授权进入' }}</text>
     </button>
 
-    <view class="demo-tip">演示模式:后端 dev 登录接口直接生成 buyer token,可下单</view>
+    <view class="demo-tip">演示模式:一键进入游客浏览模式,无需真实微信授权</view>
 
     <view class="agreement">
       <text class="checkbox">☑</text>
@@ -34,24 +45,57 @@ export default {
   },
   methods: {
     /**
-     * 演示模式:M2 之前直接调后端 /api/dev/login 生成 buyer 真 token
-     * 之后接入真实 wx.login() → /api/wxlogin → 后端 wxlogin_test_mode 自动返 token
+     * 微信授权登录(已认证 appid):
+     *   1. 调 wx.login() 拿临时 code
+     *   2. 调 uni.getUserProfile() 拿昵称头像(M2+ 已收紧,需要用户主动授权)
+     *   3. 把 code + nickname + avatar 发给后端 /api/wxlogin
+     *   4. 后端 code2Session 换 openid,创建/更新 visitor,签发 token
      */
     async onWxLogin() {
       if (this.submitting) return
       this.submitting = true
       try {
-        // 调后端 dev 登录接口(测试模式,生成 buyer 真 token 写 user_token 表)
-        const data = await http.post('/api/dev/login', {
-          role: 'buyer',
-          account: 'buyer001'
+        // 1. 微信登录 → 临时 code
+        const loginRes = await new Promise((resolve, reject) => {
+          uni.login({
+            provider: 'weixin',
+            success: resolve,
+            fail: reject
+          })
+        })
+
+        // 2. 用户信息(昵称 + 头像)— 老版本基础库 2.x 必填,新版本可选
+        let nickname = '游客用户', avatar = ''
+        try {
+          const profile = await new Promise((resolve, reject) => {
+            uni.getUserProfile({
+              desc: '用于显示您的访客头像和昵称',
+              success: resolve,
+              fail: () => resolve(null)  // 用户拒绝也继续走,只用 code
+            })
+          })
+          if (profile) {
+            nickname = profile.userInfo.nickName || nickname
+            avatar   = profile.userInfo.avatarUrl || ''
+          }
+        } catch (e) { /* 忽略 */ }
+
+        // 3. 后端换 token
+        const data = await http.post('/api/wxlogin', {
+          code: loginRes.code,
+          nickname,
+          avatar
         }, { hideError: true })
 
-        // 写入 userStore
-        const profile = { id: data.user_id, account: 'buyer001', real_name: '演示采购' }
-        userStore.setLogin(data.token, data.role, profile)
+        // 4. 写入 userStore
+        const profile_data = data.visitor || {
+          id: data.user_id,
+          nickname,
+          avatar
+        }
+        userStore.setLogin(data.token, data.role, profile_data)
 
-        uni.showToast({ title: '微信授权登录成功(演示)', icon: 'success' })
+        uni.showToast({ title: '已进入浏览模式', icon: 'success' })
         setTimeout(() => uni.reLaunch({ url: '/pages/index/index' }), 600)
       } catch (e) {
         uni.showToast({ title: e.message || '登录失败', icon: 'none' })
@@ -79,7 +123,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 80rpx;
+  margin-bottom: 60rpx;
 }
 .big-icon { font-size: 140rpx; }
 .title {
@@ -93,6 +137,22 @@ export default {
   font-size: 26rpx;
   margin-top: 16rpx;
 }
+
+.info-card {
+  width: 100%;
+  background: linear-gradient(180deg, #fff7ed, #fef3c7);
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 50rpx;
+}
+.info-row {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+.info-icon { font-size: 32rpx; margin-right: 16rpx; }
+.info-text { font-size: 26rpx; color: #4b5563; }
+
 .btn-wx {
   background: #07c160;
   color: #fff;

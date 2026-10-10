@@ -1,7 +1,7 @@
 <?php
 
 return array (
-  'name' => '紫金山房源展示系统',
+  'name' => '果仓货盘小程序管理系统',
   'beian' => '',
   'cdnurl' => '',
   'version' => '1.0.5',
