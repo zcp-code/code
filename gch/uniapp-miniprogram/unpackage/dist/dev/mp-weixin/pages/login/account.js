@@ -223,9 +223,11 @@ var _default = {
       account: '',
       // 不预填,让用户自己输入(避免误点登录)
       password: '',
-      submitting: false
+      submitting: false,
+      redirect: '' // 登录成功后回跳的目标
     };
   },
+
   computed: {
     roleLabel: function roleLabel() {
       return this.role === 'wholesaler' ? '批发商' : '采购商';
@@ -233,6 +235,7 @@ var _default = {
   },
   onLoad: function onLoad(q) {
     this.role = q.role || 'buyer';
+    this.redirect = q.redirect ? decodeURIComponent(q.redirect) : '';
   },
   methods: {
     onAccountInput: function onAccountInput(e) {
@@ -271,21 +274,13 @@ var _default = {
               case 7:
                 data = _context.sent;
                 profile = _this.role === 'wholesaler' ? data.wholesaler : data.buyer;
-                _user.default.setLogin(data.token, data.role, profile);
+                _user.default.setLogin(data.token, data.role, profile, data.expire || 0);
                 uni.showToast({
                   title: '登录成功',
                   icon: 'success'
                 });
                 setTimeout(function () {
-                  if (_this.role === 'wholesaler') {
-                    uni.reLaunch({
-                      url: '/pages/wholesaler/dashboard/dashboard'
-                    });
-                  } else {
-                    uni.switchTab({
-                      url: '/pages/index/index'
-                    });
-                  }
+                  _user.default.afterLoginJump(_this.redirect, _this.role);
                 }, 600);
                 _context.next = 17;
                 break;

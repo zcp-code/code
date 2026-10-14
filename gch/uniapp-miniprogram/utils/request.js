@@ -25,6 +25,13 @@ function request(url, options = {}) {
       data: options.data || {},
       header,
       success: res => {
+        // HTTP 401:服务端用 HttpException 抛的,常见于角色不匹配 / token 失效
+        if (res.statusCode === 401) {
+          app.clearLogin()
+          uni.showToast({ title: '登录已失效,请重新登录', icon: 'none' })
+          reject(new Error('请先登录'))
+          return
+        }
         if (res.statusCode !== 200) {
           uni.showToast({ title: `HTTP ${res.statusCode}`, icon: 'none' })
           reject(new Error(`HTTP ${res.statusCode}`))
@@ -34,8 +41,9 @@ function request(url, options = {}) {
         if (body.code === 200) {
           resolve(body.data)
         } else if (body.code === 401) {
-          // token 失效 — 静默清除登录态,不弹 toast(避免大量 console 报错)
+          // token 失效 — 清登录态 + 提示
           app.clearLogin()
+          uni.showToast({ title: '登录已失效,请重新登录', icon: 'none' })
           reject(new Error(body.msg || '请先登录'))
         } else {
           // 业务失败:始终弹 toast(无论 hideError),确保用户能看到提示

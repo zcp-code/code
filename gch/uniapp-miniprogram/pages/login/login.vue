@@ -9,7 +9,7 @@
 
     <view class="role-list">
       <view class="role-card" @tap="enterRole('buyer')">
-        <text class="role-icon">🧑‍💼</text>
+        <text class="role-icon">🧑‍</text>
         <view class="role-info">
           <text class="role-title">我是采购商</text>
           <text class="role-desc">浏览货盘 · 一键预定 · 管理订单</text>
@@ -18,7 +18,7 @@
       </view>
 
       <view class="role-card" @tap="enterRole('wholesaler')">
-        <text class="role-icon">👨‍🌾</text>
+        <text class="role-icon">🌾</text>
         <view class="role-info">
           <text class="role-title">我是批发商</text>
           <text class="role-desc">发布货盘 · 处理预订 · 管理库存</text>

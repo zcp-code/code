@@ -106,7 +106,7 @@ export default {
           content: '下单需使用账号密码登录采购商账号',
           confirmText: '去登录',
           success: ({ confirm }) => {
-            if (confirm) uni.navigateTo({ url: '/pages/login/account?role=buyer' })
+            if (confirm) userStore.goLogin({ role: 'buyer' })
           }
         })
       }
@@ -142,7 +142,10 @@ export default {
     },
 
     async toggleFav() {
-      if (!userStore.token) return uni.navigateTo({ url: '/pages/login/account?role=buyer' })
+      // 收藏需要采购商身份,光有 token 不够(游客 token 会被服务端 401)
+      if (!userStore.isRealLogin || userStore.role !== 'buyer') {
+        return userStore.goLogin({ role: 'buyer' })
+      }
       try {
         await http.post(api.favoriteGoods, { goods_id: this.id }, { hideError: true })
         this.favorited = !this.favorited

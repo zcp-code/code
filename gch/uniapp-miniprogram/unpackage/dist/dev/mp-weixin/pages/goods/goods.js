@@ -294,8 +294,8 @@ var _default = {
           confirmText: '去登录',
           success: function success(_ref) {
             var confirm = _ref.confirm;
-            if (confirm) uni.navigateTo({
-              url: '/pages/login/account?role=buyer'
+            if (confirm) _user.default.goLogin({
+              role: 'buyer'
             });
           }
         });
@@ -382,12 +382,12 @@ var _default = {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (_user.default.token) {
+                if (!(!_user.default.isRealLogin || _user.default.role !== 'buyer')) {
                   _context3.next = 2;
                   break;
                 }
-                return _context3.abrupt("return", uni.navigateTo({
-                  url: '/pages/login/account?role=buyer'
+                return _context3.abrupt("return", _user.default.goLogin({
+                  role: 'buyer'
                 }));
               case 2:
                 _context3.prev = 2;

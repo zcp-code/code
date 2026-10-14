@@ -68,11 +68,11 @@
             <text class="iconfont icon-dianhua"></text>
             <text>电话</text>
           </view>
-          <view class="action-btn" :class="{ fav: s.favorited }" @tap.stop="toggleFav(s, $event)">
+        <!--  <view class="action-btn" :class="{ fav: s.favorited }" @tap.stop="toggleFav(s, $event)">
             <text>{{ s.favorited ? '★ 已收藏' : '☆ 收藏' }}</text>
-          </view>
+          </view> -->
           <view class="action-btn primary" @tap.stop="goDetail(s.id)">
-            <text>进店 →</text>
+            <text>进店 </text>
           </view>
         </view>
       </view>
@@ -131,7 +131,7 @@ export default {
           content: '店铺收藏需使用采购商账号',
           confirmText: '去登录',
           success: ({ confirm }) => {
-            if (confirm) uni.navigateTo({ url: '/pages/login/account?role=buyer' })
+            if (confirm) userStore.goLogin({ role: 'buyer' })
           }
         })
       }
@@ -257,16 +257,14 @@ page { background-color: #f5f5f5; }
   min-width: 0;
 }
 .shop-title-line {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-  flex-wrap: wrap;
+	margin-bottom: 10rpx;
 }
 .shop-name {
   font-size: 32rpx;
   font-weight: 600;
   color: #222;
   max-width: 50%;
+  margin-right: 10rpx;
 }
 .shop-badge {
   font-size: 22rpx;

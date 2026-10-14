@@ -288,6 +288,9 @@ CREATE TABLE `fy_shop` (
   `business_hours` varchar(64) DEFAULT NULL COMMENT '营业时间',
   `intro` text COMMENT '简介',
   `qrcode_url` varchar(255) DEFAULT NULL COMMENT '店铺二维码URL(小程序二维码)',
+  `wechat_qrcode` varchar(255) DEFAULT '' COMMENT '微信号二维码URL',
+  `wechat_name` varchar(64) DEFAULT '' COMMENT '微信号',
+  `certified` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否认证 0否 1是',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0停用1启用',
   `createtime` int(10) unsigned DEFAULT NULL,
   `updatetime` int(10) unsigned DEFAULT NULL,
@@ -437,44 +440,39 @@ INSERT INTO `fy_auth_group_access` VALUES (1, 1);
 
 -- 初始菜单（参考 FastAdmin 标准菜单 + 本项目业务菜单）
 INSERT INTO `fy_auth_rule` (`id`, `type`, `pid`, `name`, `title`, `icon`, `condition`, `remark`, `ismenu`, `createtime`, `updatetime`, `weigh`, `status`) VALUES
--- 仪表盘
-(1, 'menu_dir', 0, 'dashboard', '仪表盘', 'fa fa-tachometer', '', '仪表盘', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 150, 'normal'),
-(2, 'menu', 1, 'dashboard/index', '查看', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 150, 'normal'),
--- 仓货盘业务菜单（顶级）
-(10, 'menu_dir', 0, 'gch', '仓货盘管理', 'fa fa-cubes', '', '本项目业务', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 100, 'normal'),
--- 控制台
-(11, 'menu', 10, 'gch/dashboard', '控制台', 'fa fa-tachometer', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 99, 'normal'),
+-- 控制台（统一入口,登录默认落点）
+(11, 'menu', 0, 'gch/dashboard', '控制台', 'fa fa-tachometer', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 99, 'normal'),
 (12, 'menu', 11, 'gch/dashboard/index', '查看', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 99, 'normal'),
 -- 货品分类
-(20, 'menu', 10, 'gch/product_category', '货品分类', 'fa fa-list', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 90, 'normal'),
+(20, 'menu', 0, 'gch/product_category', '货品分类', 'fa fa-list', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 90, 'normal'),
 (21, 'menu', 20, 'gch/product_category/index', '查看', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 90, 'normal'),
 (22, 'menu', 20, 'gch/product_category/add', '添加', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 89, 'normal'),
 (23, 'menu', 20, 'gch/product_category/edit', '编辑', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 88, 'normal'),
 (24, 'menu', 20, 'gch/product_category/del', '删除', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 87, 'normal'),
 -- 店铺管理
-(30, 'menu', 10, 'gch/shop', '店铺管理', 'fa fa-shopping-bag', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 85, 'normal'),
+(30, 'menu', 0, 'gch/shop', '店铺管理', 'fa fa-shopping-bag', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 85, 'normal'),
 (31, 'menu', 30, 'gch/shop/index', '查看', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 85, 'normal'),
 (32, 'menu', 30, 'gch/shop/add', '添加', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 84, 'normal'),
 (33, 'menu', 30, 'gch/shop/edit', '编辑', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 83, 'normal'),
 (34, 'menu', 30, 'gch/shop/del', '删除', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 82, 'normal'),
 -- 货盘管理
-(40, 'menu', 10, 'gch/goods', '货盘管理', 'fa fa-th-large', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 80, 'normal'),
+(40, 'menu', 0, 'gch/goods', '货盘管理', 'fa fa-th-large', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 80, 'normal'),
 (41, 'menu', 40, 'gch/goods/index', '查看', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 80, 'normal'),
 (42, 'menu', 40, 'gch/goods/edit', '编辑', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 79, 'normal'),
 (43, 'menu', 40, 'gch/goods/status', '强制下架', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 78, 'normal'),
 -- 预订管理
-(50, 'menu', 10, 'gch/reservation', '预订管理', 'fa fa-calendar', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 75, 'normal'),
+(50, 'menu', 0, 'gch/reservation', '预订管理', 'fa fa-calendar', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 75, 'normal'),
 (51, 'menu', 50, 'gch/reservation/index', '查看', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 75, 'normal'),
 (52, 'menu', 50, 'gch/reservation/export', '导出', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 74, 'normal'),
 -- 用户管理 - 采购商
-(60, 'menu', 10, 'gch/buyer', '采购商管理', 'fa fa-users', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 70, 'normal'),
+(60, 'menu', 0, 'gch/buyer', '采购商管理', 'fa fa-users', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 70, 'normal'),
 (61, 'menu', 60, 'gch/buyer/index', '查看', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 70, 'normal'),
 (62, 'menu', 60, 'gch/buyer/add', '添加', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 69, 'normal'),
 (63, 'menu', 60, 'gch/buyer/edit', '编辑', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 68, 'normal'),
 (64, 'menu', 60, 'gch/buyer/status', '启用/停用', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 67, 'normal'),
 (65, 'menu', 60, 'gch/buyer/resetPwd', '重置密码', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 66, 'normal'),
 -- 用户管理 - 批发商
-(70, 'menu', 10, 'gch/wholesaler', '批发商管理', 'fa fa-user-md', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 65, 'normal'),
+(70, 'menu', 0, 'gch/wholesaler', '批发商管理', 'fa fa-user-md', '', '', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 65, 'normal'),
 (71, 'menu', 70, 'gch/wholesaler/index', '查看', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 65, 'normal'),
 (72, 'menu', 70, 'gch/wholesaler/add', '添加', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 64, 'normal'),
 (73, 'menu', 70, 'gch/wholesaler/edit', '编辑', 'fa fa-circle-o', '', '', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 63, 'normal'),

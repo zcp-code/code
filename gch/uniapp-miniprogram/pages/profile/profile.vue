@@ -97,22 +97,22 @@
  
      <!-- 第二组功能 -->
      <view class="cell-group">
-       <view v-if="isBuyer" class="cell" @tap="switchRole('wholesaler')">
+       <!-- <view v-if="isBuyer" class="cell" @tap="switchRole('wholesaler')">
          <view class="cell-icon blue">
            <text>🏪</text>
          </view>
          <text class="cell-label">切换为批发商</text>
          <text class="cell-arrow iconfont icon-xiangyou"></text>
-       </view>
+       </view> -->
  
-       <view v-if="isWholesaler" class="cell" @tap="switchRole('buyer')">
+      <!-- <view v-if="isWholesaler" class="cell" @tap="switchRole('buyer')">
          <view class="cell-icon purple">
            <text>🛒</text>
          </view>
          <text class="cell-label">切换为采购商</text>
          <text class="cell-arrow iconfont icon-xiangyou"></text>
        </view>
- 
+ -->
        <view class="cell cell-danger" @tap="logout">
          <view class="cell-icon danger">
            <text>🚪</text>
@@ -209,7 +209,7 @@ export default {
             const data = await http.post(api.wxLogin, {
               code, nickname: '游客' + Math.floor(Math.random() * 999), avatar: ''
             }, { hideError: true })
-            userStore.setLogin(data.token, 'visitor', data.visitor)
+            userStore.setLogin(data.token, 'visitor', data.visitor, data.expire || 0)
             uni.showToast({ title: '微信授权登录成功', icon: 'success' })
             setTimeout(() => uni.switchTab({ url: '/pages/index/index' }), 600)
           } catch (e) {
@@ -218,7 +218,7 @@ export default {
         }
       })
     },
-    goAccountLogin() { uni.navigateTo({ url: '/pages/login/account?role=buyer' }) },
+    goAccountLogin() { userStore.goLogin({ role: 'buyer' }) },
     goMyOrders(status) {
       const url = status ? `/pages/orders/orders?status=${status}` : '/pages/orders/orders'
       uni.navigateTo({ url })

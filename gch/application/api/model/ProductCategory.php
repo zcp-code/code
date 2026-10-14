@@ -13,18 +13,18 @@ class ProductCategory extends Model
     protected $updateTime = 'updatetime';
 
     /**
-     * 列表（含每个分类下的在售货盘数）
+     * 列表（只返回有在售货品的分类 + 附带每个分类下的货盘数 + 均价）
      */
     public static function listWithCount()
     {
-        $list = self::where('status', 1)->order('sort asc, id asc')->select();
-        foreach ($list as &$cat) {
-            $count = \think\Db::name('goods')
-                ->where('category_id', $cat->id)
-                ->where('status', 1)
-                ->count();
-            $cat->count = $count;
-        }
+        $list = self::alias('c')
+            ->field('c.*, COUNT(g.id) AS count, AVG(g.price) AS avg_price, MIN(g.price) AS min_price, MAX(g.price) AS max_price')
+            ->join('fy_goods g', 'g.category_id = c.id AND g.status = 1', 'LEFT')
+            ->where('c.status', 1)
+            ->group('c.id')
+            ->having('count > 0')
+            ->order('c.sort asc, c.id asc')
+            ->select();
         return $list;
     }
 }

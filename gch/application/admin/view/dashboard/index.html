@@ -60,33 +60,109 @@
         margin-top: 4px;
     }
 
-    /* === 图表区 === */
-    .chart-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin-bottom: 16px;
-    }
-    .chart-card {
+    /* === 果仓行情卡 === */
+    .market-card {
         background: #fff;
         border-radius: 8px;
         padding: 20px 24px;
         box-shadow: 0 1px 4px rgba(0,0,0,.04);
+        margin-bottom: 16px;
     }
-    .chart-title {
+    .market-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .market-title {
         font-size: 16px;
         font-weight: 600;
         color: #333;
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 16px;
     }
-    .chart-title .fa { color: #ff6600; }
-    .chart-area {
-        width: 100%;
-        height: 360px;
+    .market-title .fa { color: #ff6600; }
+    .market-summary {
+        font-size: 13px;
+        color: #999;
     }
+    .market-summary b {
+        color: #ff6600;
+        font-weight: 600;
+        font-size: 15px;
+        margin: 0 4px;
+    }
+
+    .market-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+    }
+    .market-item {
+        background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+        border-radius: 10px;
+        padding: 18px 20px;
+        border: 1px solid rgba(255, 102, 0, 0.1);
+        position: relative;
+        transition: all .2s;
+    }
+    .market-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 102, 0, 0.12);
+    }
+    .market-item-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #111;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 12px;
+    }
+    .market-item-cnt {
+        margin-left: auto;
+        font-size: 11px;
+        background: #ff6600;
+        color: #fff;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-weight: 500;
+    }
+    .market-item-price {
+        font-size: 28px;
+        font-weight: 700;
+        color: #d97706;
+        line-height: 1.2;
+    }
+    .market-item-unit {
+        font-size: 13px;
+        color: #999;
+        font-weight: 400;
+        margin-left: 4px;
+    }
+    .market-item-range {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed rgba(255, 102, 0, 0.15);
+        font-size: 12px;
+        color: #999;
+        display: flex;
+        justify-content: space-between;
+    }
+    .market-item-range b {
+        color: #666;
+        font-weight: 500;
+    }
+    .market-empty {
+        text-align: center;
+        padding: 60px 0;
+        color: #ccc;
+    }
+    .market-empty .fa { font-size: 48px; display: block; margin-bottom: 12px; color: #ddd; }
+    .market-empty-text { font-size: 14px; }
 
     /* === 大数据看板欢迎横幅 === */
     .hero {
@@ -103,14 +179,22 @@
     .hero-title { font-size: 22px; font-weight: 600; }
     .hero-sub { font-size: 13px; opacity: .85; margin-top: 6px; }
     .hero-time { font-size: 14px; opacity: .9; text-align: right; }
+
+    @media (max-width: 1200px) {
+        .market-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+        .kpi-row { grid-template-columns: repeat(2, 1fr); }
+        .market-grid { grid-template-columns: repeat(2, 1fr); }
+    }
 </style>
 
 <div class="panel panel-default panel-intro">
-    <div class="panel-heading">
+    <!-- <div class="panel-heading">
         {:build_heading(null, false)}
-    </div>
+    </div> -->
     <div class="panel-body">
-        <div class="dash">
+        <div class="">
 
             <!-- 欢迎横幅 -->
             <div class="hero">
@@ -175,127 +259,52 @@
                 <div class="kpi-card gray">
                     <div class="kpi-icon"><i class="fa fa-line-chart"></i></div>
                     <div class="kpi-info">
-                        <div class="kpi-num">¥{:sprintf('%.2f', max($weekly_avg[6]?:0, 0))}</div>
-                        <div class="kpi-label">今日均价</div>
+                        <div class="kpi-num">{$today_total|htmlentities}</div>
+                        <div class="kpi-label">今日在售款数</div>
                     </div>
                 </div>
             </div>
 
-            <!-- echarts 图表 -->
-            <div class="chart-row">
-                <!-- 一周每日均价折线图 -->
-                <div class="chart-card">
-                    <div class="chart-title">
-                        <i class="fa fa-line-chart"></i>
-                        一周内每日所有货品均价趋势
-                    </div>
-                    <div id="chart-weekly" class="chart-area"></div>
-                </div>
-                <!-- 本周各商品均价柱状图 -->
-                <div class="chart-card">
-                    <div class="chart-title">
+            <!-- 今日果仓行情 -->
+            <div class="market-card">
+                <div class="market-head">
+                    <div class="market-title">
                         <i class="fa fa-bar-chart"></i>
-                        本周每种商品均价 Top 10
+                        今日果仓行情
                     </div>
-                    <div id="chart-goods" class="chart-area"></div>
+                    <div class="market-summary">
+                        今日在售共 <b>{$today_total|htmlentities}</b> 款,涉及 <b>{:count($today_market)}</b> 个品名
+                    </div>
                 </div>
+
+                {if $today_market}
+                <div class="market-grid">
+                    {foreach name="today_market" item="m"}
+                    <div class="market-item">
+                        <div class="market-item-name">
+                            <i class="fa fa-apple" style="color:#ff6600;"></i>
+                            {$m.name|htmlentities}
+                            <span class="market-item-cnt">{$m.cnt} 款</span>
+                        </div>
+                        <div class="market-item-price">
+                            ¥{$m.avg_price|number_format=2}
+                            <span class="market-item-unit">/ {$m.unit|htmlentities}</span>
+                        </div>
+                        <div class="market-item-range">
+                            <span>最低 <b>¥{$m.min_price|number_format=2}</b></span>
+                            <span>最高 <b>¥{$m.max_price|number_format=2}</b></span>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+                {else}
+                <div class="market-empty">
+                    <i class="fa fa-inbox"></i>
+                    <div class="market-empty-text">今日暂无发布货品</div>
+                </div>
+                {/if}
             </div>
 
         </div>
     </div>
 </div>
-
-<!-- echarts -->
-<script src="__CDN__/assets/js/echarts.min.js"></script>
-<script src="__CDN__/assets/js/echarts-theme.js"></script>
-<script>
-    (function() {
-        // TP 5.1 没有 |raw 修饰符 — 用原生 PHP json_encode 直接注入 JS
-        var weeklyLabels = <?php echo json_encode($weekly_labels); ?>;
-        var weeklyAvg    = <?php echo json_encode($weekly_avg); ?>;
-        var goodsNames   = <?php echo json_encode($goods_names); ?>;
-        var goodsAvg     = <?php echo json_encode($goods_avg); ?>;
-
-        // 折线图
-        var chart1 = echarts.init(document.getElementById('chart-weekly'));
-        chart1.setOption({
-            tooltip: { trigger: 'axis', valueFormatter: v => '¥' + v },
-            grid: { left: 50, right: 20, top: 30, bottom: 40 },
-            xAxis: {
-                type: 'category',
-                data: weeklyLabels,
-                axisLine: { lineStyle: { color: '#ccc' } },
-                axisLabel: { color: '#666' }
-            },
-            yAxis: {
-                type: 'value',
-                name: '均价(元)',
-                nameTextStyle: { color: '#999' },
-                axisLabel: { color: '#999', formatter: '{value}' },
-                splitLine: { lineStyle: { color: '#eee' } }
-            },
-            series: [{
-                name: '日均单价',
-                type: 'line',
-                data: weeklyAvg,
-                smooth: true,
-                symbol: 'circle',
-                symbolSize: 8,
-                itemStyle: { color: '#ff6600' },
-                lineStyle: { color: '#ff6600', width: 3 },
-                areaStyle: {
-                    color: {
-                        type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-                        colorStops: [
-                            { offset: 0, color: 'rgba(255,102,0,.3)' },
-                            { offset: 1, color: 'rgba(255,102,0,.05)' }
-                        ]
-                    }
-                },
-                label: { show: true, color: '#ff6600', formatter: v => '¥' + v.value, position: 'top' }
-            }]
-        });
-
-        // 柱状图
-        var chart2 = echarts.init(document.getElementById('chart-goods'));
-        chart2.setOption({
-            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: v => '¥' + v },
-            grid: { left: 50, right: 30, top: 30, bottom: 80 },
-            xAxis: {
-                type: 'category',
-                data: goodsNames,
-                axisLabel: { color: '#666', interval: 0, rotate: 30 }
-            },
-            yAxis: {
-                type: 'value',
-                name: '均价(元)',
-                nameTextStyle: { color: '#999' },
-                axisLabel: { color: '#999' },
-                splitLine: { lineStyle: { color: '#eee' } }
-            },
-            series: [{
-                name: '商品均价',
-                type: 'bar',
-                data: goodsAvg,
-                barWidth: '40%',
-                itemStyle: {
-                    color: {
-                        type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-                        colorStops: [
-                            { offset: 0, color: '#ff8a5b' },
-                            { offset: 1, color: '#ff6600' }
-                        ]
-                    },
-                    borderRadius: [6, 6, 0, 0]
-                },
-                label: { show: true, position: 'top', color: '#ff6600', formatter: v => '¥' + v.value }
-            }]
-        });
-
-        // 响应式
-        window.addEventListener('resize', function() {
-            chart1.resize();
-            chart2.resize();
-        });
-    })();
-</script>

@@ -37,6 +37,14 @@
         </view>
         <text class="arrow">›</text>
       </view>
+      <view class="menu-item" @tap="goWechat">
+        <view class="menu-icon icon-green">💬</view>
+        <view class="menu-text">
+          <view class="menu-label">店铺微信</view>
+          <view class="menu-desc">设置微信号和二维码,采购商可一键加好友</view>
+        </view>
+        <text class="arrow">›</text>
+      </view>
 
     </view>
 
@@ -96,6 +104,7 @@ export default {
       } catch (e) {}
     },
     goQrcode() { uni.navigateTo({ url: '/pages/wholesaler/qrcode' }) },
+    goWechat() { uni.navigateTo({ url: '/pages/wholesaler/wechat' }) },
     changePwd() { uni.navigateTo({ url: '/pages/change-pwd/change-pwd?role=wholesaler' }) },
     goGoods() { uni.switchTab({ url: '/pages/wholesaler/goods' }) },
     goReservations() { uni.navigateTo({ url: '/pages/wholesaler/reservations' }) },

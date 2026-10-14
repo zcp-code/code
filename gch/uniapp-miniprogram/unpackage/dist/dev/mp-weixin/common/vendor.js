@@ -9585,6 +9585,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.userStore = exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 51));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 53));
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
 // store/user.js — Pinia 风格用户状态管理(零依赖,基于 Vue.observable)
 //
@@ -9596,22 +9598,111 @@ var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
 // Vue.observable 让 state 响应式,getter 在 template 里自动重渲染。
 
 var STORAGE_KEY = 'GCH_USER';
-function readCache() {
-  try {
-    return uni.getStorageSync(STORAGE_KEY) || {};
-  } catch (e) {
-    return {};
+
+// tabBar 页面(登录后跳转必须用 switchTab,不能用 redirectTo)
+var TAB_BAR_PAGES = ['pages/index/index', 'pages/shops/shops', 'pages/orders/orders', 'pages/profile/profile', 'pages/wholesaler/dashboard/dashboard', 'pages/wholesaler/goods', 'pages/wholesaler/reservations', 'pages/wholesaler/mine'];
+
+/** 获取当前页面的完整路径(含 query),登录后回跳用 */
+function getCurrentPath() {
+  var pages = typeof getCurrentPages === 'function' ? getCurrentPages() : [];
+  if (!pages.length) return '';
+  var cur = pages[pages.length - 1];
+  var opts = cur.options || {};
+  var qs = Object.keys(opts).filter(function (k) {
+    return opts[k] !== undefined && opts[k] !== null;
+  }).map(function (k) {
+    return "".concat(k, "=").concat(encodeURIComponent(opts[k]));
+  }).join('&');
+  return '/' + cur.route + (qs ? '?' + qs : '');
+}
+
+/** 登录后回跳处理:
+ *  - 有 redirect → 走对应路径(tab 用 reLaunch 更稳,普通用 redirectTo)
+ *  - 无 redirect → 按角色默认
+ */
+function afterLoginJump(redirect, role) {
+  if (redirect) {
+    var path = redirect.split('?')[0].replace(/^\//, '');
+    if (TAB_BAR_PAGES.includes(path)) {
+      // tabBar 用 reLaunch:从非 tab 页面切到 tabBar 页面最稳,避免 switchTab 卡死
+      uni.reLaunch({
+        url: redirect
+      });
+    } else {
+      uni.redirectTo({
+        url: redirect,
+        fail: function fail() {
+          return uni.reLaunch({
+            url: redirect
+          });
+        }
+      });
+    }
+    return;
+  }
+  if (role === 'wholesaler') {
+    uni.reLaunch({
+      url: '/pages/wholesaler/dashboard/dashboard'
+    });
+  } else if (role === 'visitor') {
+    uni.reLaunch({
+      url: '/pages/index/index'
+    });
+  } else {
+    uni.switchTab({
+      url: '/pages/index/index'
+    });
   }
 }
-function writeCache() {
+
+/** 任意页面调用:带 redirect 跳到登录页(登录后回到原页) */
+function goLogin() {
+  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+    _ref$role = _ref.role,
+    role = _ref$role === void 0 ? 'buyer' : _ref$role,
+    _ref$mode = _ref.mode,
+    mode = _ref$mode === void 0 ? 'account' : _ref$mode;
+  var redirect = encodeURIComponent(getCurrentPath());
+  var path = mode === 'wx' ? '/pages/wxlogin/wxlogin' : '/pages/login/account';
+  uni.navigateTo({
+    url: "".concat(path, "?role=").concat(role, "&redirect=").concat(redirect)
+  });
+}
+function readCache() {
   try {
-    uni.setStorageSync(STORAGE_KEY, {
-      token: state.token,
-      role: state.role,
-      profile: state.profile,
-      apiBase: state.apiBase
-    });
+    var data = uni.getStorageSync(STORAGE_KEY);
+    if (data && data.token) return data;
   } catch (e) {}
+  // 兜底:从备份 key 恢复(只剩 token,role/profile 丢了让用户重登)
+  try {
+    var backup = uni.getStorageSync('GCH_TK_BACKUP');
+    if (backup) {
+      console.warn('[userStore.readCache] 主 key 丢了,从备份恢复 token');
+      return {
+        token: backup,
+        role: '',
+        profile: null
+      };
+    }
+  } catch (e) {}
+  return {};
+}
+function writeCache() {
+  // 同步双写:主 key + 兼容 key(老版本/部分场景下兼容性更好)
+  var data = {
+    token: state.token,
+    role: state.role,
+    profile: state.profile,
+    apiBase: state.apiBase,
+    expire: state.expire
+  };
+  try {
+    uni.setStorageSync(STORAGE_KEY, data);
+    // 同步写一个简单 token-only 的备份,排查"丢了"时有用
+    if (data.token) uni.setStorageSync('GCH_TK_BACKUP', data.token);
+  } catch (e) {
+    console.error('[userStore.writeCache] failed:', e);
+  }
 }
 
 // 响应式 state(Vue.observable 让任何地方访问都会自动追踪依赖)
@@ -9620,7 +9711,8 @@ var state = _vue.default.observable({
   token: _cache.token || '',
   role: _cache.role || '',
   profile: _cache.profile || null,
-  apiBase: _cache.apiBase || 'http://192.168.0.15:1992'
+  apiBase: _cache.apiBase || 'http://192.168.0.15:1992',
+  expire: _cache.expire || 0 // token 过期时间(秒级时间戳),0 = 未知
 });
 
 // Pinia 风格 store:用 getter 暴露 state,模板自动响应
@@ -9637,6 +9729,9 @@ var userStore = {
   },
   get apiBase() {
     return state.apiBase;
+  },
+  get expire() {
+    return state.expire;
   },
   // === getters ===
   get isLogin() {
@@ -9667,9 +9762,11 @@ var userStore = {
   },
   // === actions ===
   setLogin: function setLogin(token, role, profile) {
+    var expire = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
     state.token = token;
     state.role = role;
     state.profile = profile;
+    state.expire = expire;
     writeCache();
   },
   setRole: function setRole(role) {
@@ -9694,7 +9791,78 @@ var userStore = {
   setApiBase: function setApiBase(url) {
     state.apiBase = url;
     writeCache();
-  }
+  },
+  /**
+   * 静默续期 token(返回 Promise,失败不抛错)
+   * - 仅在 token 距过期 < 1 天时才发请求
+   * - 不阻塞调用方
+   */
+  silentRefresh: function silentRefresh() {
+    var _this = this;
+    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+      var now, app, apiBase, res;
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (state.token) {
+                _context.next = 2;
+                break;
+              }
+              return _context.abrupt("return");
+            case 2:
+              now = Math.floor(Date.now() / 1000); // 剩余 > 1 天 或 没记录 expire → 不续期
+              if (!(!state.expire || state.expire - now > 86400)) {
+                _context.next = 5;
+                break;
+              }
+              return _context.abrupt("return");
+            case 5:
+              _context.prev = 5;
+              // 直接发请求(避免循环 import 引发循环依赖)
+              app = typeof getApp === 'function' ? getApp() : null;
+              apiBase = app ? app.globalData.apiBase : state.apiBase;
+              _context.next = 10;
+              return new Promise(function (resolve, reject) {
+                uni.request({
+                  url: apiBase + '/api/common/refreshToken',
+                  method: 'POST',
+                  header: {
+                    Token: state.token
+                  },
+                  success: function success(r) {
+                    return resolve(r);
+                  },
+                  fail: function fail(e) {
+                    return reject(e);
+                  }
+                });
+              });
+            case 10:
+              res = _context.sent;
+              if (res.statusCode === 200 && res.data && res.data.code === 200) {
+                state.expire = res.data.data.expire || 0;
+                writeCache();
+              } else if (res.statusCode === 401) {
+                // 续期失败(token 已死)→ 清登录态,让后续请求走重新登录
+                _this.clearAll();
+              }
+              _context.next = 16;
+              break;
+            case 14:
+              _context.prev = 14;
+              _context.t0 = _context["catch"](5);
+            case 16:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[5, 14]]);
+    }))();
+  },
+  // === 登录跳转工具 ===
+  goLogin: goLogin,
+  afterLoginJump: afterLoginJump
 };
 exports.userStore = userStore;
 var _default = userStore;
@@ -9926,6 +10094,16 @@ function request(url) {
       data: options.data || {},
       header: header,
       success: function success(res) {
+        // HTTP 401:服务端用 HttpException 抛的,常见于角色不匹配 / token 失效
+        if (res.statusCode === 401) {
+          app.clearLogin();
+          uni.showToast({
+            title: '登录已失效,请重新登录',
+            icon: 'none'
+          });
+          reject(new Error('请先登录'));
+          return;
+        }
         if (res.statusCode !== 200) {
           uni.showToast({
             title: "HTTP ".concat(res.statusCode),
@@ -9938,8 +10116,12 @@ function request(url) {
         if (body.code === 200) {
           resolve(body.data);
         } else if (body.code === 401) {
-          // token 失效 — 静默清除登录态,不弹 toast(避免大量 console 报错)
+          // token 失效 — 清登录态 + 提示
           app.clearLogin();
+          uni.showToast({
+            title: '登录已失效,请重新登录',
+            icon: 'none'
+          });
           reject(new Error(body.msg || '请先登录'));
         } else {
           // 业务失败:始终弹 toast(无论 hideError),确保用户能看到提示
@@ -10007,6 +10189,9 @@ var _default = {
   wxLogin: '/api/wxlogin',
   commonConfig: '/api/common/config',
   commonUpload: '/api/common/upload',
+  commonRefreshToken: '/api/common/refreshToken',
+  // 静默续期
+
   // 公开浏览
   goodsList: '/api/goods',
   goodsDetail: function goodsDetail(id) {
@@ -10058,6 +10243,10 @@ var _default = {
   wholesalerReservationConfirm: '/api/wholesaler/reservation_confirm',
   // 下划线!斜杠 pathinfo 会落到 reservation()->reservation_detail
   wholesalerReservationCancel: '/api/wholesaler/reservation_cancel',
+  // 批发商店铺微信信息(给采购商"加微信"功能用)
+  wholesalerWechatGet: '/api/wholesaler/wechat',
+  // GET 拉取, POST 更新
+
   // 登录态辅助
   pendingRoleKey: 'pending_role' // 起始页 → 登录页 之间传递角色
 };

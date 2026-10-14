@@ -13,6 +13,7 @@ use think\Route;
 Route::post('wxlogin',           'api/WxLogin/index');
 Route::get('common/config',      'api/Common/config');
 Route::post('common/upload',     'api/Common/upload');
+Route::post('common/refreshToken', 'api/Common/refreshToken');  // 静默续期(需 header 带 token)
 
 // ========== 公开浏览（无需登录） ==========
 Route::get('categories',         'api/Category/index');
@@ -49,6 +50,9 @@ Route::post('wholesaler/logout',        'api/Wholesaler/logout');
 Route::get('wholesaler/profile',        'api/Wholesaler/profile');
 Route::post('wholesaler/changePwd',     'api/Wholesaler/changePwd');
 Route::get('wholesaler/qrcode',         'api/Wholesaler/qrcode');
+// 店铺微信信息:GET 拉取 / POST 更新(批发商自助)
+Route::get('wholesaler/wechat',          'api/Wholesaler/wechat');
+Route::post('wholesaler/wechat',         'api/Wholesaler/wechat');
 
 // 批发商货盘
 Route::get('wholesaler/categories',     'api/WholesalerGoods/categories');

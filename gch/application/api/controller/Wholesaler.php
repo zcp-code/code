@@ -165,6 +165,65 @@ class Wholesaler extends ApiBase
         ]);
     }
 
+    /**
+     * 批发商自助维护店铺微信信息(给采购商"加微信"功能用)
+     * GET  → 返回当前店铺的 wechat_qrcode / wechat_name
+     * POST → 更新(只更新非空字段,允许只改一个)
+     * 入参:wechat_qrcode(图片URL), wechat_name(微信号)
+     */
+    public function wechat()
+    {
+        $this->_requireAuth();
+        $wh = WholesalerModel::get($this->user['user_id']);
+        if (!$wh || !$wh->shop_id) return $this->error('您尚未绑定店铺');
+
+        $shop = Shop::get($wh->shop_id);
+        if (!$shop) return $this->error('店铺不存在');
+
+        // GET:返回当前值
+        if ($this->request->isGet()) {
+            return $this->success([
+                'shop_id'        => $shop->id,
+                'shop_name'      => $shop->name,
+                'wechat_qrcode'  => $shop->wechat_qrcode ?? '',
+                'wechat_name'    => $shop->wechat_name   ?? '',
+            ]);
+        }
+
+        // POST:更新
+        $raw = file_get_contents('php://input');
+        $json = $raw ? json_decode($raw, true) : [];
+        if (!is_array($json) || empty($json)) {
+            $json = $this->request->post();
+            if (!is_array($json)) $json = [];
+        }
+
+        $updates = [];
+        if (isset($json['wechat_qrcode'])) {
+            $url = trim((string)$json['wechat_qrcode']);
+            // 简单校验:必须是 http(s):// 开头,防止注入乱七八糟的值
+            if ($url !== '' && !preg_match('#^https?://#i', $url)) {
+                return $this->error('二维码 URL 必须以 http:// 或 https:// 开头');
+            }
+            $updates['wechat_qrcode'] = $url;
+        }
+        if (isset($json['wechat_name'])) {
+            $name = trim((string)$json['wechat_name']);
+            if (mb_strlen($name) > 64) return $this->error('微信号长度不能超过 64 字符');
+            $updates['wechat_name'] = $name;
+        }
+
+        if (empty($updates)) {
+            return $this->error('没有要更新的字段');
+        }
+
+        $shop->save($updates);
+        return $this->success([
+            'wechat_qrcode' => $updates['wechat_qrcode'] ?? $shop->wechat_qrcode,
+            'wechat_name'   => $updates['wechat_name']   ?? $shop->wechat_name,
+        ], '已保存');
+    }
+
     // === 货盘管理(原 WholesalerGoods) ===
 
     public function categories()

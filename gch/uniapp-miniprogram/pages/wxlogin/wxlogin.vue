@@ -40,8 +40,12 @@ import userStore from '@/store/user.js'
 export default {
   data() {
     return {
-      submitting: false
+      submitting: false,
+      redirect: ''
     }
+  },
+  onLoad(q) {
+    this.redirect = q.redirect ? decodeURIComponent(q.redirect) : ''
   },
   methods: {
     /**
@@ -93,10 +97,12 @@ export default {
           nickname,
           avatar
         }
-        userStore.setLogin(data.token, data.role, profile_data)
+        userStore.setLogin(data.token, data.role, profile_data, data.expire || 0)
 
         uni.showToast({ title: '已进入浏览模式', icon: 'success' })
-        setTimeout(() => uni.reLaunch({ url: '/pages/index/index' }), 600)
+        setTimeout(() => {
+          userStore.afterLoginJump(this.redirect, 'visitor')
+        }, 600)
       } catch (e) {
         uni.showToast({ title: e.message || '登录失败', icon: 'none' })
       }

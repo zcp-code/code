@@ -39,11 +39,11 @@ class Index extends Backend
                 config('fastadmin.' . $key, $cookieValue);
             }
         }
-        //左侧菜单
+        //左侧菜单(只留"控制台"作为统一入口,原 FastAdmin 默认的"仪表盘"已下线)
         list($menulist, $navlist, $fixedmenu, $referermenu) = $this->auth->getSidebar([
-            'dashboard' => 'hot',
-            'addon'     => ['new', 'red', 'badge'],
-            'auth/rule' => __('Menu'),
+            'gch/dashboard' => 'hot',
+            'addon'         => ['new', 'red', 'badge'],
+            'auth/rule'     => __('Menu'),
         ], $this->view->site['fixedpage']);
         $action = $this->request->request('action');
         if ($this->request->isPost()) {
@@ -141,6 +141,16 @@ class Index extends Backend
             $this->success(__('Logout successful'), 'index/login');
         }
         return $this->view->fetch();
+    }
+
+    /**
+     * 给前端 JS 拿腾讯地图 key(避免 key 出现在 view 源码里)
+     * GET /admin/index/getMapKey  → {code, key}
+     */
+    public function getMapKey()
+    {
+        $key = \think\Env::get('map.tx_key', '');
+        return $this->success($key);
     }
 
 }

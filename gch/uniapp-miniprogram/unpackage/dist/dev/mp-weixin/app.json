@@ -20,6 +20,7 @@
     "pages/wholesaler/reservations",
     "pages/wholesaler/mine",
     "pages/wholesaler/qrcode",
+    "pages/wholesaler/wechat",
     "pages/wholesaler-order-detail/wholesaler-order-detail"
   ],
   "subPackages": [],

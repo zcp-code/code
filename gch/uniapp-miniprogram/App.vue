@@ -11,14 +11,27 @@ export default {
   },
 
   onLaunch() {
-    // 启动:未登录 → 登录页;批发商 → 工作台;采购商 → 首页
-    const role = userStore.role
-    if (role === 'wholesaler') {
-      uni.reLaunch({ url: '/pages/wholesaler/dashboard/dashboard' })
-    } else if (role === 'buyer') {
-      uni.reLaunch({ url: '/pages/index/index' })
-    } else {
+    // 启动诊断(上线时可注释掉)
+    console.log('[App.onLaunch] storage:', uni.getStorageSync('GCH_USER'))
+    console.log('[App.onLaunch] isRealLogin:', userStore.isRealLogin, 'role:', userStore.role, 'token.len:', (userStore.token || '').length)
+
+    // 启动:看持久化 token 决定去向
+    //   1. 没登录态(token 缺失/无效) → 登录入口
+    //   2. 批发商 → 工作台
+    //   3. 采购商 / 游客 → 首页(都能浏览,只是游客不能下单)
+    if (!userStore.isRealLogin) {
+      console.log('[App.onLaunch] 无登录态 → 跳登录页')
       uni.reLaunch({ url: '/pages/login/login' })
+      return
+    }
+    // 静默续期(token 剩余 < 1 天才发请求,失败不影响主流程)
+    userStore.silentRefresh()
+    if (userStore.role === 'wholesaler') {
+      console.log('[App.onLaunch] 批发商 → 工作台')
+      uni.reLaunch({ url: '/pages/wholesaler/dashboard/dashboard' })
+    } else {
+      console.log('[App.onLaunch] 采购商/游客 → 首页')
+      uni.reLaunch({ url: '/pages/index/index' })
     }
   },
 

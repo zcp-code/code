@@ -187,8 +187,12 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 var _default = {
   data: function data() {
     return {
-      submitting: false
+      submitting: false,
+      redirect: ''
     };
+  },
+  onLoad: function onLoad(q) {
+    this.redirect = q.redirect ? decodeURIComponent(q.redirect) : '';
   },
   methods: {
     /**
@@ -265,15 +269,13 @@ var _default = {
                   nickname: nickname,
                   avatar: avatar
                 };
-                _user.default.setLogin(data.token, data.role, profile_data);
+                _user.default.setLogin(data.token, data.role, profile_data, data.expire || 0);
                 uni.showToast({
                   title: '已进入浏览模式',
                   icon: 'success'
                 });
                 setTimeout(function () {
-                  return uni.reLaunch({
-                    url: '/pages/index/index'
-                  });
+                  _user.default.afterLoginJump(_this.redirect, 'visitor');
                 }, 600);
                 _context.next = 29;
                 break;

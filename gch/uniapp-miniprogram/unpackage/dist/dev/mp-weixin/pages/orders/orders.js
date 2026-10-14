@@ -101,7 +101,7 @@ var components
 try {
   components = {
     customTabbar: function () {
-      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 200))
+      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 208))
     },
   }
 } catch (e) {
@@ -215,7 +215,7 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
-    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
+    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 208));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var STATUS_TABS = [{
@@ -474,8 +474,8 @@ var _default = {
       });
     },
     goLogin: function goLogin() {
-      uni.navigateTo({
-        url: '/pages/login/account?role=buyer'
+      _user.default.goLogin({
+        role: 'buyer'
       });
     },
     formatTime: function formatTime(ts) {

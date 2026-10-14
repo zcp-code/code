@@ -4,6 +4,7 @@ export default {
   wxLogin:        '/api/wxlogin',
   commonConfig:   '/api/common/config',
   commonUpload:   '/api/common/upload',
+  commonRefreshToken: '/api/common/refreshToken',  // 静默续期
 
   // 公开浏览
   goodsList:      '/api/goods',
@@ -49,6 +50,9 @@ export default {
   wholesalerReservationDetail: id => `/api/wholesaler/reservation/${id}`,
   wholesalerReservationConfirm: '/api/wholesaler/reservation_confirm',  // 下划线!斜杠 pathinfo 会落到 reservation()->reservation_detail
   wholesalerReservationCancel:  '/api/wholesaler/reservation_cancel',
+
+  // 批发商店铺微信信息(给采购商"加微信"功能用)
+  wholesalerWechatGet:    '/api/wholesaler/wechat',  // GET 拉取, POST 更新
 
   // 登录态辅助
   pendingRoleKey: 'pending_role'   // 起始页 → 登录页 之间传递角色

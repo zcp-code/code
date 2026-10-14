@@ -93,6 +93,23 @@ class Buyer extends Backend
     }
 
     /**
+     * 账号唯一性校验(FastAdmin 表单 remote 验证用)
+     * 入参: account (排除自身 id 用,默认无)
+     * 出参: true(可用)/ 错误字符串(已被占用)
+     */
+    public function checkAccountUnique()
+    {
+        $account = $this->request->param('account', '');
+        $id      = (int)$this->request->param('id', 0);
+        if (empty($account)) return $this->success(true);
+
+        $query = $this->model->where('account', $account);
+        if ($id > 0) $query->where('id', '<>', $id);
+        $exists = $query->find();
+        return $exists ? $this->success(false, '该账号已存在') : $this->success(true);
+    }
+
+    /**
      * 重置密码
      */
     public function resetPwd($ids = '')

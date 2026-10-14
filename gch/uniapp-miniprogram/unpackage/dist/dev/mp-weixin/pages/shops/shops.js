@@ -101,7 +101,7 @@ var components
 try {
   components = {
     customTabbar: function () {
-      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 200))
+      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 208))
     },
   }
 } catch (e) {
@@ -280,7 +280,7 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
-    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
+    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 208));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var _default = {
@@ -387,8 +387,8 @@ var _default = {
                   confirmText: '去登录',
                   success: function success(_ref) {
                     var confirm = _ref.confirm;
-                    if (confirm) uni.navigateTo({
-                      url: '/pages/login/account?role=buyer'
+                    if (confirm) _user.default.goLogin({
+                      role: 'buyer'
                     });
                   }
                 }));

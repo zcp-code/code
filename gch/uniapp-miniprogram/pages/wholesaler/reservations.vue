@@ -35,31 +35,32 @@
 
         <!-- 货品行:封面 + 信息 -->
         <view class="goods-row">
-          <image class="goods-cover" :src="r.cover || '/static/placeholder.png'" mode="aspectFill" @tap="goDetail(r.id)"></image>
-          <view class="goods-info" @tap="goDetail(r.id)">
+          <image class="goods-cover" :src="r.cover || '/static/placeholder.png'" mode="aspectFill" ></image>
+          <view class="goods-info" >
             <view class="goods-name ellipsis-2">{{ r.goods_name }}</view>
             <view class="goods-spec">¥{{ Number(r.price).toFixed(2) }}/{{ r.unit }} × {{ r.quantity.toLocaleString() }} {{ r.unit }}</view>
             <view class="goods-total">¥{{ (Number(r.price) * r.quantity).toFixed(2) }}</view>
           </view>
         </view>
 
-        <!-- 采购商 + 店铺 -->
-        <view class="kv-row">
-          <text class="kv-k">采购商</text>
-          <text class="kv-v">{{ r.buyer_name || '-' }}</text>
-        </view>
-        <view class="kv-row">
-          <text class="kv-k">店铺</text>
-          <text class="kv-v">{{ r.shop_name || '-' }}</text>
+        <!-- 采购商 + 店铺 (合并单行) -->
+        <view class="party-row">
+          <view class="party-item">
+            <!-- <view class="party-icon party-icon-buyer">买</view> -->
+            <text class="party-name ellipsis">{{ r.buyer_name || '-' }}</text>
+          </view>
+          <!-- <view class="party-item">
+            <view class="party-icon party-icon-shop">店</view>
+            <text class="party-name ellipsis">{{ r.shop_name || '-' }}</text>
+          </view> -->
         </view>
 
         <!-- 底部操作 -->
         <view class="res-actions">
-          <view class="btn-gray" @tap="goDetail(r.id)">详情</view>
-          <view v-if="r.status === 'pending'" class="btn-warn" @tap.stop="cancel(r)">取消</view>
-          <view v-if="r.status === 'pending'" class="btn-outline" @tap.stop="callBuyerFor(r)">📞 联系</view>
-          <view v-if="r.status === 'pending'" class="btn-primary" @tap.stop="confirm(r)">✓ 确认</view>
-          <view v-else class="btn-outline" @tap="callBuyerFor(r)">📞 联系</view>
+			<view v-if="r.status === 'pending'" class="btn-outline btn" @tap.stop="callBuyerFor(r)">📞 联系</view>
+          <view v-if="r.status === 'pending'" class="btn-warn btn" @tap.stop="cancel(r)">取消</view>          
+          <view v-if="r.status === 'pending'" class="btn-primary btn" @tap.stop="confirm(r)">✓ 确认</view>
+          <view v-else class="btn-outline btn" @tap="callBuyerFor(r)">📞 联系</view>
         </view>
       </view>
 
@@ -301,24 +302,56 @@ page { background-color: #f5f5f5; }
   margin-top: 6rpx;
 }
 
-/* 采购商 + 店铺 */
-.kv-row {
-  display: flex;
-  font-size: 24rpx;
-  padding: 6rpx 0;
-  align-items: center;
+/* 采购商 + 店铺 (合并单行) */
+.party-row {
+  background: #f7f8fa;
+  border-radius: 8rpx;
+  padding: 12rpx 16rpx;
+  margin-top: 4rpx;
 }
-.kv-k { color: #999; width: 110rpx; flex-shrink: 0; }
-.kv-v { color: #555; flex: 1; }
+.party-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-top:10rpx;
+}
+.party-icon {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  color: #fff;
+  font-weight: 500;
+  flex-shrink: 0;
+  margin-right: 6rpx;
+}
+.party-icon-buyer { background: linear-gradient(135deg, #ff9966, #ff6600); }
+.party-icon-shop  { background: linear-gradient(135deg, #4facfe, #00b3a4); }
+.party-name {
+  font-size: 24rpx;
+  color: #555;
+  flex: 1;
+  min-width: 0;
+}
+
 
 /* 操作按钮 */
 .res-actions {
   display: flex;
   gap: 12rpx;
   margin-top: 16rpx;
+  justify-content: flex-end;
+}
+.btn{
+	width: 25%;
+	flex: 0 0 25%;
 }
 .btn-gray {
-  flex: 1;
+
   background: #f5f5f5;
   color: #666;
   border-radius: 32rpx;
@@ -328,7 +361,7 @@ page { background-color: #f5f5f5; }
 }
 .btn-gray:active { background: #e5e5e5; }
 .btn-warn {
-  flex: 1;
+  
   background: #fff;
   color: #e55a00;
   border: 1rpx solid #ff6600;
@@ -338,7 +371,7 @@ page { background-color: #f5f5f5; }
   text-align: center;
 }
 .btn-outline {
-  flex: 1;
+ 
   background: #fff;
   color: #ff6600;
   border: 1rpx solid #ff6600;
@@ -348,7 +381,7 @@ page { background-color: #f5f5f5; }
   text-align: center;
 }
 .btn-primary {
-  flex: 1.5;
+
   background: #ff6600;
   color: #fff;
   border-radius: 32rpx;

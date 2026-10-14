@@ -225,7 +225,7 @@ export default {
       })
     },
     goDetail(id) { uni.navigateTo({ url: `/pages/reservation-detail/reservation-detail?id=${id}` }) },
-    goLogin() { uni.navigateTo({ url: '/pages/login/account?role=buyer' }) },
+    goLogin() { userStore.goLogin({ role: 'buyer' }) },
     formatTime(ts) {
       if (!ts) return ''
       const d = new Date(ts * 1000)

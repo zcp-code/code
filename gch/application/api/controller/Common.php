@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 
+use extend\gch\Token;
 use think\Env;
 
 /**
@@ -21,6 +22,43 @@ class Common extends ApiBase
             'min_appid'  => Env::get('wechat.min_appid', ''),
             'image_host' => '', // 图片 CDN 域名
         ]);
+    }
+
+    /**
+     * 静默续期 token(在 token 即将过期时调用,延长 7 天)
+     * - 不需要新生成 token,直接 UPDATE expire_time
+     * - 不修改任何业务数据
+     * - 失败(401 等)不影响主流程
+     *
+     * 入参:无(从 header.Token 取当前 token)
+     * 返回: { token, expire }  // token 字符串没变,主要是给前端同步本地 expire
+     */
+    public function refreshToken()
+    {
+        $token = $this->request->header('Token', '');
+        if (empty($token)) {
+            return $this->error('缺少 Token', 401);
+        }
+
+        $row = \think\Db::name('user_token')
+            ->where('token', $token)
+            ->where('expire_time', '>', time())
+            ->find();
+        if (!$row) {
+            return $this->error('Token 已失效', 401);
+        }
+
+        // 续期 7 天
+        $newExpire = time() + Token::TOKEN_EXPIRE;
+        \think\Db::name('user_token')
+            ->where('token', $token)
+            ->update(['expire_time' => $newExpire]);
+
+        return $this->success([
+            'token'  => $token,
+            'expire' => $newExpire,
+            'role'   => $row['role'],
+        ], '已续期');
     }
 
     /**

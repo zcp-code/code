@@ -9,12 +9,12 @@
       <view v-for="g in list" :key="g.id" class="goods-card">
         <image class="cover" :src="g.cover || '/static/placeholder.png'" mode="aspectFill"></image>
         <view class="info">
-          <view class="name ellipsis-2">{{g.name}}</view>
+          <view class="name ellipsis-2">{{g.name}}  <text class="status" :class="'status-' + g.status">{{statusLabel(g.status)}}</text></view>
           <view class="meta">¥{{g.price}}/{{g.unit}} · 库存 {{g.total_stock}}</view>
           <view class="meta">已订 {{g.reserved_quantity}} · 可订 {{g.available}}</view>
-          <view class="meta time">{{formatTime(g.publish_time)}}</view>
+          
           <view class="status-row">
-            <text class="status" :class="'status-' + g.status">{{statusLabel(g.status)}}</text>
+			<view class="meta time">{{formatTime(g.publish_time)}}</view>
             <view class="actions">
               <view class="btn small warn" @tap="toggleStatus(g)">
                 {{ g.status === 1 ? '下架' : '上架' }}

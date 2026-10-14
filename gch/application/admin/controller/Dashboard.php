@@ -40,7 +40,6 @@ class Dashboard extends Backend
     {
         $todayStart = strtotime(date('Y-m-d'));
         $todayEnd   = $todayStart + 86400;
-        $weekStart  = $todayStart - 86400 * 6;   // 一周前(含今天共 7 天)
 
         // 1. KPI 数字卡片
         $this->view->assign([
@@ -53,41 +52,44 @@ class Dashboard extends Backend
             'total_goods'       => Db::name('goods')->count(),
         ]);
 
-        // 2. 一周内每日均价折线图(每天所有在售货品的平均单价)
-        $weeklyAvg = [];
-        $weeklyLabels = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $dayStart = $todayStart - 86400 * $i;
-            $dayEnd   = $dayStart + 86400;
-            $weeklyLabels[] = date('m-d', $dayStart);
-            $avg = Db::name('goods')
-                ->whereBetween('publish_time', [$dayStart, $dayEnd])
-                ->where('status', 1)
-                ->avg('price');
-            $weeklyAvg[] = $avg === null ? 0 : round((float)$avg, 2);
-        }
-
-        // 3. 一周内每种商品的均价柱状图(取最近 7 天 publish 的在售货品,按 name 分组)
-        $goodsStats = Db::name('goods')
-            ->field('name, AVG(price) as avg_price, COUNT(*) as cnt')
-            ->whereBetween('publish_time', [$weekStart, $todayEnd])
+        // 2. 今日果仓行情:按"品名"分组聚合今日发布且在售的货品
+        //   字段:品名 / 均价 / 最低 / 最高 / 款数 / 单位(取出现最多的)
+        $rows = Db::name('goods')
+            ->field('name, AVG(price) as avg_price, MIN(price) as min_price, MAX(price) as max_price, COUNT(*) as cnt')
+            ->whereBetween('publish_time', [$todayStart, $todayEnd])
             ->where('status', 1)
             ->group('name')
-            ->order('cnt desc')
-            ->limit(10)
+            ->order('cnt desc, avg_price desc')
             ->select();
-        $goodsNames   = [];
-        $goodsAvgList = [];
-        foreach ($goodsStats as $g) {
-            $goodsNames[]   = $g['name'];
-            $goodsAvgList[] = round((float)$g['avg_price'], 2);
+
+        $todayMarket = [];
+        foreach ($rows as $r) {
+            // 取该品名今日最常用的单位(简单取一个货品的 unit)
+            $unit = Db::name('goods')
+                ->where('name', $r['name'])
+                ->whereBetween('publish_time', [$todayStart, $todayEnd])
+                ->where('status', 1)
+                ->order('id desc')
+                ->value('unit') ?: '';
+            $todayMarket[] = [
+                'name'      => $r['name'],
+                'unit'      => $unit,
+                'avg_price' => round((float)$r['avg_price'], 2),
+                'min_price' => round((float)$r['min_price'], 2),
+                'max_price' => round((float)$r['max_price'], 2),
+                'cnt'       => (int)$r['cnt'],
+            ];
         }
 
+        // 今日在售总款数(用于"今日新增"汇总)
+        $todayTotal = Db::name('goods')
+            ->whereBetween('publish_time', [$todayStart, $todayEnd])
+            ->where('status', 1)
+            ->count();
+
         $this->view->assign([
-            'weekly_labels' => json_encode($weeklyLabels),
-            'weekly_avg'    => json_encode($weeklyAvg),
-            'goods_names'   => json_encode($goodsNames),
-            'goods_avg'     => json_encode($goodsAvgList),
+            'today_market' => $todayMarket,
+            'today_total'  => $todayTotal,
         ]);
 
         return $this->view->fetch();

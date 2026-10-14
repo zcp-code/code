@@ -102,23 +102,28 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var g0 = _vm.shop ? _vm.loading && _vm.goodsList.length === 0 : null
-  var g1 = _vm.shop && !g0 ? _vm.goodsList.length : null
+  var g0 = _vm.shop ? _vm.goodsList.length : null
+  var g1 = _vm.shop ? _vm.loading && _vm.goodsList.length === 0 : null
+  var g2 = _vm.shop && !g1 ? _vm.goodsList.length : null
   var l0 = _vm.shop
     ? _vm.__map(_vm.goodsList, function (g, __i0__) {
         var $orig = _vm.__get_orig(g)
-        var g2 = Number(g.price).toFixed(2)
+        var m0 = _vm.isToday(g.publish_time)
+        var m1 = _vm.formatDate(g.publish_time)
+        var g3 = Number(g.price).toFixed(2)
         return {
           $orig: $orig,
-          g2: g2,
+          m0: m0,
+          m1: m1,
+          g3: g3,
         }
       })
     : null
-  var g3 =
-    _vm.shop && _vm.bookGoods ? Number(_vm.bookGoods.price).toFixed(2) : null
   var g4 =
-    _vm.shop && _vm.bookGoods ? _vm.bookGoods.available.toLocaleString() : null
+    _vm.shop && _vm.bookGoods ? Number(_vm.bookGoods.price).toFixed(2) : null
   var g5 =
+    _vm.shop && _vm.bookGoods ? _vm.bookGoods.available.toLocaleString() : null
+  var g6 =
     _vm.shop && _vm.bookGoods
       ? ((Number(_vm.bookGoods.price) || 0) * _vm.bookQty).toFixed(2)
       : null
@@ -128,10 +133,11 @@ var render = function () {
       $root: {
         g0: g0,
         g1: g1,
+        g2: g2,
         l0: l0,
-        g3: g3,
         g4: g4,
         g5: g5,
+        g6: g6,
       },
     }
   )
@@ -197,12 +203,16 @@ var _default = {
       showSheet: false,
       bookGoods: null,
       bookQty: 1,
-      submitting: false
+      submitting: false,
+      showWxModal: false
     };
   },
   computed: {
     isBuyer: function isBuyer() {
       return _user.default.isBuyer;
+    },
+    hasWechat: function hasWechat() {
+      return !!(this.shop && (this.shop.wechat_qrcode || this.shop.wechat_name));
     },
     totalToday: function totalToday() {
       var todayStart = Math.floor(new Date().setHours(0, 0, 0, 0) / 1000);
@@ -340,12 +350,12 @@ var _default = {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (_user.default.token) {
+                if (!(!_user.default.isRealLogin || _user.default.role !== 'buyer')) {
                   _context3.next = 2;
                   break;
                 }
-                return _context3.abrupt("return", uni.navigateTo({
-                  url: '/pages/login/account?role=buyer'
+                return _context3.abrupt("return", _user.default.goLogin({
+                  role: 'buyer'
                 }));
               case 2:
                 _context3.prev = 2;
@@ -392,6 +402,39 @@ var _default = {
         });
       }, 600);
     },
+    // === 加微信 ===
+    openWechat: function openWechat() {
+      if (!this.hasWechat) {
+        return uni.showToast({
+          title: '商户暂未提供微信信息',
+          icon: 'none'
+        });
+      }
+      this.showWxModal = true;
+    },
+    closeWechat: function closeWechat() {
+      this.showWxModal = false;
+    },
+    previewQrcode: function previewQrcode() {
+      if (!this.shop || !this.shop.wechat_qrcode) return;
+      // previewImage 自带长按保存功能
+      uni.previewImage({
+        urls: [this.shop.wechat_qrcode],
+        current: this.shop.wechat_qrcode
+      });
+    },
+    copyWx: function copyWx() {
+      if (!this.shop || !this.shop.wechat_name) return;
+      uni.setClipboardData({
+        data: this.shop.wechat_name,
+        success: function success() {
+          return uni.showToast({
+            title: '已复制微信号',
+            icon: 'success'
+          });
+        }
+      });
+    },
     quickReserve: function quickReserve(g) {
       if (!_user.default.canOrder) {
         return uni.showModal({
@@ -400,8 +443,8 @@ var _default = {
           confirmText: '去登录',
           success: function success(_ref) {
             var confirm = _ref.confirm;
-            if (confirm) uni.navigateTo({
-              url: '/pages/login/account?role=buyer'
+            if (confirm) _user.default.goLogin({
+              role: 'buyer'
             });
           }
         });

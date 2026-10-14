@@ -101,7 +101,7 @@ var components
 try {
   components = {
     customTabbar: function () {
-      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 200))
+      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 208))
     },
   }
 } catch (e) {
@@ -125,27 +125,41 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var l0 = _vm.__map(_vm.list, function (g, __i1__) {
+  var g0 = _vm.categories.length
+  var l0 =
+    g0 > 0
+      ? _vm.__map(_vm.categories, function (c, __i0__) {
+          var $orig = _vm.__get_orig(c)
+          var m0 = _vm.formatAvg(c.avg_price)
+          return {
+            $orig: $orig,
+            m0: m0,
+          }
+        })
+      : null
+  var l1 = _vm.__map(_vm.list, function (g, __i2__) {
     var $orig = _vm.__get_orig(g)
-    var m0 = _vm.formatTime(g.publish_time)
+    var m1 = _vm.formatTime(g.publish_time)
     return {
       $orig: $orig,
-      m0: m0,
+      m1: m1,
     }
   })
-  var g0 = !_vm.loading ? _vm.finished && _vm.list.length > 0 : null
-  var g1 = !_vm.loading && !g0 ? _vm.list.length : null
-  var g2 = _vm.bookGoods ? Number(_vm.bookGoods.price).toFixed(2) : null
-  var g3 = _vm.bookGoods ? _vm.bookGoods.available.toLocaleString() : null
+  var g1 = !_vm.loading ? _vm.finished && _vm.list.length > 0 : null
+  var g2 = !_vm.loading && !g1 ? _vm.list.length : null
+  var g3 = _vm.bookGoods ? Number(_vm.bookGoods.price).toFixed(2) : null
+  var g4 = _vm.bookGoods ? _vm.bookGoods.available.toLocaleString() : null
   _vm.$mp.data = Object.assign(
     {},
     {
       $root: {
-        l0: l0,
         g0: g0,
+        l0: l0,
+        l1: l1,
         g1: g1,
         g2: g2,
         g3: g3,
+        g4: g4,
       },
     }
   )
@@ -291,9 +305,32 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
-    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
+    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 208));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var _default = {
@@ -534,8 +571,8 @@ var _default = {
           confirmColor: '#ff6600',
           success: function success(_ref) {
             var confirm = _ref.confirm;
-            if (confirm) uni.navigateTo({
-              url: '/pages/login/account?role=buyer'
+            if (confirm) _user.default.goLogin({
+              role: 'buyer'
             });
           }
         });
@@ -546,12 +583,13 @@ var _default = {
           success: function success(_ref2) {
             var tapIndex = _ref2.tapIndex;
             if (tapIndex === 0) {
-              uni.navigateTo({
-                url: '/pages/wxlogin/wxlogin'
+              _user.default.goLogin({
+                role: 'buyer',
+                mode: 'wx'
               });
             } else if (tapIndex === 1) {
-              uni.navigateTo({
-                url: '/pages/login/account?role=buyer'
+              _user.default.goLogin({
+                role: 'buyer'
               });
             }
           }
@@ -645,7 +683,15 @@ var _default = {
       var hm = "".concat(pad(d.getHours()), ":").concat(pad(d.getMinutes()));
       if (sameDay) return "\u4ECA\u5929 ".concat(hm);
       if (isYesterday) return "\u6628\u5929 ".concat(hm);
-      return "".concat(d.getMonth() + 1, "-").concat(pad(d.getDate()), " ").concat(hm);
+      return "".concat(d.getMonth() + 1, "-").concat(pad(d.getDate()));
+    },
+    formatPrice: function formatPrice(p) {
+      var n = parseFloat(p);
+      return isNaN(n) ? '0.00' : n.toFixed(2);
+    },
+    formatAvg: function formatAvg(p) {
+      var n = parseFloat(p);
+      return isNaN(n) || n <= 0 ? '--' : n.toFixed(2);
     }
   }
 };

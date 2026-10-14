@@ -52,7 +52,7 @@
         {{ submitting ? '登录中...' : '登录' }}
       </button>
 
-	 <view class="back-tip" @tap="goBack">‹ 返回</view>
+	 <!-- <view class="back-tip" @tap="goBack">‹ 返回</view> -->
 
       <view class="agreement">
         登录即代表您同意
@@ -75,7 +75,8 @@ export default {
       role: 'buyer',
       account: '',     // 不预填,让用户自己输入(避免误点登录)
       password: '',
-      submitting: false
+      submitting: false,
+      redirect: ''     // 登录成功后回跳的目标
     }
   },
   computed: {
@@ -85,6 +86,7 @@ export default {
   },
   onLoad(q) {
     this.role = q.role || 'buyer'
+    this.redirect = q.redirect ? decodeURIComponent(q.redirect) : ''
   },
   methods: {
     onAccountInput(e) { this.account = (e.detail.value || '').trim() },
@@ -102,15 +104,11 @@ export default {
         }, { hideError: true })
 
         const profile = this.role === 'wholesaler' ? data.wholesaler : data.buyer
-        userStore.setLogin(data.token, data.role, profile)
+        userStore.setLogin(data.token, data.role, profile, data.expire || 0)
 
         uni.showToast({ title: '登录成功', icon: 'success' })
         setTimeout(() => {
-          if (this.role === 'wholesaler') {
-            uni.reLaunch({ url: '/pages/wholesaler/dashboard/dashboard' })
-          } else {
-            uni.switchTab({ url: '/pages/index/index' })
-          }
+          userStore.afterLoginJump(this.redirect, this.role)
         }, 600)
       } catch (e) {
         uni.showToast({ title: e.message || '登录失败', icon: 'none' })

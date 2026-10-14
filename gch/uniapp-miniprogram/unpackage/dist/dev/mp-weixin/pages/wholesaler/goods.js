@@ -101,7 +101,7 @@ var components
 try {
   components = {
     customTabbar: function () {
-      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 200))
+      return Promise.all(/*! import() | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then(__webpack_require__.bind(null, /*! @/components/custom-tabbar/custom-tabbar.vue */ 208))
     },
   }
 } catch (e) {
@@ -127,8 +127,8 @@ var render = function () {
   var _c = _vm._self._c || _h
   var l0 = _vm.__map(_vm.list, function (g, __i0__) {
     var $orig = _vm.__get_orig(g)
-    var m0 = _vm.formatTime(g.publish_time)
-    var m1 = _vm.statusLabel(g.status)
+    var m0 = _vm.statusLabel(g.status)
+    var m1 = _vm.formatTime(g.publish_time)
     return {
       $orig: $orig,
       m0: m0,
@@ -233,7 +233,7 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 //
 var CustomTabbar = function CustomTabbar() {
   Promise.all(/*! require.ensure | components/custom-tabbar/custom-tabbar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/custom-tabbar/custom-tabbar")]).then((function () {
-    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 200));
+    return resolve(__webpack_require__(/*! @/components/custom-tabbar/custom-tabbar.vue */ 208));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var _default = {

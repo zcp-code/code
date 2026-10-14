@@ -28,11 +28,34 @@
       </view>
     </view>
 
+    <!-- 果仓货盘行情:每种现有水果的实时均价(横滑) -->
+    <view v-if="categories.length > 0" class="market-bar">
+      <view class="market-header">
+        <text class="market-icon">📊</text>
+        <text class="market-title">果仓货盘行情</text>
+        <text class="market-tip">实时均价</text>
+      </view>
+      <scroll-view class="market-scroll" scroll-x :show-scrollbar="false">
+        <view class="market-list">
+          <view
+            v-for="c in categories"
+            :key="c.id"
+            class="market-item"
+            @tap="selectCat(c.id)"
+          >
+            <text class="market-name">{{ c.name }}</text>
+            <text class="market-price">¥{{ formatAvg(c.avg_price) }}</text>
+            <text class="market-unit">/{{ c.count }} 款</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
     <!-- 品类横滑 chip -->
     <scroll-view class="category-scroll" scroll-x>
       <view class="chip" :class="{ active: !categoryId }" @tap="selectCat('')">全部</view>
       <view v-for="c in categories" :key="c.id" class="chip" :class="{ active: categoryId == c.id }" @tap="selectCat(c.id)">
-        {{ c.name }}
+        {{ c.name }}<text v-if="(c.count || 0) > 0" class="chip-badge">{{ c.count }}</text>
       </view>
     </scroll-view>
 
@@ -210,7 +233,7 @@ export default {
           cancelText: '继续逛逛',
           confirmColor: '#ff6600',
           success: ({ confirm }) => {
-            if (confirm) uni.navigateTo({ url: '/pages/login/account?role=buyer' })
+            if (confirm) userStore.goLogin({ role: 'buyer' })
           }
         })
       } else {
@@ -219,9 +242,9 @@ export default {
           itemList: ['微信授权进入(游客浏览)', '采购商账号登录'],
           success: ({ tapIndex }) => {
             if (tapIndex === 0) {
-              uni.navigateTo({ url: '/pages/wxlogin/wxlogin' })
+              userStore.goLogin({ role: 'buyer', mode: 'wx' })
             } else if (tapIndex === 1) {
-              uni.navigateTo({ url: '/pages/login/account?role=buyer' })
+              userStore.goLogin({ role: 'buyer' })
             }
           }
         })
@@ -262,7 +285,16 @@ export default {
       const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`
       if (sameDay) return `今天 ${hm}`
       if (isYesterday) return `昨天 ${hm}`
-      return `${d.getMonth() + 1}-${pad(d.getDate())} ${hm}`
+      return `${d.getMonth() + 1}-${pad(d.getDate())}`
+    },
+
+    formatPrice(p) {
+      const n = parseFloat(p)
+      return isNaN(n) ? '0.00' : n.toFixed(2)
+    },
+    formatAvg(p) {
+      const n = parseFloat(p)
+      return isNaN(n) || n <= 0 ? '--' : n.toFixed(2)
     }
   }
 }
@@ -311,6 +343,47 @@ export default {
 .stat-num { font-size: 36rpx; font-weight: 600; color: #ff6600; display: block; }
 .stat-label { color: #999; font-size: 22rpx; margin-top: 6rpx; }
 
+/* ===== 行情条(每种水果实时均价) ===== */
+.market-bar {
+  background: linear-gradient(135deg, #fff7ed, #fef3c7);
+  margin: 0 24rpx 24rpx;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx 24rpx;
+  border: 1rpx solid rgba(245, 158, 11, 0.15);
+}
+.market-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.market-icon { font-size: 32rpx; margin-right: 8rpx; }
+.market-title { font-size: 28rpx; font-weight: 700; color: #92400e; }
+.market-tip {
+  margin-left: auto;
+  font-size: 20rpx;
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+  padding: 4rpx 12rpx;
+  border-radius: 16rpx;
+}
+.market-scroll { white-space: nowrap; }
+.market-list { display: inline-flex; gap: 16rpx; padding: 4rpx 0; }
+.market-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18rpx 24rpx;
+  background: #fff;
+  border-radius: 14rpx;
+  min-width: 160rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  transition: transform .15s;
+}
+.market-item:active { transform: scale(0.96); }
+.market-name { font-size: 24rpx; color: #6b7280; margin-bottom: 4rpx; }
+.market-price { font-size: 32rpx; font-weight: 700; color: #d97706; letter-spacing: -.5rpx; }
+.market-unit { font-size: 20rpx; color: #9ca3af; margin-top: 2rpx; }
+
 .category-scroll {
   white-space: nowrap;
   padding: 0 30rpx 20rpx;
@@ -327,6 +400,24 @@ export default {
 }
 .chip.active {
   background: #ff6600;
+  color: #fff;
+}
+.chip-badge {
+  display: inline-block;
+  min-width: 28rpx;
+  height: 28rpx;
+  padding: 0 10rpx;
+  margin-left: 8rpx;
+  background: rgba(255, 102, 0, 0.12);
+  color: #ff6600;
+  font-size: 20rpx;
+  line-height: 28rpx;
+  text-align: center;
+  border-radius: 14rpx;
+  font-weight: 600;
+}
+.chip.active .chip-badge {
+  background: rgba(255, 255, 255, 0.3);
   color: #fff;
 }
 
@@ -359,28 +450,41 @@ export default {
 .price { color: #ff6600; font-size: 34rpx; font-weight: 700; }
 .goods-actions {
   display: flex;
-  gap: 12rpx;
-  margin-top: 16rpx;
+  gap: 16rpx;
+  margin-top: 20rpx;
 }
 .btn-outline {
   flex: 1;
-  background: #fff;
+  background: #fff7f0;
   color: #ff6600;
-  border: 2rpx solid #ff6600;
-  border-radius: 8rpx;
-  padding: 12rpx 0;
-  text-align: center;
-  font-size: 26rpx;
-}
-.btn-primary {
-  flex: 1.2;
-  background: #ff6600;
-  color: #fff;
-  border-radius: 8rpx;
-  padding: 12rpx 0;
+  border: 2rpx solid #ffd0a8;
+  border-radius: 999rpx;
+  padding: 14rpx 0;
   text-align: center;
   font-size: 26rpx;
   font-weight: 500;
+  transition: all .15s;
+}
+.btn-outline:active {
+  background: #ffe7d3;
+  border-color: #ff6600;
+  transform: scale(0.97);
+}
+.btn-primary {
+  flex: 1.2;
+  background: linear-gradient(135deg, #ff8533, #ff6600);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 14rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(255, 102, 0, 0.25);
+  transition: all .15s;
+}
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 2rpx 6rpx rgba(255, 102, 0, 0.2);
 }
 
 .loading, .empty {
@@ -454,15 +558,16 @@ export default {
 .qty-unit { color: #999; font-size: 26rpx; margin-left: 12rpx; }
 .sheet-submit {
   width: 100%;
-  background: #ff6600;
+  background: linear-gradient(135deg, #ff8533, #ff6600);
   color: #fff;
-  border-radius: 12rpx;
+  border-radius: 999rpx;
   padding: 24rpx 0;
   font-size: 32rpx;
   font-weight: 500;
   margin-top: 30rpx;
+  box-shadow: 0 6rpx 16rpx rgba(255, 102, 0, 0.25);
 }
-.sheet-submit[disabled] { background: #ccc; }
+.sheet-submit[disabled] { background: #ccc; box-shadow: none; }
 .sheet-tip {
   color: #999;
   font-size: 22rpx;
