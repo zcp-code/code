@@ -18,6 +18,8 @@ Route::any('product_category/index',    'admin/ProductCategory/index');
 Route::any('product_category/add',      'admin/ProductCategory/add');
 Route::any('product_category/edit/:id', 'admin/ProductCategory/edit');
 Route::any('product_category/del',      'admin/ProductCategory/del');
+// add.html 表单 remote() 实时唯一性校验
+Route::any('product_category/checkNameUnique', 'admin/ProductCategory/checkNameUnique');
 
 // 店铺
 Route::any('shop/index',    'admin/Shop/index');

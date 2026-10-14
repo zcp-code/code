@@ -50,7 +50,7 @@
             </view>
             <view class="fav-tag">
               <text class="fav-icon">★</text>
-              <text class="fav-time">{{ formatTime(g.fav_time) }}</text>
+              <text class="fav-time">{{ formatTime(g.favorite_time) }}</text>
             </view>
           </view>
         </view>
@@ -81,7 +81,7 @@
             </view>
             <view class="fav-tag">
               <text class="fav-icon">★</text>
-              <text class="fav-time">{{ formatTime(s.fav_time) }}</text>
+              <text class="fav-time">{{ formatTime(s.favorite_time) }}</text>
             </view>
           </view>
         </view>

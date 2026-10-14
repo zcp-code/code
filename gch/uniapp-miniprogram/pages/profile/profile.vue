@@ -21,16 +21,10 @@
        <view class="login-title">果仓货盘</view>
        <view class="login-slogan">产地直连 · 批发采购更省心</view>
  
-       <button class="btn-green" @tap="wxLogin">
-         <text class="wx-icon">💬</text>
-         <text>微信授权登录</text>
-       </button>
- 
        <view class="account-link" @tap="goAccountLogin">
          账号密码登录<text class="arrow">›</text>
        </view>
  
-       <view class="demo-tip">演示账号 test / 123456</view>
      </view>
  
      <view class="agreement">登录代表已同意《用户协议》与《隐私政策》</view>

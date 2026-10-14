@@ -91,4 +91,23 @@ class ProductCategory extends Backend
         }
         return $this->success('已处理 ' . $count . ' 条（有关联货盘的已停用）');
     }
+
+    /**
+     * 分类名唯一性校验(add.html 表单 input 上的 remote() 校验规则)
+     * 期望响应:valid=true 表示可用,valid=false 表示已存在
+     * 必须返回 HTTP 200,否则 validator 直接显示"网络错误"
+     */
+    public function checkNameUnique()
+    {
+        $name = $this->request->post('name', '');
+        $id   = (int)$this->request->post('id', 0);
+
+        $query = $this->model->where('name', $name);
+        if ($id > 0) {
+            $query->where('id', '<>', $id);
+        }
+        $exists = $query->count() > 0;
+
+        return json(['valid' => !$exists]);
+    }
 }

@@ -69,7 +69,7 @@
 
       <view class="image-list">
         <view v-for="(img, idx) in images" :key="idx" class="image-item">
-          <image :src="img" mode="aspectFill" class="image"></image>
+          <image :src="imageUrl(img)" mode="aspectFill" class="image"></image>
           <view class="del" @tap="removeImage(idx)">×</view>
         </view>
         <view v-if="images.length < 9" class="image-item add" @tap="chooseImage">
@@ -142,6 +142,7 @@
 
 <script>
 import http, { api } from '@/utils/request.js'
+import userStore from '@/store/user.js'
 
 const UNITS = ['斤', '公斤', '箱', '袋', '盒', '件', '个', '只', '把', '捆']
 
@@ -193,26 +194,55 @@ export default {
     },
     async chooseImage() {
       try {
-        const { tempFilePaths } = await uni.chooseImage({
-          count: 9 - this.images.length,
+        const remain = 9 - this.images.length
+        if (remain <= 0) {
+          uni.showToast({ title: '最多上传 9 张', icon: 'none' })
+          return
+        }
+        console.log('[publish.chooseImage] remain:', remain, 'apiBase:', userStore.apiBase, 'token.len:', (userStore.token || '').length)
+        const res = await uni.chooseImage({
+          count: remain,
           sizeType: ['compressed']
         })
+        console.log('[publish.chooseImage] full result:', res)
+        // 兼容两种返回形态:
+        // 1) 对象:{errMsg, tempFilePaths, tempFiles}
+        // 2) 数组:[null, {errMsg, tempFilePaths, tempFiles}] —— 你这个 mp-weixin 版本是这种(err-first 回调式 Promise)
+        const result = Array.isArray(res) ? res[1] : res
+        const tempFilePaths = (result && (result.tempFilePaths || result.tempFiles)) || []
+        console.log('[publish.chooseImage] tempFilePaths:', tempFilePaths)
+        if (!tempFilePaths || tempFilePaths.length === 0) {
+          console.warn('[publish.chooseImage] 用户没选图')
+          return
+        }
         for (const p of tempFilePaths) {
           try {
+            // header 不要手动设 Content-Type —— uni.uploadFile 会自动生成 multipart/form-data + boundary
+            // 手写 'multipart/form-data' 但不带 boundary 会让 nginx/php-fpm 丢弃文件 → 后端 $this->request->file('file') 为 null
             const up = await new Promise((resolve, reject) => {
-              wx.uploadFile({
-                url: getApp().globalData.apiBase + api.commonUpload,
+              uni.uploadFile({
+                url: userStore.apiBase + api.commonUpload,
                 filePath: p,
                 name: 'file',
-                header: { 'Content-Type': 'multipart/form-data' },
-                success: resolve,
-                fail: reject
+                header: userStore.token ? { Token: userStore.token } : {},
+                success: (r) => {
+                  console.log('[publish.uploadFile] response:', r)
+                  resolve(r)
+                },
+                fail: (e) => {
+                  console.error('[publish.uploadFile] fail:', e)
+                  reject(e)
+                }
               })
             })
             let body
             try { body = JSON.parse(up.data) } catch (e) { body = up.data }
-            if (body && body.code === 200 && body.data && body.data.url) {
-              this.images.push(body.data.url)
+            console.log('[publish.uploadFile] body:', body)
+            if (body && body.code === 200 && body.data && body.data.path) {
+              // 存相对路径(/uploads/xxx),渲染时再拼 userStore.apiBase;
+              // 不要存后端 $this->request->domain() 拼出的完整 URL——
+              // 微信 webview 在开发者工具里会把 host 当成 webview frame,path 当相对路径,变成 __pageframe__/uploads/xxx → 渲染层网络层错误
+              this.images.push(body.data.path)
             } else {
               uni.showToast({ title: (body && body.msg) || '上传失败', icon: 'none' })
             }
@@ -225,7 +255,10 @@ export default {
           uni.showToast({ title: `已上传 ${this.images.length} 张`, icon: 'success' })
         }
       } catch (e) {
-        // 用户取消选择,不提示
+        // 用户取消选择,不提示;但有异常时打印便于排查
+        if (e && e.errMsg && e.errMsg.indexOf('cancel') === -1) {
+          console.error('[publish.chooseImage] error:', e)
+        }
       }
     },
     removeImage(i) {
@@ -235,17 +268,14 @@ export default {
       if (this.submitting || !this.isValid) return
       this.submitting = true
       try {
-        const relativeImages = this.images.map(u => {
-          const m = u.match(/\/uploads\/.+/)
-          return m ? m[0] : u
-        })
+        // this.images 里存的就是相对路径(/uploads/xxx),直接提交即可
         await http.post(api.wholesalerGoodsCreate, {
           category_id: this.form.category_id,
           name: this.form.name,
           price: Number(this.form.price),
           unit: this.form.unit,
           total_stock: Number(this.form.total_stock),
-          images: relativeImages
+          images: this.images.slice()
         }, { hideError: true })
         uni.showModal({
           title: '发布成功 🎉',
@@ -259,6 +289,11 @@ export default {
     formatPrice(p) {
       const n = parseFloat(p)
       return isNaN(n) ? '0.00' : n.toFixed(2)
+    },
+    /** 拼图片完整 URL:相对路径 /uploads/xxx → 用 userStore.apiBase 拼成完整 URL */
+    imageUrl(p) {
+      if (!p) return ''
+      return /^https?:\/\//i.test(p) ? p : userStore.apiBase + p
     }
   }
 }

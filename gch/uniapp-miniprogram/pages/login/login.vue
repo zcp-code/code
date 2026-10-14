@@ -1,7 +1,7 @@
 <template>
   <view class="entry">
     <view class="hero">
-      <text class="big-icon">🍎</text>
+      <text class="big-icon"> <image src="/static/logo.PNG" mode="widthFix"></image></text>
       <text class="title">果仓货盘</text>
       <text class="slogan">产地直连 · 批发采购更省心</text>
       <text class="hint">请选择您的身份进入</text>
@@ -74,7 +74,10 @@ export default {
   align-items: center;
   margin-bottom: 80rpx;
 }
-.big-icon { font-size: 140rpx; }
+.big-icon { width:  140rpx; }
+.big-icon image{
+	 width:  140rpx; 
+}
 .title {
   font-size: 52rpx;
   font-weight: 700;

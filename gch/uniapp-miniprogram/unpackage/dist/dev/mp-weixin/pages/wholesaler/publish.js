@@ -34,7 +34,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _publish_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./publish.vue?vue&type=script&lang=js& */ 172);
 /* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _publish_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _publish_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
 /* harmony import */ var _publish_vue_vue_type_style_index_0_id_3a745426_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./publish.vue?vue&type=style&index=0&id=3a745426&scoped=true&lang=css& */ 174);
-/* harmony import */ var _D_LenovoQMDownload_SoftMgr_HBuilder_X_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js */ 33);
+/* harmony import */ var _D_LenovoQMDownload_SoftMgr_HBuilder_X_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js */ 36);
 
 var renderjs
 
@@ -102,9 +102,17 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
+  var l0 = _vm.__map(_vm.images, function (img, idx) {
+    var $orig = _vm.__get_orig(img)
+    var m0 = _vm.imageUrl(img)
+    return {
+      $orig: $orig,
+      m0: m0,
+    }
+  })
   var g0 = _vm.images.length
   var g1 = g0 < 9 ? _vm.images.length : null
-  var m0 = _vm.canPreview ? _vm.formatPrice(_vm.form.price) : null
+  var m1 = _vm.canPreview ? _vm.formatPrice(_vm.form.price) : null
   var g2 = _vm.showCatPicker ? _vm.categories.length : null
   if (!_vm._isMounted) {
     _vm.e0 = function ($event) {
@@ -130,9 +138,10 @@ var render = function () {
     {},
     {
       $root: {
+        l0: l0,
         g0: g0,
         g1: g1,
-        m0: m0,
+        m1: m1,
         g2: g2,
       },
     }
@@ -170,7 +179,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni, wx) {
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
 var _typeof = __webpack_require__(/*! @babel/runtime/helpers/typeof */ 13);
@@ -178,9 +187,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 51));
-var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 53));
-var _request = _interopRequireWildcard(__webpack_require__(/*! @/utils/request.js */ 35));
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 31));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
+var _request = _interopRequireWildcard(__webpack_require__(/*! @/utils/request.js */ 38));
+var _user = _interopRequireDefault(__webpack_require__(/*! @/store/user.js */ 30));
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -267,22 +277,47 @@ var _default = {
     chooseImage: function chooseImage() {
       var _this3 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
-        var _yield$uni$chooseImag, tempFilePaths, _iterator, _step, _loop;
+        var remain, res, result, tempFilePaths, _iterator, _step, _loop;
         return _regenerator.default.wrap(function _callee2$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.prev = 0;
-                _context3.next = 3;
+                remain = 9 - _this3.images.length;
+                if (!(remain <= 0)) {
+                  _context3.next = 5;
+                  break;
+                }
+                uni.showToast({
+                  title: '最多上传 9 张',
+                  icon: 'none'
+                });
+                return _context3.abrupt("return");
+              case 5:
+                console.log('[publish.chooseImage] remain:', remain, 'apiBase:', _user.default.apiBase, 'token.len:', (_user.default.token || '').length);
+                _context3.next = 8;
                 return uni.chooseImage({
-                  count: 9 - _this3.images.length,
+                  count: remain,
                   sizeType: ['compressed']
                 });
-              case 3:
-                _yield$uni$chooseImag = _context3.sent;
-                tempFilePaths = _yield$uni$chooseImag.tempFilePaths;
+              case 8:
+                res = _context3.sent;
+                console.log('[publish.chooseImage] full result:', res);
+                // 兼容两种返回形态:
+                // 1) 对象:{errMsg, tempFilePaths, tempFiles}
+                // 2) 数组:[null, {errMsg, tempFilePaths, tempFiles}] —— 你这个 mp-weixin 版本是这种(err-first 回调式 Promise)
+                result = Array.isArray(res) ? res[1] : res;
+                tempFilePaths = result && (result.tempFilePaths || result.tempFiles) || [];
+                console.log('[publish.chooseImage] tempFilePaths:', tempFilePaths);
+                if (!(!tempFilePaths || tempFilePaths.length === 0)) {
+                  _context3.next = 16;
+                  break;
+                }
+                console.warn('[publish.chooseImage] 用户没选图');
+                return _context3.abrupt("return");
+              case 16:
                 _iterator = _createForOfIteratorHelper(tempFilePaths);
-                _context3.prev = 6;
+                _context3.prev = 17;
                 _loop = /*#__PURE__*/_regenerator.default.mark(function _loop() {
                   var p, up, body, msg;
                   return _regenerator.default.wrap(function _loop$(_context2) {
@@ -293,15 +328,21 @@ var _default = {
                           _context2.prev = 1;
                           _context2.next = 4;
                           return new Promise(function (resolve, reject) {
-                            wx.uploadFile({
-                              url: getApp().globalData.apiBase + _request.api.commonUpload,
+                            uni.uploadFile({
+                              url: _user.default.apiBase + _request.api.commonUpload,
                               filePath: p,
                               name: 'file',
-                              header: {
-                                'Content-Type': 'multipart/form-data'
+                              header: _user.default.token ? {
+                                Token: _user.default.token
+                              } : {},
+                              success: function success(r) {
+                                console.log('[publish.uploadFile] response:', r);
+                                resolve(r);
                               },
-                              success: resolve,
-                              fail: reject
+                              fail: function fail(e) {
+                                console.error('[publish.uploadFile] fail:', e);
+                                reject(e);
+                              }
                             });
                           });
                         case 4:
@@ -311,70 +352,78 @@ var _default = {
                           } catch (e) {
                             body = up.data;
                           }
-                          if (body && body.code === 200 && body.data && body.data.url) {
-                            _this3.images.push(body.data.url);
+                          console.log('[publish.uploadFile] body:', body);
+                          if (body && body.code === 200 && body.data && body.data.path) {
+                            // 存相对路径(/uploads/xxx),渲染时再拼 userStore.apiBase;
+                            // 不要存后端 $this->request->domain() 拼出的完整 URL——
+                            // 微信 webview 在开发者工具里会把 host 当成 webview frame,path 当相对路径,变成 __pageframe__/uploads/xxx → 渲染层网络层错误
+                            _this3.images.push(body.data.path);
                           } else {
                             uni.showToast({
                               title: body && body.msg || '上传失败',
                               icon: 'none'
                             });
                           }
-                          _context2.next = 13;
+                          _context2.next = 14;
                           break;
-                        case 9:
-                          _context2.prev = 9;
+                        case 10:
+                          _context2.prev = 10;
                           _context2.t0 = _context2["catch"](1);
                           msg = _context2.t0 && (_context2.t0.errMsg || _context2.t0.message) || '上传失败';
                           uni.showToast({
                             title: msg,
                             icon: 'none'
                           });
-                        case 13:
+                        case 14:
                         case "end":
                           return _context2.stop();
                       }
                     }
-                  }, _loop, null, [[1, 9]]);
+                  }, _loop, null, [[1, 10]]);
                 });
                 _iterator.s();
-              case 9:
+              case 20:
                 if ((_step = _iterator.n()).done) {
-                  _context3.next = 13;
+                  _context3.next = 24;
                   break;
                 }
-                return _context3.delegateYield(_loop(), "t0", 11);
-              case 11:
-                _context3.next = 9;
+                return _context3.delegateYield(_loop(), "t0", 22);
+              case 22:
+                _context3.next = 20;
                 break;
-              case 13:
-                _context3.next = 18;
+              case 24:
+                _context3.next = 29;
                 break;
-              case 15:
-                _context3.prev = 15;
-                _context3.t1 = _context3["catch"](6);
+              case 26:
+                _context3.prev = 26;
+                _context3.t1 = _context3["catch"](17);
                 _iterator.e(_context3.t1);
-              case 18:
-                _context3.prev = 18;
+              case 29:
+                _context3.prev = 29;
                 _iterator.f();
-                return _context3.finish(18);
-              case 21:
+                return _context3.finish(29);
+              case 32:
                 if (_this3.images.length > 0) {
                   uni.showToast({
                     title: "\u5DF2\u4E0A\u4F20 ".concat(_this3.images.length, " \u5F20"),
                     icon: 'success'
                   });
                 }
-                _context3.next = 26;
+                _context3.next = 38;
                 break;
-              case 24:
-                _context3.prev = 24;
+              case 35:
+                _context3.prev = 35;
                 _context3.t2 = _context3["catch"](0);
-              case 26:
+                // 用户取消选择,不提示;但有异常时打印便于排查
+                if (_context3.t2 && _context3.t2.errMsg && _context3.t2.errMsg.indexOf('cancel') === -1) {
+                  console.error('[publish.chooseImage] error:', _context3.t2);
+                }
+              case 38:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee2, null, [[0, 24], [6, 15, 18, 21]]);
+        }, _callee2, null, [[0, 35], [17, 26, 29, 32]]);
       }))();
     },
     removeImage: function removeImage(i) {
@@ -383,7 +432,6 @@ var _default = {
     submit: function submit() {
       var _this4 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
-        var relativeImages;
         return _regenerator.default.wrap(function _callee3$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -396,22 +444,18 @@ var _default = {
               case 2:
                 _this4.submitting = true;
                 _context4.prev = 3;
-                relativeImages = _this4.images.map(function (u) {
-                  var m = u.match(/\/uploads\/.+/);
-                  return m ? m[0] : u;
-                });
-                _context4.next = 7;
+                _context4.next = 6;
                 return _request.default.post(_request.api.wholesalerGoodsCreate, {
                   category_id: _this4.form.category_id,
                   name: _this4.form.name,
                   price: Number(_this4.form.price),
                   unit: _this4.form.unit,
                   total_stock: Number(_this4.form.total_stock),
-                  images: relativeImages
+                  images: _this4.images.slice()
                 }, {
                   hideError: true
                 });
-              case 7:
+              case 6:
                 uni.showModal({
                   title: '发布成功 🎉',
                   content: '货盘已上架,买家可在首页看到',
@@ -420,33 +464,37 @@ var _default = {
                     return uni.navigateBack();
                   }
                 });
-                _context4.next = 13;
+                _context4.next = 12;
                 break;
-              case 10:
-                _context4.prev = 10;
+              case 9:
+                _context4.prev = 9;
                 _context4.t0 = _context4["catch"](3);
                 uni.showToast({
                   title: _context4.t0.message || '操作失败',
                   icon: 'none'
                 });
-              case 13:
+              case 12:
                 _this4.submitting = false;
-              case 14:
+              case 13:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee3, null, [[3, 10]]);
+        }, _callee3, null, [[3, 9]]);
       }))();
     },
     formatPrice: function formatPrice(p) {
       var n = parseFloat(p);
       return isNaN(n) ? '0.00' : n.toFixed(2);
+    },
+    /** 拼图片完整 URL:相对路径 /uploads/xxx → 用 userStore.apiBase 拼成完整 URL */imageUrl: function imageUrl(p) {
+      if (!p) return '';
+      return /^https?:\/\//i.test(p) ? p : _user.default.apiBase + p;
     }
   }
 };
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"]))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 

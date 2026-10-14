@@ -5,7 +5,7 @@
     <!-- 顶部橙色品牌区 -->
     <view class="brand-section">
       <view class="logo-box">
-        <text class="logo-icon">🍊</text>
+        <image src="/static/logo.PNG" mode="widthFix"></image>
       </view>
       <text class="brand-name">{{ roleLabel }}</text>
     </view>
@@ -42,7 +42,7 @@
         </view>
       </view>
 
-      <view class="demo-tip">演示账号:buyer001 / wh001 / test1234</view>
+      <view class="demo-tip">演示账号:cgs001{cgs12345} / gys001 【gys12345】</view>
 
       <button
         class="btn-primary"
@@ -155,7 +155,9 @@ page {
 .logo-icon {
   font-size: 72rpx;
 }
-
+.logo-box image{
+	width: 100%;
+}
 .brand-name {
   font-size: 44rpx;
   font-weight: 700;

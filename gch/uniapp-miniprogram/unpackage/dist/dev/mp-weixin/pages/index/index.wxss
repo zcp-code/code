@@ -189,7 +189,7 @@
           transform: scale(0.97);
 }
 .btn-primary.data-v-57280228 {
-  flex: 1.2;
+  flex: 1;
   background: linear-gradient(135deg, #ff8533, #ff6600);
   color: #fff;
   border-radius: 999rpx;

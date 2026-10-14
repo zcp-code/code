@@ -12,7 +12,10 @@
   align-items: center;
   margin-bottom: 80rpx;
 }
-.big-icon.data-v-b237504c { font-size: 140rpx;
+.big-icon.data-v-b237504c { width:  140rpx;
+}
+.big-icon image.data-v-b237504c{
+	 width:  140rpx;
 }
 .title.data-v-b237504c {
   font-size: 52rpx;

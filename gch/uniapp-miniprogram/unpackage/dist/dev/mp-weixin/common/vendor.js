@@ -9585,8 +9585,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.userStore = exports.default = void 0;
-var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 51));
-var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 53));
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 31));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
 // store/user.js — Pinia 风格用户状态管理(零依赖,基于 Vue.observable)
 //
@@ -9711,7 +9711,7 @@ var state = _vue.default.observable({
   token: _cache.token || '',
   role: _cache.role || '',
   profile: _cache.profile || null,
-  apiBase: _cache.apiBase || 'http://192.168.0.15:1992',
+  apiBase: _cache.apiBase || 'http://121.41.239.10',
   expire: _cache.expire || 0 // token 过期时间(秒级时间戳),0 = 未知
 });
 
@@ -9870,404 +9870,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 31 */,
-/* 32 */,
-/* 33 */
-/*!**********************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
-  \**********************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode, /* vue-cli only */
-  components, // fixed by xxxxxx auto components
-  renderjs // fixed by xxxxxx renderjs
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // fixed by xxxxxx auto components
-  if (components) {
-    if (!options.components) {
-      options.components = {}
-    }
-    var hasOwn = Object.prototype.hasOwnProperty
-    for (var name in components) {
-      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
-        options.components[name] = components[name]
-      }
-    }
-  }
-  // fixed by xxxxxx renderjs
-  if (renderjs) {
-    if(typeof renderjs.beforeCreate === 'function'){
-			renderjs.beforeCreate = [renderjs.beforeCreate]
-		}
-    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
-      this[renderjs.__module] = this
-    });
-    (options.mixins || (options.mixins = [])).push(renderjs)
-  }
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-/* 34 */
-/*!*************************************************************!*\
-  !*** F:/2026/GCH/code/gch/uniapp-miniprogram/utils/auth.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// utils/auth.js — 登录态本地缓存
-var KEY = 'GCH_AUTH';
-function write(payload) {
-  try {
-    uni.setStorageSync(KEY, payload);
-  } catch (e) {
-    console.error('auth.write failed', e);
-  }
-}
-function read() {
-  try {
-    return uni.getStorageSync(KEY) || {};
-  } catch (e) {
-    return {};
-  }
-}
-function clear() {
-  try {
-    uni.removeStorageSync(KEY);
-  } catch (e) {}
-}
-var _default = {
-  write: write,
-  read: read,
-  clear: clear
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 35 */
-/*!****************************************************************!*\
-  !*** F:/2026/GCH/code/gch/uniapp-miniprogram/utils/request.js ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "api", {
-  enumerable: true,
-  get: function get() {
-    return _api.default;
-  }
-});
-exports.default = void 0;
-var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _api = _interopRequireDefault(__webpack_require__(/*! ./api.js */ 36));
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function buildBaseUrl() {
-  return getApp().globalData.apiBase;
-}
-function request(url) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var app = getApp();
-  var method = (options.method || 'GET').toUpperCase();
-  var header = _objectSpread({
-    'Content-Type': 'application/json'
-  }, options.header);
-
-  // 注入 Token
-  if (app.globalData.token) {
-    header['Token'] = app.globalData.token;
-  }
-  return new Promise(function (resolve, reject) {
-    uni.request({
-      url: buildBaseUrl() + url,
-      method: method,
-      data: options.data || {},
-      header: header,
-      success: function success(res) {
-        // HTTP 401:服务端用 HttpException 抛的,常见于角色不匹配 / token 失效
-        if (res.statusCode === 401) {
-          app.clearLogin();
-          uni.showToast({
-            title: '登录已失效,请重新登录',
-            icon: 'none'
-          });
-          reject(new Error('请先登录'));
-          return;
-        }
-        if (res.statusCode !== 200) {
-          uni.showToast({
-            title: "HTTP ".concat(res.statusCode),
-            icon: 'none'
-          });
-          reject(new Error("HTTP ".concat(res.statusCode)));
-          return;
-        }
-        var body = res.data || {};
-        if (body.code === 200) {
-          resolve(body.data);
-        } else if (body.code === 401) {
-          // token 失效 — 清登录态 + 提示
-          app.clearLogin();
-          uni.showToast({
-            title: '登录已失效,请重新登录',
-            icon: 'none'
-          });
-          reject(new Error(body.msg || '请先登录'));
-        } else {
-          // 业务失败:始终弹 toast(无论 hideError),确保用户能看到提示
-          uni.showToast({
-            title: body.msg || '请求失败',
-            icon: 'none'
-          });
-          reject(new Error(body.msg || '请求失败'));
-        }
-      },
-      fail: function fail(err) {
-        if (!options.hideError) {
-          uni.showToast({
-            title: '网络错误',
-            icon: 'none'
-          });
-        }
-        reject(err);
-      }
-    });
-  });
-}
-var _default = {
-  get: function get(url, data, opts) {
-    return request(url, _objectSpread(_objectSpread({}, opts), {}, {
-      method: 'GET',
-      data: data
-    }));
-  },
-  post: function post(url, data, opts) {
-    return request(url, _objectSpread(_objectSpread({}, opts), {}, {
-      method: 'POST',
-      data: data
-    }));
-  },
-  delete: function _delete(url, data, opts) {
-    return request(url, _objectSpread(_objectSpread({}, opts), {}, {
-      method: 'DELETE',
-      data: data
-    }));
-  },
-  raw: request
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 36 */
-/*!************************************************************!*\
-  !*** F:/2026/GCH/code/gch/uniapp-miniprogram/utils/api.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// utils/api.js — API 路径常量
-var _default = {
-  // 公共
-  wxLogin: '/api/wxlogin',
-  commonConfig: '/api/common/config',
-  commonUpload: '/api/common/upload',
-  commonRefreshToken: '/api/common/refreshToken',
-  // 静默续期
-
-  // 公开浏览
-  goodsList: '/api/goods',
-  goodsDetail: function goodsDetail(id) {
-    return "/api/goods/".concat(id);
-  },
-  categoryList: '/api/categories',
-  shopList: '/api/shops',
-  shopDetail: function shopDetail(id) {
-    return "/api/shop/".concat(id);
-  },
-  callDial: '/api/call/dial',
-  // 游客
-  visitorProfile: '/api/visitor/profile',
-  visitorLogout: '/api/visitor/logout',
-  // 采购商
-  buyerLogin: '/api/buyer/login',
-  buyerLogout: '/api/buyer/logout',
-  buyerProfile: '/api/buyer/profile',
-  buyerChangePwd: '/api/buyer/changePwd',
-  // 预订
-  reservationCreate: '/api/reservation',
-  reservationList: '/api/reservations',
-  reservationDetail: function reservationDetail(id) {
-    return "/api/reservation/".concat(id);
-  },
-  reservationCancel: '/api/reservation/cancel',
-  // 收藏
-  favoriteGoods: '/api/favorite/goods',
-  favoriteShop: '/api/favorite/shop',
-  favorites: '/api/favorites',
-  // 批发商
-  wholesalerLogin: '/api/wholesaler/login',
-  wholesalerLogout: '/api/wholesaler/logout',
-  wholesalerProfile: '/api/wholesaler/profile',
-  wholesalerChangePwd: '/api/wholesaler/changePwd',
-  wholesalerQrcode: '/api/wholesaler/qrcode',
-  wholesalerCategories: '/api/wholesaler/categories',
-  wholesalerGoodsList: '/api/wholesaler/goods',
-  wholesalerGoodsDetail: function wholesalerGoodsDetail(id) {
-    return "/api/wholesaler/goods/".concat(id);
-  },
-  wholesalerGoodsCreate: '/api/wholesaler/goods/create',
-  wholesalerGoodsStatus: '/api/wholesaler/goods_status',
-  // 下划线!斜杠 pathinfo 会落到 goods()->create()
-  wholesalerReservations: '/api/wholesaler/reservations',
-  wholesalerReservationDetail: function wholesalerReservationDetail(id) {
-    return "/api/wholesaler/reservation/".concat(id);
-  },
-  wholesalerReservationConfirm: '/api/wholesaler/reservation_confirm',
-  // 下划线!斜杠 pathinfo 会落到 reservation()->reservation_detail
-  wholesalerReservationCancel: '/api/wholesaler/reservation_cancel',
-  // 批发商店铺微信信息(给采购商"加微信"功能用)
-  wholesalerWechatGet: '/api/wholesaler/wechat',
-  // GET 拉取, POST 更新
-
-  // 登录态辅助
-  pendingRoleKey: 'pending_role' // 起始页 → 登录页 之间传递角色
-};
-exports.default = _default;
-
-/***/ }),
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */
+/* 31 */
 /*!************************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/@babel/runtime/regenerator/index.js ***!
   \************************************************************************************************/
@@ -10276,11 +9879,11 @@ exports.default = _default;
 
 // TODO(Babel 8): Remove this file.
 
-var runtime = __webpack_require__(/*! @babel/runtime/helpers/regeneratorRuntime */ 52)();
+var runtime = __webpack_require__(/*! @babel/runtime/helpers/regeneratorRuntime */ 32)();
 module.exports = runtime;
 
 /***/ }),
-/* 52 */
+/* 32 */
 /*!*******************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/regeneratorRuntime.js ***!
   \*******************************************************************/
@@ -10601,7 +10204,7 @@ function _regeneratorRuntime() {
 module.exports = _regeneratorRuntime, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 53 */
+/* 33 */
 /*!*****************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/asyncToGenerator.js ***!
   \*****************************************************************/
@@ -10639,6 +10242,394 @@ function _asyncToGenerator(fn) {
   };
 }
 module.exports = _asyncToGenerator, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+/* 34 */,
+/* 35 */,
+/* 36 */
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
+  \**********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode, /* vue-cli only */
+  components, // fixed by xxxxxx auto components
+  renderjs // fixed by xxxxxx renderjs
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // fixed by xxxxxx auto components
+  if (components) {
+    if (!options.components) {
+      options.components = {}
+    }
+    var hasOwn = Object.prototype.hasOwnProperty
+    for (var name in components) {
+      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
+        options.components[name] = components[name]
+      }
+    }
+  }
+  // fixed by xxxxxx renderjs
+  if (renderjs) {
+    if(typeof renderjs.beforeCreate === 'function'){
+			renderjs.beforeCreate = [renderjs.beforeCreate]
+		}
+    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
+      this[renderjs.__module] = this
+    });
+    (options.mixins || (options.mixins = [])).push(renderjs)
+  }
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 37 */
+/*!*************************************************************!*\
+  !*** F:/2026/GCH/code/gch/uniapp-miniprogram/utils/auth.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// utils/auth.js — 登录态本地缓存
+var KEY = 'GCH_AUTH';
+function write(payload) {
+  try {
+    uni.setStorageSync(KEY, payload);
+  } catch (e) {
+    console.error('auth.write failed', e);
+  }
+}
+function read() {
+  try {
+    return uni.getStorageSync(KEY) || {};
+  } catch (e) {
+    return {};
+  }
+}
+function clear() {
+  try {
+    uni.removeStorageSync(KEY);
+  } catch (e) {}
+}
+var _default = {
+  write: write,
+  read: read,
+  clear: clear
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 38 */
+/*!****************************************************************!*\
+  !*** F:/2026/GCH/code/gch/uniapp-miniprogram/utils/request.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "api", {
+  enumerable: true,
+  get: function get() {
+    return _api.default;
+  }
+});
+exports.default = void 0;
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _api = _interopRequireDefault(__webpack_require__(/*! ./api.js */ 39));
+var _user = _interopRequireDefault(__webpack_require__(/*! @/store/user.js */ 30));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function buildBaseUrl() {
+  return getApp().globalData.apiBase;
+}
+function request(url) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var app = getApp();
+  var method = (options.method || 'GET').toUpperCase();
+  var header = _objectSpread({
+    'Content-Type': 'application/json'
+  }, options.header);
+
+  // 注入 Token
+  if (app.globalData.token) {
+    header['Token'] = app.globalData.token;
+  }
+  return new Promise(function (resolve, reject) {
+    uni.request({
+      url: buildBaseUrl() + url,
+      method: method,
+      data: options.data || {},
+      header: header,
+      success: function success(res) {
+        // HTTP 401:服务端用 HttpException 抛的,常见于角色不匹配 / token 失效
+        if (res.statusCode === 401) {
+          // 彻底清登录态(token + role + profile),强制重新登录
+          // 之前只 clearLogin 保留 role,导致 UI 状态错乱(用户以为"店铺 tab 有数据"但实际是空状态占位)
+          _user.default.clearAll();
+          if (!options.hideAuthToast) {
+            uni.showToast({
+              title: '登录已失效,请重新登录',
+              icon: 'none'
+            });
+          }
+          reject(new Error('请先登录'));
+          return;
+        }
+        if (res.statusCode !== 200) {
+          uni.showToast({
+            title: "HTTP ".concat(res.statusCode),
+            icon: 'none'
+          });
+          reject(new Error("HTTP ".concat(res.statusCode)));
+          return;
+        }
+        var body = res.data || {};
+        if (body.code === 200) {
+          resolve(body.data);
+        } else if (body.code === 401) {
+          // token 失效 — 清登录态 + 提示
+          app.clearLogin();
+          uni.showToast({
+            title: '登录已失效,请重新登录',
+            icon: 'none'
+          });
+          reject(new Error(body.msg || '请先登录'));
+        } else {
+          // 业务失败:始终弹 toast(无论 hideError),确保用户能看到提示
+          uni.showToast({
+            title: body.msg || '请求失败',
+            icon: 'none'
+          });
+          reject(new Error(body.msg || '请求失败'));
+        }
+      },
+      fail: function fail(err) {
+        if (!options.hideError) {
+          uni.showToast({
+            title: '网络错误',
+            icon: 'none'
+          });
+        }
+        reject(err);
+      }
+    });
+  });
+}
+var _default = {
+  get: function get(url, data, opts) {
+    return request(url, _objectSpread(_objectSpread({}, opts), {}, {
+      method: 'GET',
+      data: data
+    }));
+  },
+  post: function post(url, data, opts) {
+    return request(url, _objectSpread(_objectSpread({}, opts), {}, {
+      method: 'POST',
+      data: data
+    }));
+  },
+  delete: function _delete(url, data, opts) {
+    return request(url, _objectSpread(_objectSpread({}, opts), {}, {
+      method: 'DELETE',
+      data: data
+    }));
+  },
+  raw: request
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 39 */
+/*!************************************************************!*\
+  !*** F:/2026/GCH/code/gch/uniapp-miniprogram/utils/api.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// utils/api.js — API 路径常量
+var _default = {
+  // 公共
+  wxLogin: '/api/wxlogin',
+  commonConfig: '/api/common/config',
+  commonUpload: '/api/common/upload',
+  commonRefreshToken: '/api/common/refreshToken',
+  // 静默续期
+
+  // 公开浏览
+  goodsList: '/api/goods',
+  goodsDetail: function goodsDetail(id) {
+    return "/api/goods/".concat(id);
+  },
+  categoryList: '/api/categories',
+  shopList: '/api/shops',
+  shopDetail: function shopDetail(id) {
+    return "/api/shop/".concat(id);
+  },
+  callDial: '/api/call/dial',
+  // 游客
+  visitorProfile: '/api/visitor/profile',
+  visitorLogout: '/api/visitor/logout',
+  // 采购商
+  buyerLogin: '/api/buyer/login',
+  buyerLogout: '/api/buyer/logout',
+  buyerProfile: '/api/buyer/profile',
+  buyerChangePwd: '/api/buyer/changePwd',
+  // 预订
+  reservationCreate: '/api/reservation',
+  reservationList: '/api/reservations',
+  reservationDetail: function reservationDetail(id) {
+    return "/api/reservation/".concat(id);
+  },
+  reservationCancel: '/api/reservation/cancel',
+  // 收藏
+  favoriteGoods: '/api/favorite/goods',
+  favoriteShop: '/api/favorite/shop',
+  favorites: '/api/favorites',
+  // 批发商
+  wholesalerLogin: '/api/wholesaler/login',
+  wholesalerLogout: '/api/wholesaler/logout',
+  wholesalerProfile: '/api/wholesaler/profile',
+  wholesalerChangePwd: '/api/wholesaler/changePwd',
+  wholesalerQrcode: '/api/wholesaler/qrcode',
+  wholesalerCategories: '/api/wholesaler/categories',
+  wholesalerGoodsList: '/api/wholesaler/goods',
+  wholesalerGoodsDetail: function wholesalerGoodsDetail(id) {
+    return "/api/wholesaler/goods/".concat(id);
+  },
+  wholesalerGoodsCreate: '/api/wholesaler/goods/create',
+  wholesalerGoodsStatus: '/api/wholesaler/goods_status',
+  // 下划线!斜杠 pathinfo 会落到 goods()->create()
+  wholesalerReservations: '/api/wholesaler/reservations',
+  wholesalerReservationDetail: function wholesalerReservationDetail(id) {
+    return "/api/wholesaler/reservation/".concat(id);
+  },
+  wholesalerReservationConfirm: '/api/wholesaler/reservation_confirm',
+  // 下划线!斜杠 pathinfo 会落到 reservation()->reservation_detail
+  wholesalerReservationCancel: '/api/wholesaler/reservation_cancel',
+  // 批发商店铺微信信息(给采购商"加微信"功能用)
+  wholesalerWechatGet: '/api/wholesaler/wechat',
+  // GET 拉取, POST 更新
+
+  // 登录态辅助
+  pendingRoleKey: 'pending_role' // 起始页 → 登录页 之间传递角色
+};
+exports.default = _default;
 
 /***/ })
 ]]);

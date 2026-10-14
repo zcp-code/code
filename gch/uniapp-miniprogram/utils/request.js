@@ -1,5 +1,6 @@
 // utils/request.js — HTTP 请求封装
 import api from './api.js'
+import userStore from '@/store/user.js'
 
 function buildBaseUrl() {
   return getApp().globalData.apiBase
@@ -27,8 +28,12 @@ function request(url, options = {}) {
       success: res => {
         // HTTP 401:服务端用 HttpException 抛的,常见于角色不匹配 / token 失效
         if (res.statusCode === 401) {
-          app.clearLogin()
-          uni.showToast({ title: '登录已失效,请重新登录', icon: 'none' })
+          // 彻底清登录态(token + role + profile),强制重新登录
+          // 之前只 clearLogin 保留 role,导致 UI 状态错乱(用户以为"店铺 tab 有数据"但实际是空状态占位)
+          userStore.clearAll()
+          if (!options.hideAuthToast) {
+            uni.showToast({ title: '登录已失效,请重新登录', icon: 'none' })
+          }
           reject(new Error('请先登录'))
           return
         }

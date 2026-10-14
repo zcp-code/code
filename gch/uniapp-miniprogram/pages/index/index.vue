@@ -2,7 +2,7 @@
   <view class="container">
     <!-- 橙色头部 -->
     <view class="header">
-      <text class="title">果仓货盘 🍎</text>
+      <text class="title">果仓货盘 </text>
       <text class="subtitle">生产档口直连</text>
     </view>
 
@@ -45,7 +45,7 @@
           >
             <text class="market-name">{{ c.name }}</text>
             <text class="market-price">¥{{ formatAvg(c.avg_price) }}</text>
-            <text class="market-unit">/{{ c.count }} 款</text>
+            <!-- <text class="market-unit">/{{ c.count }} 款</text> -->
           </view>
         </view>
       </scroll-view>
@@ -471,7 +471,7 @@ export default {
   transform: scale(0.97);
 }
 .btn-primary {
-  flex: 1.2;
+  flex: 1;
   background: linear-gradient(135deg, #ff8533, #ff6600);
   color: #fff;
   border-radius: 999rpx;

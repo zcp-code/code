@@ -107,7 +107,7 @@ const state = Vue.observable({
   token:   _cache.token   || '',
   role:    _cache.role    || '',
   profile: _cache.profile || null,
-  apiBase: _cache.apiBase || 'http://192.168.0.15:1992',
+  apiBase: _cache.apiBase || 'http://121.41.239.10',
   expire:  _cache.expire  || 0   // token 过期时间(秒级时间戳),0 = 未知
 })
 

@@ -30,6 +30,9 @@ page.data-v-b9388344 {
 .logo-icon.data-v-b9388344 {
   font-size: 72rpx;
 }
+.logo-box image.data-v-b9388344{
+	width: 100%;
+}
 .brand-name.data-v-b9388344 {
   font-size: 44rpx;
   font-weight: 700;
